@@ -15,7 +15,7 @@
             : 'justify-start'
         "
       >
-        <ThemeSwitcher class="pa-3" :label="`Toggle side: ${side}`" />
+        <ThemeSwitcher :label="`Toggle side: ${side}`" />
       </div>
       <div
         class="d-flex align-center"

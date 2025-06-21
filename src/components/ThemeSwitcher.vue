@@ -1,8 +1,6 @@
 <template>
   <v-switch
     v-model="isDark"
-    class="my-0"
-    density="compact"
     hide-details
     :label="label"
   />
