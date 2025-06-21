@@ -8,8 +8,20 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    Dialog: typeof import('./components/Dialog.vue')['default']
+    DropList: typeof import('./components/DropList.vue')['default']
+    Footer: typeof import('./components/Footer.vue')['default']
+    FooterDropDownInfo: typeof import('./components/FooterDropDownInfo.vue')['default']
+    Form: typeof import('./components/Form.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
+    HighlightSearch: typeof import('./components/HighlightSearch.vue')['default']
+    Link: typeof import('./components/Link.vue')['default']
+    Logo: typeof import('./components/Logo.vue')['default']
+    Mandala: typeof import('./components/Mandala.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SoundButton: typeof import('./components/SoundButton.vue')['default']
+    SWCrawlText: typeof import('./components/SWCrawlText.vue')['default']
+    ThemeSwitcher: typeof import('./components/ThemeSwitcher.vue')['default']
   }
 }
