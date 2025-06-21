@@ -109,6 +109,7 @@
 .footer-custom {
   position: relative;
   flex: initial;
+  padding: 0;
 }
 
 :deep(.footer-icon) {
