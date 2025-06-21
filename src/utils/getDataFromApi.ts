@@ -1,4 +1,4 @@
-export const API_URL = 'https://swapi.dev/api'
+export const API_URL = import.meta.env.VITE_APP_API_BASE_URL
 export const RESOURCE_URL = 'https://starwars-visualguide.com'
 export const IMG_PLACEHOLDER = `${RESOURCE_URL}/assets/img/placeholder.jpg`
 
