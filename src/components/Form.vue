@@ -204,8 +204,8 @@
 
   const getData = async () => {
     isLoading.value = true
-    const response = await getDataFromApi(selectedApi.value)
-    const responseItems = response?.results
+    const response = await getDataFromApi(selectedApi.value, search.value)
+    const responseItems = response?.results?.map(item => ({ ...item.fields, url: item.fields.url }))
     if (responseItems?.length) {
       items.value = responseItems
     }
