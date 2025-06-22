@@ -31,12 +31,8 @@ export const LINKS = [
     text: 'Vuetify',
   },
   {
-    link: 'https://swapi.dev/api',
+    link: 'https://starwars-databank.vercel.app/',
     text: 'API',
-  },
-  {
-    link: 'https://starwars-visualguide.com',
-    text: 'Resources',
   },
   {
     link: 'https://starwars.fandom.com/',
@@ -57,7 +53,7 @@ export const AUDIO_ICONS = {
   stop: 'mdi-stop',
 } as const
 
-export const NON_BREAKING_SPACE = String.fromCharCode(160)
+export const NON_BREAKING_SPACE = String.fromCodePoint(160)
 
 export type Theme = typeof THEMES[keyof typeof THEMES]
 export type Side = typeof SIDES[keyof typeof SIDES]
