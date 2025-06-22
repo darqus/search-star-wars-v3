@@ -57,5 +57,7 @@
 .result {
   max-height: clamp(30vh, 50vh, 70vh);
   overflow: auto;
+
+  /* white-space: pre-wrap; */
 }
 </style>
