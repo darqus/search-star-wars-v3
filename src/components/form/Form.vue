@@ -44,7 +44,7 @@
     isLoading.value = true
     const response = await getDataFromApi(selectedApi.value, currentPage.value)
     items.value = response?.data
-    totalPages.value = response?.info?.total ?? 1
+    totalPages.value = response?.info.total
     isLoading.value = false
   }
 
