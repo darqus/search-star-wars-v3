@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { computed, ref } from 'vue'
   import { useDisplay, useTheme } from 'vuetify'
+  import Dialog from '@/components/Dialog.vue'
   import {
     API_URL,
     getDataFromApi,
@@ -30,6 +31,11 @@
   const selectedFields = ref(SEARCH_API_LIST[0].searchFields)
   const search = ref('')
   const isLoading = ref(false)
+  const imgURL = ref('')
+  const result = ref('')
+  const defaultResult = ref('')
+  const isDialogShow = ref(false)
+  const onDialog = (value: boolean) => (isDialogShow.value = value)
 
   const currentPage = ref(1)
   const totalPages = ref(1)
@@ -54,7 +60,6 @@
 
 <template>
   <v-container class="search-form">
-    {{ search }}
     <v-row align="center">
       <v-col cols="12" sm="4" xs="12">
         <Logo />
@@ -113,6 +118,37 @@
 
     <v-row style="position: relative">
       <v-col>
+        <template v-if="items.length > 0 && result !== defaultResult">
+          <template v-if="imgURL && search">
+            <div class="wrapper">
+              <div :aria-label="selectedApi" class="img" role="img">
+                <a
+                  href="#"
+                  @click.prevent="isDialogShow = !isDialogShow"
+                  @keyup="isDialogShow = !isDialogShow"
+                >
+                  <img
+                    v-for="item in 2"
+                    :key="item"
+                    :alt="selectedApi"
+                    :src="imgURL"
+                  >
+                </a>
+              </div>
+            </div>
+            <Dialog
+              class="my-5"
+              :is-dialog-show="isDialogShow"
+              :result="result"
+              :search="search"
+              @dialog="onDialog"
+            />
+          </template>
+          <template v-else>
+            <div class="result-text">{{ result }}</div>
+          </template>
+
+        </template>
         <template v-if="!display.smAndDown.value">
           <Mandala :side="side" />
           <Mandala class-name="right" :side="side" />
