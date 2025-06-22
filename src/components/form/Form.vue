@@ -37,6 +37,7 @@
 
   const currentPage = ref(1)
   const totalPages = ref(1)
+  const density = 'compact'
 
   const isDark = computed(() => theme.global.current.value.dark)
 
@@ -88,7 +89,7 @@
       <v-col cols="12" sm="4" xs="12">
         <v-select
           v-model="selectedApi"
-          density="compact"
+          :density="density"
           item-title="api"
           item-value="api"
           :items="SEARCH_API_LIST"
@@ -100,6 +101,7 @@
         <v-pagination
           v-if="totalPages > 1"
           v-model="currentPage"
+          :density="density"
           :length="totalPages"
           @update:model-value="onPageChange"
         />
@@ -109,7 +111,7 @@
           v-model="search"
           v-model:search-input="search"
           clearable
-          density="compact"
+          :density="density"
           :item-title="'name'"
           :items="items"
           :label="`Search ${selectedApi}`"
