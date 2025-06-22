@@ -47,7 +47,7 @@ export const SEARCH_API_LIST: SearchApiItem[] = [
   },
 ]
 
-type Item = {
+export type Item = {
   _id: string
   name: string
   description: string

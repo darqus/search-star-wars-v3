@@ -5,6 +5,7 @@
   import {
     API_URL,
     getDataFromApi,
+    type Item,
     SEARCH_API_LIST,
   } from '@/components/form/getDataFromApi'
   import Link from '@/components/Link.vue'
@@ -25,7 +26,7 @@
 
   const INPUT_DELAY = 500
 
-  const items = ref<any[]>([])
+  const items = ref<Item[]>([])
   const HEADER_NAME_SHORT = 'Star Wars search'
   const HEADER_NAME_POSTFIX = 'in Galaxy'
   const selectedApi = ref(SEARCH_API_LIST[0].api)
