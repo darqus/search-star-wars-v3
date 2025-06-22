@@ -27,9 +27,7 @@
   const HEADER_NAME_SHORT = 'Star Wars search'
   const HEADER_NAME_POSTFIX = 'in Galaxy'
   const selectedApi = ref(SEARCH_API_LIST[0].api)
-  const selectedField = ref(SEARCH_API_LIST[0].searchFields[0])
-  const selectedFields = ref(SEARCH_API_LIST[0].searchFields)
-  const search = ref('')
+  const search = ref<Item>()
   const isLoading = ref(false)
   const imgURL = ref('')
   const result = ref('')
@@ -44,7 +42,7 @@
 
   const getData = async () => {
     isLoading.value = true
-    const response = await getDataFromApi(selectedApi.value, search.value, currentPage.value)
+    const response = await getDataFromApi(selectedApi.value, currentPage.value)
     items.value = response?.data
     totalPages.value = response?.info?.total ?? 1
     isLoading.value = false
@@ -83,7 +81,7 @@
     </v-row>
 
     <v-row style="position: relative; z-index: 2">
-      <v-col cols="12" sm="3" xs="12">
+      <v-col cols="12" sm="4" xs="12">
         <v-select
           v-model="selectedApi"
           density="compact"
@@ -93,15 +91,7 @@
           :label="`What you search, ${role}? May the Force be with you`"
         />
       </v-col>
-      <v-col cols="12" sm="3" xs="12">
-        <v-select
-          v-model="selectedField"
-          density="compact"
-          :items="selectedFields"
-          label="Selected Field"
-        />
-      </v-col>
-      <v-col cols="12" sm="3" style="position: relative" xs="12">
+      <v-col cols="12" sm="4" style="position: relative" xs="12">
         <v-pagination
           v-if="totalPages > 1"
           v-model="currentPage"
@@ -109,13 +99,13 @@
           @update:model-value="onPageChange"
         />
       </v-col>
-      <v-col cols="12" sm="3" style="position: relative" xs="12">
+      <v-col cols="12" sm="4" style="position: relative" xs="12">
         <v-autocomplete
           v-model="search"
           v-model:search-input="search"
           clearable
           density="compact"
-          :item-title="selectedField"
+          :item-title="'name'"
           :items="items"
           :label="`Search ${selectedApi}`"
           :loading="isLoading"

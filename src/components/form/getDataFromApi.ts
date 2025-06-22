@@ -2,47 +2,36 @@ export const API_URL = import.meta.env.VITE_APP_API_BASE_URL
 
 export interface SearchApiItem {
   api: string
-  searchFields: string[]
   imgApiPath: string
 }
 
 export const SEARCH_API_LIST: SearchApiItem[] = [
   {
     api: 'characters',
-    searchFields: ['name'],
     imgApiPath: 'characters',
   },
   {
     api: 'creatures',
-    searchFields: ['name'],
     imgApiPath: 'creatures',
   },
   {
     api: 'droids',
-    searchFields: ['name'],
     imgApiPath: 'droids',
   },
   {
     api: 'locations',
-    searchFields: ['name'],
     imgApiPath: 'locations',
   },
   {
     api: 'organizations',
-    searchFields: ['name'],
     imgApiPath: 'organizations',
   },
   {
     api: 'species',
-    searchFields: ['name'],
     imgApiPath: 'species',
   },
   {
     api: 'vehicles',
-    searchFields: [
-      'name',
-      'model',
-    ],
     imgApiPath: 'vehicles',
   },
 ]
@@ -67,16 +56,12 @@ export interface ApiResponse {
 
 export const getDataFromApi = async (
   selectedApi: string,
-  search?: string,
   page = 1,
   limit = 20,
 ): Promise<ApiResponse> => {
   const params = new URLSearchParams()
   params.append('page', page.toString())
   params.append('limit', limit.toString())
-  if (search) {
-    params.append('name', search)
-  }
 
   const url = `${API_URL}/${selectedApi}?${params}`
   const res = await fetch(url)
