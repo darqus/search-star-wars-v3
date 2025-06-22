@@ -202,9 +202,7 @@
           @keyup="onKeyup"
           @update:search="onInput"
         />
-
       </v-col>
-
     </v-row>
 
     <v-row style="position: relative">
