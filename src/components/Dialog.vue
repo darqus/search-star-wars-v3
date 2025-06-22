@@ -1,9 +1,10 @@
 <script setup lang="ts">
+  import type { Item } from './form/getDataFromApi'
   import { ref, watch } from 'vue'
   import { useDisplay } from 'vuetify'
 
   interface Props {
-    search: string
+    search: Item
     result: string
     isDialogShow: boolean
   }
@@ -32,7 +33,7 @@
       :max-width="display.smAndDown.value ? '100%' : 560"
     >
       <v-card>
-        <v-card-title class="text-h5">{{ search }}</v-card-title>
+        <v-card-title class="text-h5">{{ search.name }}</v-card-title>
         <v-card-text>
           <pre class="result">{{ result }}</pre>
         </v-card-text>
