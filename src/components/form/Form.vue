@@ -1,7 +1,6 @@
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue'
   import { useDisplay, useTheme } from 'vuetify'
-  import Dialog from '@/components/Dialog.vue'
   import {
     API_URL,
     getDataFromApi,
@@ -11,7 +10,6 @@
   import Link from '@/components/Link.vue'
   import Logo from '@/components/Logo.vue'
   import Mandala from '@/components/Mandala.vue'
-  import createJSON from '@/utils/createJSON'
   import './scss/form.scss'
 
   interface Props {
@@ -24,8 +22,6 @@
   const theme = useTheme()
   const display = useDisplay()
 
-  const INPUT_DELAY = 500
-
   const items = ref<Item[]>([])
   const HEADER_NAME_SHORT = 'Star Wars search'
   const HEADER_NAME_POSTFIX = 'in Galaxy'
@@ -35,34 +31,11 @@
   const search = ref('')
   const timeout = ref<ReturnType<typeof setTimeout> | null>(null)
   const isLoading = ref(false)
-  const isShownDropDown = ref(false)
-  const isKeyupArrowDown = ref(false)
-  const defaultResult = '{}'
-  const imgURL = ref<string | null>(null)
-  const isDialogShow = ref(false)
+
   const currentPage = ref(1)
   const totalPages = ref(1)
 
   const isDark = computed(() => theme.global.current.value.dark)
-
-  const result = computed(() => {
-    if (items.value.length === 0) {
-      clearResult()
-      return ''
-    }
-
-    const findedSelected = items.value.find(
-      item => item[selectedField.value] === search.value,
-    )
-
-    if (!findedSelected) {
-      clearIMGURL()
-      return ''
-    }
-
-    setIMGURL(findedSelected.url)
-    return createJSON(findedSelected)
-  })
 
   watch(selectedApi, () => {
     setSearchField()
@@ -78,28 +51,6 @@
     clearSearch()
   }
 
-  const onSelect = (select: string) => {
-    search.value = select
-    isShownDropDown.value = false
-    timeout.value = null
-  }
-
-  const onInput = (event: Event) => {
-    const target = event.target as HTMLInputElement
-    if (!target.value) return clearSearch()
-
-    isShownDropDown.value = true
-
-    if (timeout.value) clearTimeout(timeout.value)
-    timeout.value = setTimeout(() => getData(), INPUT_DELAY)
-  }
-
-  const onKeyup = (event: KeyboardEvent) => {
-    if (event.code === 'ArrowDown') {
-      isKeyupArrowDown.value = true
-    }
-  }
-
   const getData = async () => {
     isLoading.value = true
     const response = await getDataFromApi(selectedApi.value, search.value, currentPage.value)
@@ -111,28 +62,6 @@
   const onPageChange = (page: number) => {
     currentPage.value = page
     getData()
-  }
-
-  // TODO: ref
-  const setIMGURL = (url: string) => {
-    /* const id = getIDfromApiUrl(url)
-    const { imgApiPath } = SEARCH_API_LIST.find(
-      ({ api }) => api === selectedApi.value,
-    )!
-
-    imgURL.value = `${RESOURCE_URL}/assets/img/${imgApiPath}/${id}.jpg` */
-  }
-
-  const onDialog = (value: boolean) => {
-    isDialogShow.value = value
-  }
-
-  const clearIMGURL = () => {
-    imgURL.value = null
-  }
-
-  const clearResult = () => {
-  // defaultResult is constant
   }
 
   const clearSearch = () => {
@@ -200,41 +129,12 @@
           :items="items"
           :label="`Search ${selectedApi}`"
           :loading="isLoading"
-          @keyup="onKeyup"
-          @update:search="onInput"
         />
       </v-col>
     </v-row>
 
     <v-row style="position: relative">
       <v-col>
-        <template v-if="items.length > 0 && result !== defaultResult">
-          <template v-if="imgURL">
-            <div class="wrapper">
-              <div :aria-label="selectedApi" class="img" role="img">
-                <a
-                  href="#"
-                  @click.prevent="isDialogShow = !isDialogShow"
-                  @keyup="isDialogShow = !isDialogShow"
-                >
-                  <img
-                    v-for="item in 2"
-                    :key="item"
-                    :alt="selectedApi"
-                    :src="imgURL"
-                  >
-                </a>
-              </div>
-            </div>
-            <Dialog
-              class="my-5"
-              :is-dialog-show="isDialogShow"
-              :result="result"
-              :search="search"
-              @dialog="onDialog"
-            />
-          </template>
-        </template>
         <template v-if="!display.smAndDown.value">
           <Mandala :side="side" />
           <Mandala class-name="right" :side="side" />
