@@ -44,7 +44,7 @@
             : 'justify-start'
         "
       >
-        <div>
+        <div class="links">
           <Link
             v-for="{ link, text } in links"
             :key="text"
@@ -110,6 +110,12 @@
   position: relative;
   flex: initial;
   padding: 0;
+
+  .links {
+    a {
+      color: v-bind($vuetify.theme.current.dark ? 'white' : 'black');
+    }
+  }
 }
 
 :deep(.footer-icon) {
