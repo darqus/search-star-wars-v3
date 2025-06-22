@@ -89,6 +89,7 @@
           item-value="api"
           :items="SEARCH_API_LIST"
           :label="`What you search, ${role}? May the Force be with you`"
+          @update:model-value="getData"
         />
       </v-col>
       <v-col cols="12" sm="4" style="position: relative" xs="12">
