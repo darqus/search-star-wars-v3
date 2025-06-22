@@ -153,7 +153,6 @@
           :search="search"
           @dialog="onDialog"
         />
-        <div v-else-if="result" class="result-text">{{ result }}</div>
         <template v-if="!display.smAndDown.value">
           <Mandala :side="side" />
           <Mandala class-name="right" :side="side" />
