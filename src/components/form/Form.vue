@@ -128,20 +128,22 @@
           </template>
           <template v-else-if="items.length > 0 && result !== defaultResult">
             <template v-if="imgURL && search">
-              <div :aria-label="selectedApi" class="img" role="img">
-                <a
-                  href="#"
-                  @click.prevent="isDialogShow = !isDialogShow"
-                  @keyup="isDialogShow = !isDialogShow"
-                >
-                  <img
-                    v-for="item in 2"
-                    :key="item"
-                    :alt="selectedApi"
-                    :src="imgURL"
+              <transition mode="out-in" name="scale">
+                <div :key="imgURL" :aria-label="selectedApi" class="img" role="img">
+                  <a
+                    href="#"
+                    @click.prevent="isDialogShow = !isDialogShow"
+                    @keyup="isDialogShow = !isDialogShow"
                   >
-                </a>
-              </div>
+                    <img
+                      v-for="item in 2"
+                      :key="item"
+                      :alt="selectedApi"
+                      :src="imgURL"
+                    >
+                  </a>
+                </div>
+              </transition>
             </template>
           </template>
         </div>
@@ -165,5 +167,13 @@
 <style>
 .links {
   color: v-bind(isDark ? 'lightblue' : 'rgb(36, 125, 199)');
+}
+
+.scale-enter-active, .scale-leave-active {
+  transition: transform 0.3s ease-in;
+}
+
+.scale-enter-from, .scale-leave-to {
+  transform: scale(0);
 }
 </style>
