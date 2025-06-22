@@ -47,13 +47,22 @@ export const SEARCH_API_LIST: SearchApiItem[] = [
   },
 ]
 
+type Item = {
+  _id: string
+  name: string
+  description: string
+  image: string
+  __v: number
+}
+
 export interface ApiResponse {
-  results: any[]
+  data: Item[]
   info?: {
-    count: number
-    pages: number
-    next: string | null
-    prev: string | null
+    total: number
+    page: number
+    limit: number
+    next: string
+    prev: string
   }
 }
 

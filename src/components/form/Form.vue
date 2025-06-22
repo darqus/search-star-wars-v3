@@ -2,15 +2,15 @@
   import { computed, ref, watch } from 'vue'
   import { useDisplay, useTheme } from 'vuetify'
   import Dialog from '@/components/Dialog.vue'
-  import Link from '@/components/Link.vue'
-  import Logo from '@/components/Logo.vue'
-  import Mandala from '@/components/Mandala.vue'
-  import createJSON from '@/utils/createJSON'
   import {
     API_URL,
     getDataFromApi,
     SEARCH_API_LIST,
-  } from '@/utils/getDataFromApi'
+  } from '@/components/form/getDataFromApi'
+  import Link from '@/components/Link.vue'
+  import Logo from '@/components/Logo.vue'
+  import Mandala from '@/components/Mandala.vue'
+  import createJSON from '@/utils/createJSON'
   import './scss/form.scss'
 
   interface Props {
@@ -39,6 +39,8 @@
   const defaultResult = '{}'
   const imgURL = ref<string | null>(null)
   const isDialogShow = ref(false)
+  const currentPage = ref(1)
+  const totalPages = ref(1)
 
   const isDark = computed(() => theme.global.current.value.dark)
 
@@ -99,12 +101,15 @@
 
   const getData = async () => {
     isLoading.value = true
-    const response = await getDataFromApi(selectedApi.value, search.value)
-    const responseItems = response?.results?.map(item => ({ ...item, url: item.url || item.id }))
-    if (responseItems?.length) {
-      items.value = responseItems
-    }
+    const response = await getDataFromApi(selectedApi.value, search.value, currentPage.value)
+    items.value = response?.data
+    totalPages.value = response?.info?.total ?? 1
     isLoading.value = false
+  }
+
+  const onPageChange = (page: number) => {
+    currentPage.value = page
+    getData()
   }
 
   // TODO: ref
@@ -133,7 +138,11 @@
     search.value = ''
     items.value = []
     timeout.value = null
+    currentPage.value = 1
+    totalPages.value = 1
   }
+
+  getData()
 </script>
 
 <template>
@@ -163,7 +172,12 @@
           :items="SEARCH_API_LIST"
           :label="`What you search, ${role}? May the Force be with you`"
         />
-        <v-pagination :length="4" />
+        <v-pagination
+          v-if="totalPages > 1"
+          v-model="currentPage"
+          :length="totalPages"
+          @update:model-value="onPageChange"
+        />
       </v-col>
       <v-col cols="12" sm="4" xs="12">
         <v-select
