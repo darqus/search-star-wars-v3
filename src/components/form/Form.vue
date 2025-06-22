@@ -115,11 +115,14 @@
       </v-col>
     </v-row>
 
-    <v-row style="position: relative">
+    <v-row>
       <v-col>
-        <template v-if="items.length > 0 && result !== defaultResult">
-          <template v-if="imgURL && search">
-            <div class="wrapper">
+        <div class="wrapper">
+          <template v-if="isLoading">
+            <v-progress-circular indeterminate :size="display.smAndDown.value ? 400 : 600" />
+          </template>
+          <template v-else-if="items.length > 0 && result !== defaultResult">
+            <template v-if="imgURL && search">
               <div :aria-label="selectedApi" class="img" role="img">
                 <a
                   href="#"
@@ -134,20 +137,18 @@
                   >
                 </a>
               </div>
-            </div>
-            <Dialog
-              class="my-5"
-              :is-dialog-show="isDialogShow"
-              :result="result"
-              :search="search"
-              @dialog="onDialog"
-            />
+            </template>
           </template>
-          <template v-else>
-            <div class="result-text">{{ result }}</div>
-          </template>
-
-        </template>
+        </div>
+        <Dialog
+          v-if="imgURL && search"
+          class="my-5"
+          :is-dialog-show="isDialogShow"
+          :result="result"
+          :search="search"
+          @dialog="onDialog"
+        />
+        <div v-else-if="result" class="result-text">{{ result }}</div>
         <template v-if="!display.smAndDown.value">
           <Mandala :side="side" />
           <Mandala class-name="right" :side="side" />
