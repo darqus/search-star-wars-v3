@@ -163,7 +163,7 @@
     </v-row>
 
     <v-row style="position: relative; z-index: 2">
-      <v-col cols="12" sm="4" xs="12">
+      <v-col cols="12" sm="3" xs="12">
         <v-select
           v-model="selectedApi"
           density="compact"
@@ -172,14 +172,8 @@
           :items="SEARCH_API_LIST"
           :label="`What you search, ${role}? May the Force be with you`"
         />
-        <v-pagination
-          v-if="totalPages > 1"
-          v-model="currentPage"
-          :length="totalPages"
-          @update:model-value="onPageChange"
-        />
       </v-col>
-      <v-col cols="12" sm="4" xs="12">
+      <v-col cols="12" sm="3" xs="12">
         <v-select
           v-model="selectedField"
           density="compact"
@@ -187,7 +181,15 @@
           label="Selected Field"
         />
       </v-col>
-      <v-col cols="12" sm="4" style="position: relative" xs="12">
+      <v-col cols="12" sm="3" style="position: relative" xs="12">
+        <v-pagination
+          v-if="totalPages > 1"
+          v-model="currentPage"
+          :length="totalPages"
+          @update:model-value="onPageChange"
+        />
+      </v-col>
+      <v-col cols="12" sm="3" style="position: relative" xs="12">
         <v-autocomplete
           v-model="search"
           v-model:search-input="search"
@@ -200,7 +202,9 @@
           @keyup="onKeyup"
           @update:search="onInput"
         />
+
       </v-col>
+
     </v-row>
 
     <v-row style="position: relative">
