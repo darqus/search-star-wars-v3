@@ -18,7 +18,7 @@
     side: string
   }
 
-  const props = defineProps<Props>()
+  defineProps<Props>()
 
   const theme = useTheme()
   const display = useDisplay()
@@ -32,7 +32,7 @@
   const selectedField = ref(SEARCH_API_LIST[0].searchFields[0])
   const selectedFields = ref(SEARCH_API_LIST[0].searchFields)
   const search = ref('')
-  const timeout = ref<NodeJS.Timeout | null>(null)
+  const timeout = ref<ReturnType<typeof setTimeout> | null>(null)
   const isLoading = ref(false)
   const isShownDropDown = ref(false)
   const isKeyupArrowDown = ref(false)
