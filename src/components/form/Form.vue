@@ -94,6 +94,7 @@
           item-value="api"
           :items="SEARCH_API_LIST"
           :label="`What you search, ${role}? May the Force be with you`"
+          :menu-props="{ scrim: true, scrollStrategy: 'close' }"
           @update:model-value="getData"
         />
       </v-col>
@@ -116,6 +117,7 @@
           :items="items"
           :label="`Search ${selectedApi}`"
           :loading="isLoading"
+          :menu-props="{ scrim: true, scrollStrategy: 'close' }"
           return-object
           @update:model-value="onSelect"
         />
