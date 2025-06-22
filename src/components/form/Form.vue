@@ -77,7 +77,7 @@
         <h1 class="header-text" :class="isDark ? 'dark' : 'light'">
           <span>{{ HEADER_NAME_SHORT }}</span>
           <span>&nbsp;</span>
-          <Link :link="`${API_URL}/${selectedApi}`" :text="selectedApi" />
+          <Link class="links" :link="`${API_URL}/${selectedApi}`" :text="selectedApi" />
           <span>&nbsp;</span>
           <span>{{ HEADER_NAME_POSTFIX }}</span>
         </h1>
@@ -162,3 +162,9 @@
     </v-row>
   </v-container>
 </template>
+
+<style>
+.links {
+  color: v-bind(isDark ? 'lightblue' : 'rgb(36, 125, 199)');
+}
+</style>
