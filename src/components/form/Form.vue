@@ -54,6 +54,7 @@
 
 <template>
   <v-container class="search-form">
+    {{ search }}
     <v-row align="center">
       <v-col cols="12" sm="4" xs="12">
         <Logo />
