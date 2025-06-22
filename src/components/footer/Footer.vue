@@ -71,7 +71,7 @@
 
 <script setup lang="ts">
   import { useDisplay } from 'vuetify'
-  import FooterDropDownInfo from '@/components/FooterDropDownInfo.vue'
+  import FooterDropDownInfo from '@/components/footer/FooterDropDownInfo.vue'
   import Link from '@/components/Link.vue'
   import SoundButton from '@/components/SoundButton.vue'
   import SWCrawlText from '@/components/SWCrawlText.vue'

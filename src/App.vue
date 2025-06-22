@@ -10,7 +10,7 @@
 <script setup lang="ts">
   import { computed, onMounted, watch } from 'vue'
   import { useTheme } from 'vuetify'
-  import Footer from '@/components/Footer.vue'
+  import Footer from '@/components/footer/Footer.vue'
   import Form from '@/components/form/Form.vue'
   import getBrowserTheme from '@/utils/getBrowserTheme'
   import { getItem, setItem } from '@/utils/persistanceStorage'
