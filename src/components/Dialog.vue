@@ -1,30 +1,3 @@
-<template>
-  <div class="d-flex justify-center">
-    <v-dialog
-      v-model="dialog"
-      :max-width="display.smAndDown.value ? '100%' : 560"
-    >
-      <v-card>
-        <v-card-title class="text-h5">{{ search }}</v-card-title>
-        <v-card-text>
-          <pre class="result">{{ result }}</pre>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="grey-darken-1"
-            variant="text"
-            @click="dialog = false"
-            @keyup="dialog = false"
-          >
-            OK
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </div>
-</template>
-
 <script setup lang="ts">
   import { ref, watch } from 'vue'
   import { useDisplay } from 'vuetify'
@@ -51,6 +24,33 @@
     dialog.value = value
   })
 </script>
+
+<template>
+  <div class="d-flex justify-center">
+    <v-dialog
+      v-model="dialog"
+      :max-width="display.smAndDown.value ? '100%' : 560"
+    >
+      <v-card>
+        <v-card-title class="text-h5">{{ search }}</v-card-title>
+        <v-card-text>
+          <pre class="result">{{ result }}</pre>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            color="grey-darken-1"
+            variant="text"
+            @click="dialog = false"
+            @keyup="dialog = false"
+          >
+            OK
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
+</template>
 
 <style scoped>
 .result {
