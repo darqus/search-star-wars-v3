@@ -11,7 +11,7 @@
   import { computed, onMounted, watch } from 'vue'
   import { useTheme } from 'vuetify'
   import Footer from '@/components/Footer.vue'
-  import Form from '@/components/Form.vue'
+  import Form from '@/components/form/Form.vue'
   import getBrowserTheme from '@/utils/getBrowserTheme'
   import { getItem, setItem } from '@/utils/persistanceStorage'
   import setLinkIcons from '@/utils/setLinkIcons'

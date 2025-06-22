@@ -12,7 +12,7 @@ declare module 'vue' {
     DropList: typeof import('./components/DropList.vue')['default']
     Footer: typeof import('./components/Footer.vue')['default']
     FooterDropDownInfo: typeof import('./components/FooterDropDownInfo.vue')['default']
-    Form: typeof import('./components/Form.vue')['default']
+    Form: typeof import('./components/form/Form.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     HighlightSearch: typeof import('./components/HighlightSearch.vue')['default']
     Link: typeof import('./components/Link.vue')['default']
