@@ -4,7 +4,7 @@
   import Footer from '@/components/footer/Footer.vue'
   import Form from '@/components/form/Form.vue'
   import getBrowserTheme from '@/utils/getBrowserTheme'
-  import { getItem, setItem } from '@/utils/persistanceStorage'
+  import { getItem, setItem } from '@/utils/persistenceStorage'
   import setLinkIcons from '@/utils/setLinkIcons'
   import {
     BGS, ROLES, SIDES, THEMES,
