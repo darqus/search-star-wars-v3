@@ -45,6 +45,10 @@
     const response = await getDataFromApi(selectedApi.value, currentPage.value)
     items.value = response?.data
     totalPages.value = response?.info.total
+    if (items.value.length > 0) {
+      search.value = items.value[0]
+      onSelect(items.value[0])
+    }
     isLoading.value = false
   }
 
