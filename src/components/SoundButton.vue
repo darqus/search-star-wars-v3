@@ -1,18 +1,3 @@
-<template>
-  <div class="d-flex align-center ga-2">
-    <v-btn icon @click="onToggle">
-      <v-icon>{{ icon }}</v-icon>
-    </v-btn>
-    <v-checkbox
-      v-model="isLoop"
-      class="ma-0"
-      density="compact"
-      hide-details
-      label="loop"
-    />
-  </div>
-</template>
-
 <script setup lang="ts">
   import { computed, onMounted, ref, watch } from 'vue'
   import { AUDIO_ICONS } from '@/state/'
@@ -51,3 +36,18 @@
     }
   }
 </script>
+
+<template>
+  <div class="d-flex align-center ga-2">
+    <v-btn icon @click="onToggle">
+      <v-icon>{{ icon }}</v-icon>
+    </v-btn>
+    <v-checkbox
+      v-model="isLoop"
+      class="ma-0"
+      density="compact"
+      hide-details
+      label="loop"
+    />
+  </div>
+</template>

@@ -1,13 +1,3 @@
-<template>
-  <a
-    :href="link"
-    :style="fontSizeRem > 0 ? `font-size: ${fontSizeRem}rem;` : ''"
-    target="_blank"
-  >
-    {{ text }}
-  </a>
-</template>
-
 <script setup lang="ts">
   interface Props {
     link?: string
@@ -21,3 +11,13 @@
     fontSizeRem: -1,
   })
 </script>
+
+<template>
+  <a
+    :href="link"
+    :style="fontSizeRem > 0 ? `font-size: ${fontSizeRem}rem;` : ''"
+    target="_blank"
+  >
+    {{ text }}
+  </a>
+</template>

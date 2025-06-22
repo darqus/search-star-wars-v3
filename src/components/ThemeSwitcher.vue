@@ -1,11 +1,3 @@
-<template>
-  <v-switch
-    v-model="isDark"
-    hide-details
-    :label="label"
-  />
-</template>
-
 <script setup lang="ts">
   import { computed } from 'vue'
   import { useTheme } from 'vuetify'
@@ -25,3 +17,11 @@
     },
   })
 </script>
+
+<template>
+  <v-switch
+    v-model="isDark"
+    hide-details
+    :label="label"
+  />
+</template>

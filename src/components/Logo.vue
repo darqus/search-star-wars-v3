@@ -1,3 +1,12 @@
+<script setup lang="ts">
+  import { computed } from 'vue'
+  import { useTheme } from 'vuetify'
+  import logoSvgPath from '@/state/svgPaths'
+
+  const theme = useTheme()
+  const isDark = computed(() => theme.global.current.value.dark)
+</script>
+
 <template>
   <svg
     class="logo"
@@ -13,15 +22,6 @@
     </g>
   </svg>
 </template>
-
-<script setup lang="ts">
-  import { computed } from 'vue'
-  import { useTheme } from 'vuetify'
-  import logoSvgPath from '@/state/svgPaths'
-
-  const theme = useTheme()
-  const isDark = computed(() => theme.global.current.value.dark)
-</script>
 
 <style scoped>
 .logo {

@@ -1,16 +1,3 @@
-<template>
-  <div
-    class="swct-mask"
-    :class="{ mobile: display.smAndDown.value }"
-    :style="color"
-  >
-    <div class="shadow" />
-    <div class="swct-container">
-      <div class="swct-text -js-stop">{{ text }}</div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
   import { computed } from 'vue'
   import { useDisplay, useTheme } from 'vuetify'
@@ -31,6 +18,19 @@
     return `color: ${colorValue}`
   })
 </script>
+
+<template>
+  <div
+    class="swct-mask"
+    :class="{ mobile: display.smAndDown.value }"
+    :style="color"
+  >
+    <div class="shadow" />
+    <div class="swct-container">
+      <div class="swct-text -js-stop">{{ text }}</div>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .swct-mask {

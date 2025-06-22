@@ -1,3 +1,41 @@
+<script setup lang="ts">
+  import { NON_BREAKING_SPACE } from '@/state/'
+
+  interface Props {
+    className?: string
+    side: string
+  }
+
+  withDefaults(defineProps<Props>(), {
+    className: 'left',
+  })
+
+  const items = {
+    s1: {
+      text: `${NON_BREAKING_SPACE.repeat(3)}΅̮̼˘˼̐`,
+      len: 7,
+    },
+    s2: {
+      text: `${NON_BREAKING_SPACE.repeat(
+        2,
+      )};̧΅̮̼<tspan>̧΅</tspan>̃ˬ<tspan>̧</tspan>̧΅̮<tspan>͒̈́</tspan>`,
+      len: 7,
+    },
+    s3: {
+      text: `˘˼̐˶̨̰̼̃͂̏̑̉̆${NON_BREAKING_SPACE.repeat(2)}`,
+      len: 6,
+    },
+    s4: {
+      text: `${NON_BREAKING_SPACE.repeat(3)} ͒̈́'`,
+      len: 7,
+    },
+    s5: {
+      text: 'ˠ˞˟˷̐˽̘̖̫̫̭̮̔',
+      len: 15,
+    },
+  }
+</script>
+
 <template>
   <div aria-hidden="true" class="mandala-container animate-colors" :class="`${className} ${side}`">
     <div
@@ -108,44 +146,6 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-  import { NON_BREAKING_SPACE } from '@/state/'
-
-  interface Props {
-    className?: string
-    side: string
-  }
-
-  withDefaults(defineProps<Props>(), {
-    className: 'left',
-  })
-
-  const items = {
-    s1: {
-      text: `${NON_BREAKING_SPACE.repeat(3)}΅̮̼˘˼̐`,
-      len: 7,
-    },
-    s2: {
-      text: `${NON_BREAKING_SPACE.repeat(
-        2,
-      )};̧΅̮̼<tspan>̧΅</tspan>̃ˬ<tspan>̧</tspan>̧΅̮<tspan>͒̈́</tspan>`,
-      len: 7,
-    },
-    s3: {
-      text: `˘˼̐˶̨̰̼̃͂̏̑̉̆${NON_BREAKING_SPACE.repeat(2)}`,
-      len: 6,
-    },
-    s4: {
-      text: `${NON_BREAKING_SPACE.repeat(3)} ͒̈́'`,
-      len: 7,
-    },
-    s5: {
-      text: 'ˠ˞˟˷̐˽̘̖̫̫̭̮̔',
-      len: 15,
-    },
-  }
-</script>
 
 <style scoped>
 .mandala-container {

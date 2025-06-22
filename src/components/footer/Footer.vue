@@ -1,3 +1,22 @@
+<script setup lang="ts">
+  import { useDisplay } from 'vuetify'
+  import FooterDropDownInfo from '@/components/footer/FooterDropDownInfo.vue'
+  import Link from '@/components/Link.vue'
+  import SoundButton from '@/components/SoundButton.vue'
+  import SWCrawlText from '@/components/SWCrawlText.vue'
+  import ThemeSwitcher from '@/components/ThemeSwitcher.vue'
+  import { LINKS } from '@/state/'
+
+  interface Props {
+    side: string
+  }
+
+  defineProps<Props>()
+
+  const display = useDisplay()
+  const links = LINKS
+</script>
+
 <template>
   <v-footer class="footer-custom">
     <v-container
@@ -68,25 +87,6 @@
     </v-container>
   </v-footer>
 </template>
-
-<script setup lang="ts">
-  import { useDisplay } from 'vuetify'
-  import FooterDropDownInfo from '@/components/footer/FooterDropDownInfo.vue'
-  import Link from '@/components/Link.vue'
-  import SoundButton from '@/components/SoundButton.vue'
-  import SWCrawlText from '@/components/SWCrawlText.vue'
-  import ThemeSwitcher from '@/components/ThemeSwitcher.vue'
-  import { LINKS } from '@/state/'
-
-  interface Props {
-    side: string
-  }
-
-  defineProps<Props>()
-
-  const display = useDisplay()
-  const links = LINKS
-</script>
 
 <style scoped>
 .d-grid {

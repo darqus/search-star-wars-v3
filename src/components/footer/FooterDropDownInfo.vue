@@ -1,3 +1,10 @@
+<script setup lang="ts">
+  const VERSION = '3.0.0'
+  const BUILD_DATE = new Date().toISOString().split('T')[0]
+
+  const info = [`version: ${VERSION}`, `build: ${BUILD_DATE}`].join('<br>')
+</script>
+
 <template>
   <v-menu location="top" offset="8">
     <template #activator="{ props }">
@@ -13,10 +20,3 @@
     </v-list>
   </v-menu>
 </template>
-
-<script setup lang="ts">
-  const VERSION = '3.0.0'
-  const BUILD_DATE = new Date().toISOString().split('T')[0]
-
-  const info = [`version: ${VERSION}`, `build: ${BUILD_DATE}`].join('<br>')
-</script>

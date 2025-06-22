@@ -1,12 +1,3 @@
-<template>
-  <v-app style="overflow: hidden;" :style="bg">
-    <v-main>
-      <Form :role="role" :side="side" />
-    </v-main>
-    <Footer :side="side" />
-  </v-app>
-</template>
-
 <script setup lang="ts">
   import { computed, onMounted, watch } from 'vue'
   import { useTheme } from 'vuetify'
@@ -64,3 +55,12 @@
     setLinkIcons(value)
   })
 </script>
+
+<template>
+  <v-app style="overflow: hidden;" :style="bg">
+    <v-main>
+      <Form :role="role" :side="side" />
+    </v-main>
+    <Footer :side="side" />
+  </v-app>
+</template>
