@@ -113,7 +113,7 @@
 
   .links {
     a {
-      color: v-bind($vuetify.theme.current.dark ? 'white' : 'black');
+      color: v-bind($vuetify.theme.current.dark ? 'lightblue' : 'rgb(23 99 161)');
     }
   }
 }
