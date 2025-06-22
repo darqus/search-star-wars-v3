@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { computed, ref, watch } from 'vue'
+  import { computed, ref } from 'vue'
   import { useDisplay, useTheme } from 'vuetify'
   import {
     API_URL,
@@ -29,27 +29,12 @@
   const selectedField = ref(SEARCH_API_LIST[0].searchFields[0])
   const selectedFields = ref(SEARCH_API_LIST[0].searchFields)
   const search = ref('')
-  const timeout = ref<ReturnType<typeof setTimeout> | null>(null)
   const isLoading = ref(false)
 
   const currentPage = ref(1)
   const totalPages = ref(1)
 
   const isDark = computed(() => theme.global.current.value.dark)
-
-  watch(selectedApi, () => {
-    setSearchField()
-  })
-
-  const setSearchField = () => {
-    const searchField = SEARCH_API_LIST.find(
-      ({ api }) => api === selectedApi.value,
-    )!.searchFields
-
-    selectedField.value = searchField[0]
-    selectedFields.value = searchField
-    clearSearch()
-  }
 
   const getData = async () => {
     isLoading.value = true
@@ -62,14 +47,6 @@
   const onPageChange = (page: number) => {
     currentPage.value = page
     getData()
-  }
-
-  const clearSearch = () => {
-    search.value = ''
-    items.value = []
-    timeout.value = null
-    currentPage.value = 1
-    totalPages.value = 1
   }
 
   getData()
