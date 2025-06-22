@@ -57,12 +57,11 @@ export type Item = {
 
 export interface ApiResponse {
   data: Item[]
-  info?: {
-    total: number
-    page: number
-    limit: number
-    next: string
-    prev: string
+  info: {
+    count: number
+    pages: number
+    next: string | null
+    prev: string | null
   }
 }
 
@@ -70,16 +69,16 @@ export const getDataFromApi = async (
   selectedApi: string,
   search?: string,
   page = 1,
-  limit = 10,
+  limit = 20,
 ): Promise<ApiResponse> => {
   const params = new URLSearchParams()
+  params.append('page', page.toString())
+  params.append('limit', limit.toString())
   if (search) {
     params.append('name', search)
   }
-  params.append('page', page.toString())
-  params.append('limit', limit.toString())
 
-  const url = `${API_URL}/${selectedApi}${search ? '/search' : ''}?${params}`
+  const url = `${API_URL}/${selectedApi}?${params}`
   const res = await fetch(url)
   const data = await res.json()
   return data
