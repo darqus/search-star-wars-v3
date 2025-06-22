@@ -55,6 +55,13 @@
     getData()
   }
 
+  const onSelect = (selectedItem: Item) => {
+    if (selectedItem?.image) {
+      imgURL.value = selectedItem.image
+      result.value = JSON.stringify(selectedItem, null, 2)
+    }
+  }
+
   getData()
 </script>
 
@@ -112,6 +119,8 @@
           :items="items"
           :label="`Search ${selectedApi}`"
           :loading="isLoading"
+          return-object
+          @update:model-value="onSelect"
         />
       </v-col>
     </v-row>
