@@ -16,7 +16,7 @@ pnpm-debug.log*
 .stylelintcache
 
 # Editor directories and files
-.amazonq
+*.amazonq
 *.suo
 *.ntvs*
 *.njsproj
