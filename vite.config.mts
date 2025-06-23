@@ -1,14 +1,14 @@
+import { fileURLToPath, URL } from 'node:url'
+import Vue from '@vitejs/plugin-vue'
+import Fonts from 'unplugin-fonts/vite'
 // Plugins
 import Components from 'unplugin-vue-components/vite'
-import Vue from '@vitejs/plugin-vue'
-import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
-import stylelint from 'vite-plugin-stylelint'
-import Fonts from 'unplugin-fonts/vite'
 import VueRouter from 'unplugin-vue-router/vite'
-
 // Utilities
 import { defineConfig } from 'vite'
-import { fileURLToPath, URL } from 'node:url'
+
+import stylelint from 'vite-plugin-stylelint'
+import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -38,7 +38,7 @@ export default defineConfig({
         families: [
           {
             name: 'Roboto',
-            weights: [300, 400, 500],
+            weights: [400],
             styles: ['normal'],
           },
         ],
