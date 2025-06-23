@@ -1,6 +1,14 @@
-# Vuetify (Default)
+# Star Wars Search v3
 
-This is the official scaffolding tool for Vuetify, designed to give you a head start in building your new Vuetify application. It sets up a base template with all the necessary configurations and standard directory structure, enabling you to begin development without the hassle of setting up the project from scratch.
+<p align="center">
+  <a href="https://darqus.github.io/search-star-wars-v3/" target="_blank">
+    <strong>🚀 Live Demo</strong>
+  </a>
+</p>
+
+This is a search application for the Star Wars universe, allowing users to find information about characters, creatures, droids, locations, organizations, species, and vehicles.
+
+The project is built upon the official Vuetify template, leveraging its robust features and tooling for a modern development experience.
 
 ## ❗️ Important Links
 
@@ -34,6 +42,38 @@ After completing the installation, your environment is ready for Vuetify develop
 - 🛠️ **Strongly-Typed Vue**: Use vue-tsc for type-checking your Vue components, and enjoy a robust development experience. [vue-tsc](https://github.com/johnsoncodehk/volar/tree/master/packages/vue-tsc)
 
 These features are curated to provide a seamless development experience from setup to deployment, ensuring that your Vuetify application is both powerful and maintainable.
+
+## 🚀 Project-Specific Enhancements
+
+This section details the specific improvements and refactoring applied to the Star Wars Search project, enhancing its architecture, code quality, and maintainability beyond the base Vuetify template.
+
+### Architectural Improvements
+
+- **API Logic Centralization**: Introduced a `useStarWarsApi` composable to encapsulate all API-related logic, improving reusability and separation of concerns.
+- **Type Management**: All TypeScript types are now organized in a dedicated `/types` folder for better clarity and maintainability.
+- **Constants Definition**: Application-wide constants are centralized in the `/constants` folder.
+- **Environment Configuration**: Environment-specific configurations are managed within the `/config` folder.
+
+### Code Quality & Maintainability
+
+- **Robust Error Handling**: Comprehensive error handling has been implemented across the application.
+- **Enhanced Typing**: Improved TypeScript typing throughout the codebase for better type safety and developer experience.
+- **Environment Variable Validation**: Added validation for environment variables to ensure correct setup and prevent runtime issues.
+- **Optimized Image Loading**: Image loading logic has been optimized for better performance.
+
+## 📂 Project Structure
+
+The project follows a clear and organized directory structure:
+
+```
+src/
+├── composables/     # Reusable logic (e.g., API calls, state management)
+├── constants/       # Application-wide constants
+├── config/          # Environment and application configuration
+├── types/           # TypeScript type definitions
+├── components/      # Vue components
+└── utils/           # Utility functions and helpers
+```
 
 ## 💡 Usage
 
@@ -76,6 +116,7 @@ This project is built with [Vuetify](https://vuetifyjs.com/en/), a UI Library wi
 - [Making a one-time donation with Paypal](https://paypal.me/vuetify)
 
 ## 📑 License
+
 [MIT](http://opensource.org/licenses/MIT)
 
 Copyright (c) 2016-present Vuetify, LLC
