@@ -7,6 +7,9 @@
 // Composables
 import { createApp } from 'vue'
 
+// Config
+import { validateEnv } from '@/config/env'
+
 // Plugins
 import { registerPlugins } from '@/plugins'
 
@@ -15,6 +18,9 @@ import App from './App.vue'
 
 // Styles
 import 'unfonts.css'
+
+// Validate environment variables
+validateEnv()
 
 const app = createApp(App)
 

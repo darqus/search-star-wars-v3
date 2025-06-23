@@ -1,16 +1,13 @@
 <script setup lang="ts">
-  import { computed, ref } from 'vue'
+  import type { Item } from '@/types/api'
+  import { computed, onMounted, ref } from 'vue'
   import { useDisplay, useTheme } from 'vuetify'
   import Dialog from '@/components/Dialog.vue'
-  import {
-    API_URL,
-    getDataFromApi,
-    type Item,
-    SEARCH_API_LIST,
-  } from '@/components/form/getDataFromApi'
   import Link from '@/components/Link.vue'
   import Logo from '@/components/Logo.vue'
   import Mandala from '@/components/Mandala.vue'
+  import { useStarWarsApi } from '@/composables/useStarWarsApi'
+  import { API_ENDPOINTS, DEFAULT_PAGE_SIZE } from '@/constants/api'
   import './scss/form.scss'
 
   interface Props {
@@ -22,36 +19,64 @@
 
   const theme = useTheme()
   const display = useDisplay()
+  const { isLoading, error, fetchData, preloadImage } = useStarWarsApi()
 
   const items = ref<Item[]>([])
-  const HEADER_NAME_SHORT = 'Star Wars search'
-  const HEADER_NAME_POSTFIX = 'in Galaxy'
-  const selectedApi = ref(SEARCH_API_LIST[0].api)
-  const search = ref<Item>()
-  const isLoading = ref(false)
+  const selectedApi = ref(API_ENDPOINTS[0].api)
+  const selectedItem = ref<Item>()
+  const searchInput = ref<string>()
   const imgURL = ref('')
   const imgLoaded = ref(false)
   const result = ref('')
-  const defaultResult = ref('')
   const isDialogShow = ref(false)
-  const onDialog = (value: boolean) => (isDialogShow.value = value)
-
   const currentPage = ref(1)
   const totalPages = ref(1)
-  const density = 'compact'
+
+  const density = 'compact' as const
+  const HEADER_NAME_SHORT = 'Star Wars search'
+  const HEADER_NAME_POSTFIX = 'in Galaxy'
 
   const isDark = computed(() => theme.global.current.value.dark)
+  const API_URL = import.meta.env.VITE_APP_API_BASE_URL
+
+  const onSelect = async (item: Item) => {
+    if (!item) {
+      imgURL.value = ''
+      result.value = ''
+      imgLoaded.value = false
+      return
+    }
+    if (!item.image) return
+
+    try {
+      imgLoaded.value = false
+      await preloadImage(item.image)
+      imgURL.value = item.image
+      imgLoaded.value = true
+      result.value = JSON.stringify(item, null, 2)
+    } catch (error_) {
+      console.error('Failed to load image:', error_)
+    }
+  }
 
   const getData = async () => {
-    isLoading.value = true
-    const response = await getDataFromApi(selectedApi.value, currentPage.value)
-    items.value = response?.data
-    totalPages.value = response?.info.total
-    if (items.value.length > 0) {
-      search.value = items.value[0]
-      onSelect(items.value[0])
+    try {
+      const response = await fetchData(selectedApi.value, currentPage.value, DEFAULT_PAGE_SIZE)
+      items.value = response.data
+      totalPages.value = response.info.total
+
+      if (items.value.length > 0) {
+        selectedItem.value = items.value[0]
+        await onSelect(items.value[0])
+      } else {
+        selectedItem.value = undefined
+        imgURL.value = ''
+        result.value = ''
+        imgLoaded.value = false
+      }
+    } catch (error_) {
+      console.error('Failed to fetch data:', error_)
     }
-    isLoading.value = false
   }
 
   const onPageChange = (page: number) => {
@@ -59,25 +84,18 @@
     getData()
   }
 
-  const preloadImage = (url: string): Promise<void> => {
-    return new Promise(resolve => {
-      const img = new Image()
-      img.addEventListener('load', () => resolve())
-      img.src = url
-    })
+  const onApiSelect = () => {
+    currentPage.value = 1
+    getData()
   }
 
-  const onSelect = async (selectedItem: Item) => {
-    if (selectedItem?.image) {
-      imgLoaded.value = false
-      await preloadImage(selectedItem.image)
-      imgURL.value = selectedItem.image
-      imgLoaded.value = true
-      result.value = JSON.stringify(selectedItem, null, 2)
-    }
+  const onDialog = (value: boolean) => {
+    isDialogShow.value = value
   }
 
-  getData()
+  onMounted(() => {
+    getData()
+  })
 </script>
 
 <template>
@@ -104,10 +122,10 @@
           :density="density"
           item-title="api"
           item-value="api"
-          :items="SEARCH_API_LIST"
+          :items="API_ENDPOINTS"
           :label="`What you search, ${role}? May the Force be with you`"
           :menu-props="{ scrim: true, scrollStrategy: 'close' }"
-          @update:model-value="getData"
+          @update:model-value="onApiSelect"
         />
       </v-col>
       <v-col cols="12" sm="4" style="position: relative" xs="12">
@@ -121,8 +139,8 @@
       </v-col>
       <v-col cols="12" sm="4" style="position: relative" xs="12">
         <v-autocomplete
-          v-model="search"
-          v-model:search-input="search"
+          v-model="selectedItem"
+          v-model:search-input="searchInput"
           clearable
           :density="density"
           :item-title="'name'"
@@ -142,33 +160,34 @@
           <template v-if="isLoading">
             <v-progress-circular indeterminate :size="display.smAndDown.value ? 400 : 600" />
           </template>
-          <template v-else-if="items.length > 0 && result !== defaultResult">
-            <template v-if="imgURL && search">
-              <transition mode="out-in" name="scale">
-                <div :key="imgURL" :aria-label="selectedApi" class="img" role="img">
-                  <a
-                    href="#"
-                    @click.prevent="isDialogShow = !isDialogShow"
-                    @keyup="isDialogShow = !isDialogShow"
+          <template v-else-if="items.length > 0 && imgURL && selectedItem && imgLoaded">
+            <transition mode="out-in" name="scale">
+              <div :key="imgURL" :aria-label="selectedItem.name" class="img" role="img">
+                <a
+                  href="#"
+                  @click.prevent="isDialogShow = !isDialogShow"
+                  @keyup="isDialogShow = !isDialogShow"
+                >
+                  <img
+                    v-for="item in 2"
+                    :key="item"
+                    :alt="selectedItem.name"
+                    :src="imgURL"
                   >
-                    <img
-                      v-for="item in 2"
-                      :key="item"
-                      :alt="selectedApi"
-                      :src="imgURL"
-                    >
-                  </a>
-                </div>
-              </transition>
-            </template>
+                </a>
+              </div>
+            </transition>
+          </template>
+          <template v-else-if="error">
+            <v-alert type="error">{{ error }}</v-alert>
           </template>
         </div>
         <Dialog
-          v-if="imgURL && search"
+          v-if="imgURL && selectedItem"
           class="my-5"
           :is-dialog-show="isDialogShow"
           :result="result"
-          :search="search"
+          :search="selectedItem"
           @dialog="onDialog"
         />
         <template v-if="!display.smAndDown.value">

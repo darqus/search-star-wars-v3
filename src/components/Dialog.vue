@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import type { Item } from './form/getDataFromApi'
   import { ref, watch } from 'vue'
   import { useDisplay } from 'vuetify'
 
