@@ -111,7 +111,7 @@ vi.mock('vuetify', async () => {
   }
 })
 
-// Mock all CSS/SCSS imports
+// Mock CSS/SCSS imports
 vi.mock('@/components/form/scss/form.scss', () => ({}))
 vi.mock('vuetify/lib/components/VCode/VCode.css', () => ({}))
 vi.mock('vuetify/styles', () => ({}))

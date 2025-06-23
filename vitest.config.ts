@@ -9,17 +9,27 @@ export default defineConfig({
       '@': fileURLToPath(new URL('src', import.meta.url)),
     },
   },
+  css: {
+    // Add CSS preprocess
+    preprocessorOptions: {
+      scss: {
+        additionalData: '',
+      },
+    },
+  },
   test: {
     globals: true,
     environment: 'happy-dom',
-    setupFiles: ['./tests/setup.ts'],
+    setupFiles: ['./tests/setup.ts', './tests/css-setup.js'],
     include: ['**/*.{test,spec}.{js,ts,jsx,tsx}'],
     coverage: {
       provider: 'istanbul',
       reporter: ['text', 'json', 'html'],
     },
-    deps: {
-      inline: ['vuetify'],
+    server: {
+      deps: {
+        inline: ['vuetify'],
+      },
     },
   },
 })
