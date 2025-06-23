@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "context7": {
+      "command": "node",
+      "args": ["-e", "console.log('Context7 MCP server placeholder')"],
+      "env": {
+        "WORKSPACE_PATH": "/home/eo/projects/github/search-star-wars-v3"
+      }
+    }
+  }
+}
