@@ -12,7 +12,9 @@
     "deploy": "npm run build && npx gh-pages -d dist",
     "lint": "npm run lint:js && npm run lint:css",
     "lint:js": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-    "lint:css": "stylelint \"**/*.{vue,scss,css}\" --fix"
+    "lint:css": "stylelint \"**/*.{vue,scss,css}\" --fix",
+    "test:unit": "vitest",
+    "test:unit:ci": "vitest run"
   },
   "dependencies": {
     "@fontsource/roboto": "5.2.5",
@@ -26,6 +28,7 @@
     "@types/node": "^24.0.3",
     "@vitejs/plugin-vue": "^5.2.3",
     "@vitest/eslint-plugin": "^1.1.42",
+    "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.7.0",
     "eslint": "^9.23.0",
     "eslint-config-vuetify": "^4.0.0",
@@ -33,6 +36,7 @@
     "eslint-plugin-no-only-tests": "^3.3.0",
     "eslint-plugin-vuejs-accessibility": "^2.0.0",
     "gh-pages": "^6.2.0",
+    "happy-dom": "^18.0.1",
     "npm-run-all2": "^8.0.4",
     "postcss-html": "^1.8.0",
     "sass-embedded": "^1.86.3",
@@ -47,6 +51,7 @@
     "vite": "^6.2.2",
     "vite-plugin-stylelint": "^6.0.0",
     "vite-plugin-vuetify": "^2.1.1",
+    "vitest": "^3.2.4",
     "vue-router": "^4.5.0",
     "vue-tsc": "^2.2.8"
   },
