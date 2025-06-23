@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { computed } from 'vue'
-  import { useTheme } from 'vuetify'
+  import { useThemeStore } from '@/stores/theme'
 
   interface Props {
     label?: string
@@ -8,12 +8,12 @@
 
   defineProps<Props>()
 
-  const theme = useTheme()
+  const themeStore = useThemeStore()
 
   const isDark = computed({
-    get: () => theme.global.current.value.dark,
+    get: () => themeStore.isDark,
     set: (value: boolean) => {
-      theme.global.name.value = value ? 'dark' : 'light'
+      themeStore.setTheme(value)
     },
   })
 </script>

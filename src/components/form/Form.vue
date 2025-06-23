@@ -1,13 +1,15 @@
 <script setup lang="ts">
   import type { Item } from '@/types/api'
   import { computed, onMounted, ref } from 'vue'
-  import { useDisplay, useTheme } from 'vuetify'
+  import { useDisplay } from 'vuetify'
   import Dialog from '@/components/Dialog.vue'
   import Link from '@/components/Link.vue'
   import Logo from '@/components/Logo.vue'
   import Mandala from '@/components/Mandala.vue'
-  import { useStarWarsApi } from '@/composables/useStarWarsApi'
-  import { API_ENDPOINTS, DEFAULT_PAGE_SIZE } from '@/constants/api'
+  import ThemeSwitcher from '@/components/ThemeSwitcher.vue'
+  import { API_ENDPOINTS } from '@/constants/api'
+  import { useStarWarsStore } from '@/stores/starWars'
+  import { useThemeStore } from '@/stores/theme'
   import './scss/form.scss'
 
   interface Props {
@@ -17,76 +19,53 @@
 
   defineProps<Props>()
 
-  const theme = useTheme()
   const display = useDisplay()
-  const { isLoading, error, fetchData, preloadImage } = useStarWarsApi()
+  const themeStore = useThemeStore()
+  const starWarsStore = useStarWarsStore()
 
-  const items = ref<Item[]>([])
-  const selectedApi = ref(API_ENDPOINTS[0].api)
-  const selectedItem = ref<Item>()
-  const searchInput = ref<string>()
-  const imgURL = ref('')
-  const imgLoaded = ref(false)
-  const result = ref('')
   const isDialogShow = ref(false)
-  const currentPage = ref(1)
-  const totalPages = ref(1)
 
   const density = 'compact' as const
   const HEADER_NAME_SHORT = 'Star Wars search'
   const HEADER_NAME_POSTFIX = 'in Galaxy'
 
-  const isDark = computed(() => theme.global.current.value.dark)
+  const isDark = computed(() => themeStore.isDark)
   const API_URL = import.meta.env.VITE_APP_API_BASE_URL
 
+  // Computed properties для доступа к состоянию хранилища
+  const items = computed(() => starWarsStore.filteredItems)
+  const selectedApi = computed({
+    get: () => starWarsStore.selectedApi,
+    set: value => starWarsStore.setApiEndpoint(value),
+  })
+  const selectedItem = computed({
+    get: () => starWarsStore.selectedItem,
+    set: value => value && starWarsStore.selectItem(value),
+  })
+  const searchInput = computed({
+    get: () => starWarsStore.searchInput,
+    set: value => starWarsStore.setSearchTerm(value || ''),
+  })
+  const imgURL = computed(() => starWarsStore.imgURL)
+  const result = computed(() => starWarsStore.result)
+  const currentPage = computed({
+    get: () => starWarsStore.currentPage,
+    set: value => starWarsStore.setPage(value),
+  })
+  const totalPages = computed(() => starWarsStore.totalPages)
+  const isLoading = computed(() => starWarsStore.isLoading)
+  const error = computed(() => starWarsStore.error)
+
   const onSelect = async (item: Item) => {
-    if (!item) {
-      imgURL.value = ''
-      result.value = ''
-      imgLoaded.value = false
-      return
-    }
-    if (!item.image) return
-
-    try {
-      imgLoaded.value = false
-      await preloadImage(item.image)
-      imgURL.value = item.image
-      imgLoaded.value = true
-      result.value = JSON.stringify(item, null, 2)
-    } catch (error_) {
-      console.error('Failed to load image:', error_)
-    }
-  }
-
-  const getData = async () => {
-    try {
-      const response = await fetchData(selectedApi.value, currentPage.value, DEFAULT_PAGE_SIZE)
-      items.value = response.data
-      totalPages.value = response.info.total
-
-      if (items.value.length > 0) {
-        selectedItem.value = items.value[0]
-        await onSelect(items.value[0])
-      } else {
-        selectedItem.value = undefined
-        imgURL.value = ''
-        result.value = ''
-        imgLoaded.value = false
-      }
-    } catch (error_) {
-      console.error('Failed to fetch data:', error_)
-    }
+    if (item) await starWarsStore.selectItem(item)
   }
 
   const onPageChange = (page: number) => {
-    currentPage.value = page
-    getData()
+    starWarsStore.setPage(page)
   }
 
   const onApiSelect = () => {
-    currentPage.value = 1
-    getData()
+    starWarsStore.setPage(1)
   }
 
   const onDialog = (value: boolean) => {
@@ -94,7 +73,7 @@
   }
 
   onMounted(() => {
-    getData()
+    starWarsStore.fetchItems()
   })
 </script>
 
@@ -105,13 +84,16 @@
         <Logo />
       </v-col>
       <v-col cols="12" sm="8" xs="12">
-        <h1 class="header-text" :class="isDark ? 'dark' : 'light'">
-          <span>{{ HEADER_NAME_SHORT }}</span>
-          <span>&nbsp;</span>
-          <Link class="links" :link="`${API_URL}/${selectedApi}`" :text="selectedApi" />
-          <span>&nbsp;</span>
-          <span>{{ HEADER_NAME_POSTFIX }}</span>
-        </h1>
+        <div class="d-flex align-center justify-space-between">
+          <h1 class="header-text" :class="isDark ? 'dark' : 'light'">
+            <span>{{ HEADER_NAME_SHORT }}</span>
+            <span>&nbsp;</span>
+            <Link class="links" :link="`${API_URL}/${selectedApi}`" :text="selectedApi" />
+            <span>&nbsp;</span>
+            <span>{{ HEADER_NAME_POSTFIX }}</span>
+          </h1>
+          <ThemeSwitcher label="Dark Mode" />
+        </div>
       </v-col>
     </v-row>
 
@@ -187,7 +169,7 @@
           class="my-5"
           :is-dialog-show="isDialogShow"
           :result="result"
-          :search="selectedItem"
+          :search="selectedItem!"
           @dialog="onDialog"
         />
         <template v-if="!display.smAndDown.value">

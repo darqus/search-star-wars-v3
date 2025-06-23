@@ -1,20 +1,21 @@
 <script setup lang="ts">
-  import { computed, onMounted, watch } from 'vue'
-  import { useTheme } from 'vuetify'
+  import { computed, onMounted } from 'vue'
   import Footer from '@/components/footer/Footer.vue'
   import Form from '@/components/form/Form.vue'
-  import getBrowserTheme from '@/utils/getBrowserTheme'
-  import { getItem, setItem } from '@/utils/persistenceStorage'
-  import setLinkIcons from '@/utils/setLinkIcons'
+  import { useThemeStore } from '@/stores/theme'
   import {
-    BGS, ROLES, SIDES, THEMES,
+    BGS, ROLES, SIDES,
   } from './state'
 
-  const IS_THEME_DARK = 'isThemeDark'
+  // Use theme store
+  const themeStore = useThemeStore()
 
-  const theme = useTheme()
+  // Initialize theme on mount
+  onMounted(() => {
+    themeStore.initTheme()
+  })
 
-  const isDark = computed(() => theme.global.current.value.dark)
+  const isDark = computed(() => themeStore.isDark)
 
   const side = computed(() => {
     return isDark.value ? SIDES.dark : SIDES.light
@@ -34,25 +35,6 @@
     return `background-image: linear-gradient${currentGradient}, url("img/${currentBg}.jpg");
   background-position: center;
   background-size: cover;`
-  })
-
-  onMounted(() => {
-    const isLSDark = getItem<boolean>(IS_THEME_DARK)
-
-    if (isLSDark === null) {
-      const browserTheme = getBrowserTheme()
-      const isBrowserThemeDark = browserTheme === THEMES.dark
-      theme.global.name.value = isBrowserThemeDark ? 'dark' : 'light'
-      setLinkIcons(isBrowserThemeDark)
-    } else {
-      theme.global.name.value = isLSDark ? 'dark' : 'light'
-      setLinkIcons(isLSDark)
-    }
-  })
-
-  watch(isDark, value => {
-    setItem(IS_THEME_DARK, value)
-    setLinkIcons(value)
   })
 </script>
 
