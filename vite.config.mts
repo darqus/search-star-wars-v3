@@ -43,8 +43,6 @@ export default defineConfig({
           },
         ],
       },
-      injectTo: 'head-prepend',
-      preload: false,
     }),
   ],
   optimizeDeps: {
