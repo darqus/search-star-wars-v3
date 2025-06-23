@@ -160,7 +160,7 @@
           <template v-if="isLoading">
             <v-progress-circular indeterminate :size="display.smAndDown.value ? 400 : 600" />
           </template>
-          <template v-else-if="items.length > 0 && imgURL && selectedItem && imgLoaded">
+          <template v-else-if="items.length > 0 && imgURL && selectedItem">
             <transition mode="out-in" name="scale">
               <div :key="imgURL" :aria-label="selectedItem.name" class="img" role="img">
                 <a
