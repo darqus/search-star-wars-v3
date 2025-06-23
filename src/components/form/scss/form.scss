@@ -62,3 +62,15 @@
     }
   }
 }
+
+.v-theme--dark.v-card,
+.v-theme--dark.v-list {
+  color: rgb(255 255 255);
+  background-color: rgba(30, 30, 30, 0.6) !important;
+}
+
+.v-theme--light.v-card,
+.v-theme--light.v-list {
+  color: rgba(0, 0, 0, 0.87);
+  background-color: rgba(255, 255, 255, 0.6) !important;
+}
