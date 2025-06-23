@@ -106,6 +106,10 @@
   row-gap: 0.5rem;
 }
 
+.v-footer {
+  opacity: .3;
+}
+
 .footer-custom {
   position: relative;
   flex: initial;
