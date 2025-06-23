@@ -1,6 +1,83 @@
 {
   "cSpell.words": [
+    "fontsource",
+    "pinia",
+    "stylelint",
+    "swctext",
+    "unplugin",
     "VITE",
+    "vitest",
     "vuetify"
-  ]
+  ],
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.stylelint": "explicit"
+  },
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "vue"
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[vue]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.ts": "explicit",
+      "source.fixAll.prettier": "explicit",
+      "source.fixAll.eslint": "explicit",
+      "source.organizeImports": "never"
+    },
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "editor.formatOnSave": true
+  },
+  "[typescript]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.ts": "explicit",
+      "source.fixAll.prettier": "explicit",
+      "source.fixAll.eslint": "explicit",
+      "source.organizeImports": "never"
+    },
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "editor.formatOnSave": true
+  },
+  "[typescript][vue]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.ts": "explicit",
+      "source.fixAll.prettier": "explicit",
+      "source.fixAll.eslint": "explicit",
+      "source.organizeImports": "never"
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[javascript]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.prettier": "explicit",
+      "source.fixAll.eslint": "explicit",
+      "source.fixAll.stylelint": "never",
+      "source.organizeImports": "never"
+    },
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true
+  },
+  "stylelint.validate": [
+    "css",
+    "scss",
+    "vue"
+  ],
+  "css.validate": false,
+  "scss.validate": false,
+  "files.associations": {
+    "*.scss": "scss",
+    "*.vue": "vue"
+  },
+  "vue.inlayHints.optionsWrapper": false,
+  "vue.inlayHints.missingProps": false,
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.ts": "${capture}.js, ${capture}.d.ts, ${capture}.spec.ts",
+    "*.vue": "${capture}.scss, ${capture}.spec.ts"
+  }
 }
