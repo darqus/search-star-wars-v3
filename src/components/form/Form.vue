@@ -30,6 +30,7 @@
   const search = ref<Item>()
   const isLoading = ref(false)
   const imgURL = ref('')
+  const imgLoaded = ref(false)
   const result = ref('')
   const defaultResult = ref('')
   const isDialogShow = ref(false)
@@ -58,9 +59,20 @@
     getData()
   }
 
-  const onSelect = (selectedItem: Item) => {
+  const preloadImage = (url: string): Promise<void> => {
+    return new Promise(resolve => {
+      const img = new Image()
+      img.addEventListener('load', () => resolve())
+      img.src = url
+    })
+  }
+
+  const onSelect = async (selectedItem: Item) => {
     if (selectedItem?.image) {
+      imgLoaded.value = false
+      await preloadImage(selectedItem.image)
       imgURL.value = selectedItem.image
+      imgLoaded.value = true
       result.value = JSON.stringify(selectedItem, null, 2)
     }
   }
