@@ -12,6 +12,7 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/search-star-wars-v3/',
   plugins: [
     VueRouter({
       dts: 'src/typed-router.d.ts',
