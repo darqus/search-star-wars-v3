@@ -86,12 +86,20 @@ export default defineConfig({
     rollupOptions: {
       output: {
         assetFileNames: assetInfo => {
+          // Не предзагружать .eot файлы
           if (assetInfo.name?.endsWith('.eot')) {
-            return 'assets/[name]-[hash][extname]'
+            return 'assets/fonts/[name]-[hash][extname]'
           }
           return 'assets/[name]-[hash][extname]'
         },
       },
+    },
+    assetsInlineLimit: filePath => {
+      // Исключить .eot файлы из preload
+      if (filePath.endsWith('.eot')) {
+        return false
+      }
+      return 4096
     },
   },
 })
