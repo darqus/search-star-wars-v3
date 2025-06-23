@@ -12,3 +12,7 @@ export const API_ENDPOINTS: SearchApiItem[] = [
 
 export const DEFAULT_PAGE_SIZE = 20
 export const TRANSITION_DURATION = 300
+
+// Cache settings
+export const DEFAULT_CACHE_ENABLED = true
+export const DEFAULT_CACHE_EXPIRY = 5 * 60 * 1000 // 5 minutes
