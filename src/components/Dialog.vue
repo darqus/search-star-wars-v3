@@ -40,7 +40,7 @@
         <v-card-actions>
           <v-spacer />
           <v-btn
-            color="grey-darken-1"
+            color="primary"
             variant="text"
             @click="dialog = false"
             @keyup="dialog = false"
