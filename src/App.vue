@@ -1,11 +1,32 @@
 <script setup lang="ts">
-  import { computed, onMounted } from 'vue'
-  import Footer from '@/components/footer/Footer.vue'
-  import Form from '@/components/form/Form.vue'
+  import { computed, defineAsyncComponent, onMounted } from 'vue'
+  import AsyncComponentWrapper from '@/components/AsyncComponentWrapper.vue'
   import { useThemeStore } from '@/stores/theme'
   import {
     BGS, ROLES, SIDES,
   } from './state'
+
+  // Lazy loaded components with loading indicator
+  /* const CacheControls = defineAsyncComponent({
+    loader: () => import('@/components/CacheControls.vue'),
+    loadingComponent: AsyncComponentWrapper,
+    delay: 300,
+    timeout: 10_000,
+  }) */
+
+  const Footer = defineAsyncComponent({
+    loader: () => import('@/components/footer/Footer.vue'),
+    loadingComponent: AsyncComponentWrapper,
+    delay: 200,
+    timeout: 10_000,
+  })
+
+  const Form = defineAsyncComponent({
+    loader: () => import('@/components/form/Form.vue'),
+    loadingComponent: AsyncComponentWrapper,
+    delay: 200,
+    timeout: 10_000,
+  })
 
   // Use theme store
   const themeStore = useThemeStore()
@@ -41,6 +62,13 @@
 <template>
   <v-app style="overflow: hidden;" :style="bg">
     <v-main>
+      <!-- <v-container>
+        <v-row>
+          <v-col cols="12">
+            <CacheControls />
+          </v-col>
+        </v-row>
+      </v-container> -->
       <Form :role="role" :side="side" />
     </v-main>
     <Footer :side="side" />

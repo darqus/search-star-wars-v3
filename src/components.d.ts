@@ -8,6 +8,8 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AsyncComponentWrapper: typeof import('./components/AsyncComponentWrapper.vue')['default']
+    CacheControls: typeof import('./components/CacheControls.vue')['default']
     Dialog: typeof import('./components/Dialog.vue')['default']
     Footer: typeof import('./components/footer/Footer.vue')['default']
     FooterDropDownInfo: typeof import('./components/footer/FooterDropDownInfo.vue')['default']

@@ -32,7 +32,7 @@ src/
 
 - [✅] Добавить unit тесты
 - [✅] Реализовать кэширование API запросов
-- [ ] Добавить lazy loading для компонентов
+- [✅] Добавить lazy loading для компонентов
 - [✅] Внедрить state management (Pinia)
 - [ ] Добавить error boundary
 - [ ] Реализовать offline режим

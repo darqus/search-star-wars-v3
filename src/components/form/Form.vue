@@ -1,16 +1,37 @@
 <script setup lang="ts">
   import type { Item } from '@/types/api'
-  import { computed, onMounted, ref } from 'vue'
+  import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
   import { useDisplay } from 'vuetify'
-  import Dialog from '@/components/Dialog.vue'
-  import Link from '@/components/Link.vue'
-  import Logo from '@/components/Logo.vue'
-  import Mandala from '@/components/Mandala.vue'
-  import ThemeSwitcher from '@/components/ThemeSwitcher.vue'
   import { API_ENDPOINTS } from '@/constants/api'
   import { useStarWarsStore } from '@/stores/starWars'
   import { useThemeStore } from '@/stores/theme'
   import './scss/form.scss'
+
+  // Lazy loaded components with loading indicators
+  const Dialog = defineAsyncComponent({
+    loader: () => import('@/components/Dialog.vue'),
+    delay: 200,
+  })
+
+  const Link = defineAsyncComponent({
+    loader: () => import('@/components/Link.vue'),
+    delay: 100,
+  })
+
+  const Logo = defineAsyncComponent({
+    loader: () => import('@/components/Logo.vue'),
+    delay: 100,
+  })
+
+  const Mandala = defineAsyncComponent({
+    loader: () => import('@/components/Mandala.vue'),
+    delay: 200,
+  })
+
+  const ThemeSwitcher = defineAsyncComponent({
+    loader: () => import('@/components/ThemeSwitcher.vue'),
+    delay: 200,
+  })
 
   interface Props {
     role: string

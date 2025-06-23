@@ -1,11 +1,33 @@
 <script setup lang="ts">
+  import { defineAsyncComponent } from 'vue'
   import { useDisplay } from 'vuetify'
-  import FooterDropDownInfo from '@/components/footer/FooterDropDownInfo.vue'
-  import Link from '@/components/Link.vue'
-  import SoundButton from '@/components/SoundButton.vue'
-  import SWCrawlText from '@/components/SWCrawlText.vue'
-  import ThemeSwitcher from '@/components/ThemeSwitcher.vue'
   import { LINKS } from '@/state/'
+
+  // Lazy loaded components with loading indicators
+  const FooterDropDownInfo = defineAsyncComponent({
+    loader: () => import('@/components/footer/FooterDropDownInfo.vue'),
+    delay: 200,
+  })
+
+  const Link = defineAsyncComponent({
+    loader: () => import('@/components/Link.vue'),
+    delay: 100,
+  })
+
+  const SoundButton = defineAsyncComponent({
+    loader: () => import('@/components/SoundButton.vue'),
+    delay: 200,
+  })
+
+  const SWCrawlText = defineAsyncComponent({
+    loader: () => import('@/components/SWCrawlText.vue'),
+    delay: 300,
+  })
+
+  const ThemeSwitcher = defineAsyncComponent({
+    loader: () => import('@/components/ThemeSwitcher.vue'),
+    delay: 100,
+  })
 
   interface Props {
     side: string
