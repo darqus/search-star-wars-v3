@@ -6,11 +6,25 @@ import { apiCache } from '@/utils/apiCache'
 const API_URL = import.meta.env.VITE_APP_API_BASE_URL
 
 const transformImageUrl = (endpoint: string, image: string): string => {
-  // Handle both old and new image URL formats
+  // Return absolute URLs without transformation
   if (image.startsWith('http')) {
     return image
   }
-  return `${IMAGE_BASE_URL}/${endpoint}/${image}`
+
+  // Clean up any leading/trailing slashes
+  const cleanImage = image.replace(/^\/+|\/+$/g, '')
+
+  // Check if the image path contains the endpoint already
+  if (cleanImage.includes(`${endpoint}/`) || cleanImage.includes(`${endpoint}\\`)) {
+    return `${IMAGE_BASE_URL}/${cleanImage}`
+  }
+
+  // For paths that start with "images/"
+  if (cleanImage.startsWith('images/')) {
+    return `${IMAGE_BASE_URL}/${endpoint}/${cleanImage}`
+  }
+
+  return `${IMAGE_BASE_URL}/${endpoint}/images/${cleanImage}`
 }
 
 export const useStarWarsApi = () => {
