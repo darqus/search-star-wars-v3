@@ -46,33 +46,40 @@ vi.mock('@/components/ThemeSwitcher.vue', () => ({
   },
 }))
 
+vi.mock('@/components/CacheControls.vue', () => ({
+  default: {
+    name: 'CacheControls',
+    props: ['cachedEndpoints', 'currentEndpoint'],
+    template: '<div data-testid="mock-cache-controls"></div>',
+  },
+}))
+
 // Мок хранилища Star Wars
 const mockStarWarsStore = {
   filteredItems: [
     {
-      _id: '1',
+      id: '1',
       name: 'Luke Skywalker',
       description: 'Jedi Knight',
-      image: 'luke.jpg',
-      __v: 0,
+      image: 'https://star-wars-api-v3.netlify.app/image/characters/luke.webp',
     },
   ],
   selectedApi: 'characters',
   selectedItem: {
-    _id: '1',
+    id: '1',
     name: 'Luke Skywalker',
     description: 'Jedi Knight',
-    image: 'luke.jpg',
-    __v: 0,
+    image: 'https://star-wars-api-v3.netlify.app/image/characters/luke.webp',
   },
   searchInput: '',
-  imgURL: 'luke.jpg',
+  imgURL: 'https://star-wars-api-v3.netlify.app/image/characters/luke.webp',
   imgLoaded: true,
   result: '{"name":"Luke Skywalker"}',
   currentPage: 1,
   totalPages: 5,
   isLoading: false,
   error: null,
+  cachedEndpoints: new Set(['characters']),
   setApiEndpoint: vi.fn(),
   setPage: vi.fn(),
   setSearchTerm: vi.fn(),

@@ -1,8 +1,17 @@
-import type { ApiResponse } from '@/types/api'
+import type { ApiResponse, Item } from '@/types/api'
 import { computed, ref } from 'vue'
+import { IMAGE_BASE_URL } from '@/types/api'
 import { apiCache } from '@/utils/apiCache'
 
 const API_URL = import.meta.env.VITE_APP_API_BASE_URL
+
+const transformImageUrl = (endpoint: string, image: string): string => {
+  // Handle both old and new image URL formats
+  if (image.startsWith('http')) {
+    return image
+  }
+  return `${IMAGE_BASE_URL}/${endpoint}/${image}`
+}
 
 export const useStarWarsApi = () => {
   const isLoading = ref(false)
@@ -44,7 +53,23 @@ export const useStarWarsApi = () => {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
-      const data = await response.json()
+      const rawData = await response.json()
+
+      // Transform data to match our API interface
+      const data: ApiResponse = {
+        data: rawData.data.map((item: Item) => ({
+          ...item,
+          // Ensure image URL has the correct format
+          image: transformImageUrl(endpoint, item.image),
+        })),
+        info: {
+          total: rawData.info.total,
+          page: rawData.info.page,
+          limit: rawData.info.limit,
+          next: rawData.info.next,
+          prev: rawData.info.prev,
+        },
+      }
 
       // Store in cache
       if (isCachingEnabled.value) {

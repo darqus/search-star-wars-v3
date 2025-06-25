@@ -7,24 +7,22 @@ vi.mock('@/composables/useStarWarsApi', () => {
   const mockData = {
     data: [
       {
-        _id: '1',
+        id: '1',
         name: 'Luke Skywalker',
         description: 'Jedi Knight',
-        image: 'luke.jpg',
-        __v: 0,
+        image: 'characters/luke.webp',
       },
       {
-        _id: '2',
+        id: '2',
         name: 'Darth Vader',
         description: 'Dark Lord of the Sith',
-        image: 'vader.jpg',
-        __v: 0,
+        image: 'characters/vader.webp',
       },
     ],
     info: {
       total: 2,
-      count: 2,
-      pages: 1,
+      page: 1,
+      limit: 10,
       next: null,
       prev: null,
     },

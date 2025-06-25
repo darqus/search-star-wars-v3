@@ -31,7 +31,7 @@ export const LINKS = [
     text: 'Vuetify',
   },
   {
-    link: 'https://starwars-databank.vercel.app/',
+    link: 'https://star-wars-api-v3.netlify.app/',
     text: 'API',
   },
   {

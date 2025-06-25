@@ -28,11 +28,6 @@
     delay: 200,
   })
 
-  const ThemeSwitcher = defineAsyncComponent({
-    loader: () => import('@/components/ThemeSwitcher.vue'),
-    delay: 200,
-  })
-
   interface Props {
     role: string
     side: string
@@ -113,7 +108,6 @@
             <span>&nbsp;</span>
             <span>{{ HEADER_NAME_POSTFIX }}</span>
           </h1>
-          <ThemeSwitcher label="Dark Mode" />
         </div>
       </v-col>
     </v-row>
