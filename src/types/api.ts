@@ -21,4 +21,4 @@ export interface SearchApiItem {
   imgApiPath: string
 }
 
-export const IMAGE_BASE_URL = 'https://star-wars-api-v3.netlify.app/image'
+export const IMAGE_BASE_URL = 'https://star-wars-api-v3.netlify.app'
