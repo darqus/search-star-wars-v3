@@ -1,0 +1,1 @@
+import{q as t,E as n,z as a,H as o,n as r}from"./index-BK53ehKw.js";const s=["href"],m=t({__name:"Link",props:{link:{default:"#"},text:{default:""},fontSizeRem:{default:-1}},setup(i){return(e,l)=>(a(),n("a",{href:e.link,style:r(e.fontSizeRem>0?`font-size: ${e.fontSizeRem}rem;`:""),target:"_blank"},o(e.text),13,s))}});export{m as default};
