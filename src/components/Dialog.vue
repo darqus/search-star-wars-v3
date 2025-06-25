@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import type { Item } from '@/types/api'
   import { ref, watch } from 'vue'
   import { useDisplay } from 'vuetify'
 
