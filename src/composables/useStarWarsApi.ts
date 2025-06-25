@@ -1,9 +1,9 @@
 import type { ApiResponse, Item } from '@/types/api'
 import { computed, ref } from 'vue'
-import { IMAGE_BASE_URL } from '@/types/api'
 import { apiCache } from '@/utils/apiCache'
 
 const API_URL = import.meta.env.VITE_APP_API_BASE_URL
+const IMAGE_BASE_URL = import.meta.env.VITE_APP_IMAGE_BASE_URL
 
 const transformImageUrl = (endpoint: string, image: string): string => {
   // Return absolute URLs without transformation
