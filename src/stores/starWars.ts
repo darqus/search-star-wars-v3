@@ -74,7 +74,17 @@ export const useStarWarsStore = defineStore('starWars', () => {
     }
   }
 
-  async function selectItem (item: Item) {
+  async function selectItem (nameOrItem: string | Item) {
+    if (!nameOrItem) {
+      resetSelection()
+      return
+    }
+
+    // If we received a string (name), find the corresponding item
+    const item = typeof nameOrItem === 'string'
+      ? items.value.find(i => i.name === nameOrItem)
+      : nameOrItem
+
     if (!item) {
       resetSelection()
       return

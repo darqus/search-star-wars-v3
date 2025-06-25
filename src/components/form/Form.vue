@@ -28,6 +28,11 @@
     delay: 200,
   })
 
+  const DropList = defineAsyncComponent({
+    loader: () => import('@/components/DropList.vue'),
+    delay: 100,
+  })
+
   interface Props {
     role: string
     side: string
@@ -72,6 +77,52 @@
   const isLoading = computed(() => starWarsStore.isLoading)
   const error = computed(() => starWarsStore.error)
 
+  // Additional state for the old-style functionality
+  const search = ref('')
+  const isShownDropDown = ref(false)
+  const isKeyupArrowDown = ref(false)
+  const selectedField = ref('name')
+
+  // Text highlighting function
+  const highlightText = (text: string, searchTerm: string) => {
+    if (!searchTerm) return text
+    const regex = new RegExp(`(${searchTerm})`, 'gi')
+    return text.replace(regex, '<span class="text-primary">$1</span>')
+  }
+
+  // Handle input with debounce (like old project)
+  let inputTimeout: ReturnType<typeof setTimeout>
+  const onInput = (value: string) => {
+    if (!value) {
+      search.value = ''
+      isShownDropDown.value = false
+      return
+    }
+
+    isShownDropDown.value = true
+    clearTimeout(inputTimeout)
+
+    if (value.length >= 3) {
+      inputTimeout = setTimeout(() => {
+        starWarsStore.setSearchTerm(value)
+      }, 500)
+    }
+  }
+
+  // Handle keyup events
+  const onKeyup = (event: KeyboardEvent) => {
+    if (event.code === 'ArrowDown') {
+      isKeyupArrowDown.value = true
+    }
+  }
+
+  // Handle selection from dropdown
+  const onSelectFromDropList = (selectedName: string) => {
+    search.value = selectedName
+    isShownDropDown.value = false
+    starWarsStore.selectItem(selectedName)
+  }
+
   const onSelect = async (item: Item) => {
     if (item) await starWarsStore.selectItem(item)
   }
@@ -113,7 +164,7 @@
     </v-row>
 
     <v-row style="position: relative; z-index: 2">
-      <v-col cols="12" sm="4" xs="12">
+      <v-col cols="12" sm="3" xs="12">
         <v-select
           v-model="selectedApi"
           :density="density"
@@ -125,7 +176,7 @@
           @update:model-value="onApiSelect"
         />
       </v-col>
-      <v-col cols="12" sm="4" style="position: relative" xs="12">
+      <v-col cols="12" sm="3" style="position: relative" xs="12">
         <v-pagination
           v-if="totalPages > 1"
           v-model="currentPage"
@@ -134,7 +185,7 @@
           @update:model-value="onPageChange"
         />
       </v-col>
-      <v-col cols="12" sm="4" style="position: relative" xs="12">
+      <v-col cols="12" sm="3" style="position: relative" xs="12">
         <v-autocomplete
           v-model="selectedItem"
           v-model:search-input="searchInput"
@@ -142,11 +193,33 @@
           :density="density"
           :item-title="'name'"
           :items="items"
-          :label="`Search ${selectedApi}`"
+          :label="`Select ${selectedApi}`"
           :loading="isLoading"
           :menu-props="{ scrim: true, scrollStrategy: 'close' }"
           return-object
           @update:model-value="onSelect"
+        />
+      </v-col>
+      <v-col cols="12" sm="3" style="position: relative" xs="12">
+        <v-text-field
+          v-model="search"
+          clearable
+          :density="density"
+          :label="`Search ${selectedApi}`"
+          :loading="isLoading"
+          @input="onInput"
+          @keyup="onKeyup"
+        />
+        <DropList
+          v-if="items.length > 0 && isShownDropDown"
+          class="drop-list"
+          :is-keyup-arrow-down="isKeyupArrowDown"
+          :items="items"
+          :search="search"
+          :selected-api="selectedApi"
+          :selected-field="selectedField"
+          @reset="isKeyupArrowDown = false"
+          @select="onSelectFromDropList"
         />
       </v-col>
     </v-row>
