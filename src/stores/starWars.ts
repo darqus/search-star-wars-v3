@@ -54,7 +54,9 @@ export const useStarWarsStore = defineStore('starWars', () => {
       items.value = response.data
       totalPages.value = response.info.total
 
-      if (items.value.length === 0) {
+      if (items.value.length > 0) {
+        await selectItem(items.value[0])
+      } else {
         resetSelection()
       }
 
