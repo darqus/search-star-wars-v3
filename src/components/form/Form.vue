@@ -160,6 +160,10 @@
     isDialogShow.value = value
   }
 
+  const onClearSelection = () => {
+    starWarsStore.resetSelection()
+  }
+
   onMounted(() => {
     starWarsStore.fetchItems()
   })
@@ -225,6 +229,7 @@
           :loading="isLoading"
           :menu-props="{ scrim: true, scrollStrategy: 'close' }"
           return-object
+          @click:clear="onClearSelection"
           @update:model-value="onSelect"
         />
       </v-col>
