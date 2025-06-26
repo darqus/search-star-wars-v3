@@ -310,16 +310,6 @@
   color: v-bind(isDark ? 'lightblue' : 'rgb(36, 125, 199)');
 }
 
-.search-dropdown {
-  position: absolute;
-  top: -20px;
-  right: 0;
-  left: 0;
-  z-index: 1000;
-  max-height: 300px;
-  overflow-y: auto;
-}
-
 .scale-enter-active, .scale-leave-active {
   transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
