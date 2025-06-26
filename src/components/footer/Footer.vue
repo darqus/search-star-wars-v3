@@ -129,7 +129,7 @@
 }
 
 .v-footer {
-  opacity: .5;
+  opacity: .8;
 }
 
 .footer-custom {
