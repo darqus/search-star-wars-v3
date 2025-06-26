@@ -34,6 +34,10 @@ export const useStarWarsStore = defineStore('starWars', () => {
   const currentPage = ref(1)
   const totalPages = ref(1)
 
+  // Separate state for search functionality
+  const searchResults = ref<Item[]>([])
+  const searchTerm = ref('')
+
   // Computed
   const isLoading = computed(() => apiIsLoading.value)
   const error = computed(() => apiError.value)
@@ -79,13 +83,13 @@ export const useStarWarsStore = defineStore('starWars', () => {
         searchTerm,
       )
 
-      items.value = response.data
-      // Don't update totalPages for search results
+      // Store search results separately from main items
+      searchResults.value = response.data
 
       return response
     } catch (error) {
       console.error('Failed to fetch search results:', error)
-      items.value = []
+      searchResults.value = []
       throw error
     }
   }
@@ -129,11 +133,58 @@ export const useStarWarsStore = defineStore('starWars', () => {
     }
   }
 
+  // Separate function for selecting from search results
+  async function selectFromSearch (nameOrItem: string | Item) {
+    if (!nameOrItem) {
+      return
+    }
+
+    // If we received a string (name), find the corresponding item
+    const item = typeof nameOrItem === 'string'
+      ? searchResults.value.find(i => i.name === nameOrItem)
+      : nameOrItem
+
+    if (!item) {
+      return
+    }
+
+    // Update search term
+    searchTerm.value = item.name
+
+    // Set as selected item to display image and details
+    selectedItem.value = item
+
+    // Load image and set result details
+    if (item.image) {
+      try {
+        imgLoaded.value = false
+        await preloadImage(item.image)
+        imgURL.value = item.image
+        imgLoaded.value = true
+        result.value = JSON.stringify(item, null, 2)
+      } catch (error) {
+        console.error('Failed to load image:', error)
+        imgURL.value = ''
+        imgLoaded.value = false
+        result.value = JSON.stringify(item, null, 2)
+      }
+    } else {
+      imgURL.value = ''
+      imgLoaded.value = false
+      result.value = JSON.stringify(item, null, 2)
+    }
+
+    // Clear search results after selection
+    searchResults.value = []
+  }
+
   function setApiEndpoint (endpoint: string) {
     if (selectedApi.value !== endpoint) {
       selectedApi.value = endpoint
       currentPage.value = 1
       searchInput.value = '' // Clear search when API changes
+      searchTerm.value = '' // Clear search term
+      searchResults.value = [] // Clear search results
       fetchItems()
     }
   }
@@ -161,7 +212,7 @@ export const useStarWarsStore = defineStore('starWars', () => {
 
   function setSearchTerm (term: string) {
     console.log('Searched term:', term)
-    searchInput.value = term
+    searchTerm.value = term
 
     // Clear previous timeout
     if (searchTimeout) {
@@ -171,12 +222,12 @@ export const useStarWarsStore = defineStore('starWars', () => {
     // Only search if we have 3 or more characters
     if (term.length >= 3) {
       searchTimeout = setTimeout(() => {
-        // Force skipCache=true for search requests (no caching)
-        fetchItems(true, term)
+        // Use fetchSearchResults instead of fetchItems
+        fetchSearchResults(term)
       }, 300) // Reduced timeout for better UX
     } else if (term.length === 0) {
-      // Reset to regular fetch when search is cleared
-      fetchItems()
+      // Clear search results when search is cleared
+      searchResults.value = []
     }
   }
 
@@ -199,6 +250,10 @@ export const useStarWarsStore = defineStore('starWars', () => {
     currentPage,
     totalPages,
 
+    // Search state
+    searchResults,
+    searchTerm,
+
     // Computed
     isLoading,
     error,
@@ -208,6 +263,7 @@ export const useStarWarsStore = defineStore('starWars', () => {
     fetchItems,
     fetchSearchResults,
     selectItem,
+    selectFromSearch,
     setApiEndpoint,
     setPage,
     setSearchTerm,

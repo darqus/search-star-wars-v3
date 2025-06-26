@@ -55,6 +55,7 @@
 
   // Computed properties для доступа к состоянию хранилища
   const items = computed(() => starWarsStore.filteredItems)
+  const searchResults = computed(() => starWarsStore.searchResults)
   const selectedApi = computed({
     get: () => starWarsStore.selectedApi,
     set: value => starWarsStore.setApiEndpoint(value),
@@ -78,7 +79,10 @@
   const error = computed(() => starWarsStore.error)
 
   // Additional state for the old-style functionality
-  const search = ref('')
+  const search = computed({
+    get: () => starWarsStore.searchTerm,
+    set: value => starWarsStore.setSearchTerm(value || ''),
+  })
   const isShownDropDown = ref(false)
   const isKeyupArrowDown = ref(false)
   const selectedField = ref('name')
@@ -128,14 +132,10 @@
   }
 
   // Handle selection from dropdown
-  const onSelectFromDropList = (selectedName: string) => {
-    search.value = selectedName
+  const onSelectFromDropList = async (selectedName: string) => {
+    // Use the separate function for search selection
+    await starWarsStore.selectFromSearch(selectedName)
     isShownDropDown.value = false
-    // Find the selected item and select it
-    const selectedItem = items.value.find(item => item.name === selectedName)
-    if (selectedItem) {
-      starWarsStore.selectItem(selectedItem)
-    }
   }
 
   const onSelect = async (item: Item) => {
@@ -148,8 +148,7 @@
 
   const onApiSelect = () => {
     starWarsStore.setPage(1)
-    // Clear search when API changes
-    search.value = ''
+    // Clear search when API changes - this will be handled by the store
     isShownDropDown.value = false
   }
 
@@ -230,10 +229,10 @@
           @keyup="onKeyup"
         />
         <DropList
-          v-if="items.length > 0 && isShownDropDown"
+          v-if="searchResults.length > 0 && isShownDropDown"
           class="drop-list"
           :is-keyup-arrow-down="isKeyupArrowDown"
-          :items="items"
+          :items="searchResults"
           :search="search"
           :selected-api="selectedApi"
           :selected-field="selectedField"
