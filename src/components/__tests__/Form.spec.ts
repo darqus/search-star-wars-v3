@@ -6,51 +6,75 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import Form from '../form/Form.vue'
 
-// Мок компонентов
+// Simplified Vue component mocks to avoid __isTeleport issues
 vi.mock('@/components/Dialog.vue', () => ({
+  __esModule: true,
   default: {
-    name: 'Dialog',
+    name: 'MockDialog',
+    template: '<div data-testid="mock-dialog" />',
     props: ['isDialogShow', 'result', 'search'],
-    template: '<div data-testid="mock-dialog"></div>',
+    __isTeleport: false,
+    __isKeepAlive: false,
+    __asyncResolved: true,
   },
 }))
 
 vi.mock('@/components/Link.vue', () => ({
+  __esModule: true,
   default: {
-    name: 'Link',
+    name: 'MockLink',
+    template: '<a data-testid="mock-link" />',
     props: ['link', 'text'],
-    template: '<a :href="link">{{ text }}</a>',
+    __isTeleport: false,
+    __isKeepAlive: false,
+    __asyncResolved: true,
   },
 }))
 
 vi.mock('@/components/Logo.vue', () => ({
+  __esModule: true,
   default: {
-    name: 'Logo',
-    template: '<div data-testid="mock-logo"></div>',
+    name: 'MockLogo',
+    template: '<div data-testid="mock-logo" />',
+    __isTeleport: false,
+    __isKeepAlive: false,
+    __asyncResolved: true,
   },
 }))
 
 vi.mock('@/components/Mandala.vue', () => ({
+  __esModule: true,
   default: {
-    name: 'Mandala',
+    name: 'MockMandala',
+    template: '<div data-testid="mock-mandala" />',
     props: ['side', 'className'],
-    template: '<div data-testid="mock-mandala"></div>',
+    __isTeleport: false,
+    __isKeepAlive: false,
+    __asyncResolved: true,
   },
 }))
 
 vi.mock('@/components/ThemeSwitcher.vue', () => ({
+  __esModule: true,
   default: {
-    name: 'ThemeSwitcher',
+    name: 'MockThemeSwitcher',
+    template: '<div data-testid="mock-theme-switcher" />',
     props: ['label'],
-    template: '<div data-testid="mock-theme-switcher">{{ label }}</div>',
+    __isTeleport: false,
+    __isKeepAlive: false,
+    __asyncResolved: true,
   },
 }))
 
 vi.mock('@/components/CacheControls.vue', () => ({
+  __esModule: true,
   default: {
-    name: 'CacheControls',
+    name: 'MockCacheControls',
+    template: '<div data-testid="mock-cache-controls" />',
     props: ['cachedEndpoints', 'currentEndpoint'],
-    template: '<div data-testid="mock-cache-controls"></div>',
+    __isTeleport: false,
+    __isKeepAlive: false,
+    __asyncResolved: true,
   },
 }))
 
@@ -71,7 +95,9 @@ const mockStarWarsStore = {
     description: 'Jedi Knight',
     image: 'https://star-wars-api-v3.netlify.app/image/characters/luke.webp',
   },
-  searchInput: '',
+  selectInput: '',
+  searchResults: [],
+  searchTerm: '',
   imgURL: 'https://star-wars-api-v3.netlify.app/image/characters/luke.webp',
   imgLoaded: true,
   result: '{"name":"Luke Skywalker"}',
@@ -85,6 +111,8 @@ const mockStarWarsStore = {
   setSearchTerm: vi.fn(),
   selectItem: vi.fn(),
   fetchItems: vi.fn(),
+  fetchSearchResults: vi.fn(),
+  selectFromSearch: vi.fn(),
   resetSelection: vi.fn(),
 }
 
@@ -142,11 +170,15 @@ describe('Form Component', () => {
       },
       global: {
         plugins: [vuetify],
+        stubs: {
+          'async-component-wrapper': true,
+          'transition': true,
+        },
       },
     })
 
     expect(wrapper.html()).toContain('Star Wars search')
-    expect(wrapper.html()).toContain('Dark Mode')
+    expect(wrapper.html()).toContain('What you search, Jedi? May the Force be with you')
   })
 
   it('shows pagination when totalPages > 1', () => {
