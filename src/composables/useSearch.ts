@@ -13,10 +13,10 @@ export function useSearch () {
   const searchResults = computed(() => starWarsStore.searchResults)
 
   const performSearch = (value: string) => {
-    console.log('🔍 Search input changed:', value)
+    // console.log('🔍 Search input changed:', value)
 
     if (!value || value.length < SEARCH_MIN_LENGTH) {
-      console.log('❌ Search cleared or too short, clearing results')
+      // console.log('❌ Search cleared or too short, clearing results')
       starWarsStore.searchResults = []
       isShownDropDown.value = false
       return
@@ -25,8 +25,8 @@ export function useSearch () {
     clearTimeout(searchTimeout)
     searchTimeout = setTimeout(async () => {
       try {
-        console.log('🔍 Performing search for:', value)
-        console.log('📡 Selected API:', starWarsStore.selectedApi)
+        // console.log('🔍 Performing search for:', value)
+        // console.log('📡 Selected API:', starWarsStore.selectedApi)
 
         starWarsStore.setSearchTerm(value)
         await starWarsStore.fetchSearchResults(value)
@@ -35,10 +35,10 @@ export function useSearch () {
           isShownDropDown.value = true
         }
 
-        console.log('✅ Search completed, results:', starWarsStore.searchResults.length)
-        console.log('📋 Search results:', starWarsStore.searchResults.map(item => item.name))
-      } catch (error) {
-        console.error('❌ Search failed:', error)
+        // console.log('✅ Search completed, results:', starWarsStore.searchResults.length)
+        // console.log('📋 Search results:', starWarsStore.searchResults.map(item => item.name))
+      } catch {
+        // console.error('❌ Search failed:', error)
         isShownDropDown.value = false
       }
     }, SEARCH_DEBOUNCE_DELAY)

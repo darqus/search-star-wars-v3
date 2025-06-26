@@ -55,9 +55,9 @@ export const useStarWarsApi = () => {
       }
 
       const cacheKey = `${endpoint}?${params}`
-      const fullUrl = `${API_URL}/${endpoint}?${params}`
+      // const fullUrl = `${API_URL}/${endpoint}?${params}`
 
-      console.log('🌐 Making API request to:', fullUrl)
+      // console.log('🌐 Making API request to:', fullUrl)
 
       // Don't use cache for search requests as specified
       const shouldUseCache = isCachingEnabled.value && useCache && !search
@@ -66,12 +66,12 @@ export const useStarWarsApi = () => {
       if (shouldUseCache) {
         const cachedData = apiCache.get<ApiResponse>(cacheKey)
         if (cachedData) {
-          console.log(`Cache hit for ${cacheKey}`)
+          // console.log(`Cache hit for ${cacheKey}`)
           // We can skip the loading state for cached responses
           isLoading.value = false
           return cachedData
         }
-        console.log(`Cache miss for ${cacheKey}`)
+        // console.log(`Cache miss for ${cacheKey}`)
       }
 
       const response = await fetch(`${API_URL}/${endpoint}?${params}`)

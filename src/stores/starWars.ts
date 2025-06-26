@@ -75,8 +75,8 @@ export const useStarWarsStore = defineStore('starWars', () => {
   // Specific method for search requests with limit of 5 items
   async function fetchSearchResults (searchTerm: string) {
     try {
-      console.log('🏪 Store: Fetching search results for:', searchTerm)
-      console.log('🏪 Store: Using API endpoint:', selectedApi.value)
+      // console.log('🏪 Store: Fetching search results for:', searchTerm)
+      // console.log('🏪 Store: Using API endpoint:', selectedApi.value)
 
       const response = await fetchData(
         selectedApi.value,
@@ -88,7 +88,7 @@ export const useStarWarsStore = defineStore('starWars', () => {
 
       // Store search results separately from main items
       searchResults.value = response.data
-      console.log('🏪 Store: Search results stored:', response.data.length, 'items')
+      // console.log('🏪 Store: Search results stored:', response.data.length, 'items')
 
       return response
     } catch (error) {
@@ -212,7 +212,7 @@ export const useStarWarsStore = defineStore('starWars', () => {
   }
 
   function setSearchTerm (term: string) {
-    console.log('Setting search term:', term)
+    // console.log('Setting search term:', term)
     searchTerm.value = term
   }
 
