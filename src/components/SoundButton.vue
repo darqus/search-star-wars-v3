@@ -1,14 +1,20 @@
 <script setup lang="ts">
   import { computed, onMounted, ref, watch } from 'vue'
   import { AUDIO_ICONS } from '@/state/'
+  import { useThemeStore } from '@/stores/theme'
 
   const sound = new Audio('snd/star-wars-theme.m4a')
+  const themeStore = useThemeStore()
 
   const isPlayed = ref(false)
   const isLoop = ref(false)
 
   const icon = computed(() => {
     return isPlayed.value ? AUDIO_ICONS.stop : AUDIO_ICONS.play
+  })
+
+  const buttonColor = computed(() => {
+    return themeStore.isDark ? 'primary' : 'white'
   })
 
   onMounted(() => {
@@ -39,8 +45,13 @@
 
 <template>
   <div class="d-flex align-center ga-2">
-    <v-btn icon size="small" @click="onToggle">
-      <v-icon size="18">{{ icon }}</v-icon>
+    <v-btn
+      :color="buttonColor"
+      icon
+      size="small"
+      @click="onToggle"
+    >
+      <v-icon size="30">{{ icon }}</v-icon>
     </v-btn>
     <v-checkbox
       v-model="isLoop"
