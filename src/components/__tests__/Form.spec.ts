@@ -54,6 +54,51 @@ vi.mock('@/components/Mandala.vue', () => ({
   },
 }))
 
+vi.mock('@/components/FormControls.vue', () => ({
+  __esModule: true,
+  default: {
+    name: 'MockFormControls',
+    template: `
+      <div data-testid="mock-form-controls">
+        <div class="v-select">
+          <label>What you search, Jedi? May the Force be with you</label>
+        </div>
+        <div class="v-pagination" v-if="totalPages > 1"></div>
+        <div class="v-autocomplete"></div>
+        <div class="v-text-field"></div>
+      </div>
+    `,
+    props: ['role', 'density'],
+    __isTeleport: false,
+    __isKeepAlive: false,
+    __asyncResolved: true,
+  },
+}))
+
+vi.mock('@/components/ResultDisplay.vue', () => ({
+  __esModule: true,
+  default: {
+    name: 'MockResultDisplay',
+    template: `
+      <div data-testid="mock-result-display">
+        <div v-if="isLoading" class="v-progress-circular"></div>
+        <div v-if="error" class="v-alert error">{{ error }}</div>
+        <div v-if="items.length > 0" class="results"></div>
+      </div>
+    `,
+    props: ['items', 'imgURL', 'selectedItem', 'isLoading', 'error'],
+    emits: ['show-dialog'],
+    __isTeleport: false,
+    __isKeepAlive: false,
+    __asyncResolved: true,
+  },
+}))
+
+// Mock the composables
+vi.mock('@/composables/useStarWarsForm', () => ({
+  useStarWarsForm: () => mockStarWarsStore,
+}))
+
 vi.mock('@/components/ThemeSwitcher.vue', () => ({
   __esModule: true,
   default: {
@@ -78,9 +123,9 @@ vi.mock('@/components/CacheControls.vue', () => ({
   },
 }))
 
-// Мок хранилища Star Wars
+// Мок хранилища Star Wars с реактивными значениями
 const mockStarWarsStore = {
-  filteredItems: [
+  items: [
     {
       id: '1',
       name: 'Luke Skywalker',
@@ -96,23 +141,17 @@ const mockStarWarsStore = {
     image: 'https://star-wars-api-v3.netlify.app/image/characters/luke.webp',
   },
   selectInput: '',
-  searchResults: [],
-  searchTerm: '',
   imgURL: 'https://star-wars-api-v3.netlify.app/image/characters/luke.webp',
-  imgLoaded: true,
   result: '{"name":"Luke Skywalker"}',
   currentPage: 1,
-  totalPages: 5,
+  totalPages: 1,
   isLoading: false,
   error: null,
-  cachedEndpoints: new Set(['characters']),
-  setApiEndpoint: vi.fn(),
-  setPage: vi.fn(),
-  setSearchTerm: vi.fn(),
-  selectItem: vi.fn(),
+  onSelect: vi.fn(),
+  onPageChange: vi.fn(),
+  onApiSelect: vi.fn(),
+  onClearSelection: vi.fn(),
   fetchItems: vi.fn(),
-  fetchSearchResults: vi.fn(),
-  selectFromSearch: vi.fn(),
   resetSelection: vi.fn(),
 }
 
