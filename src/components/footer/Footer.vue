@@ -129,13 +129,14 @@
 }
 
 .v-footer {
-  opacity: .3;
+  opacity: .5;
 }
 
 .footer-custom {
   position: relative;
   flex: initial;
   padding: 0;
+  background-color: transparent;
 
   .links {
     a {

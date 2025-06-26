@@ -39,8 +39,8 @@
 
 <template>
   <div class="d-flex align-center ga-2">
-    <v-btn icon @click="onToggle">
-      <v-icon>{{ icon }}</v-icon>
+    <v-btn icon size="small" @click="onToggle">
+      <v-icon size="18">{{ icon }}</v-icon>
     </v-btn>
     <v-checkbox
       v-model="isLoop"
