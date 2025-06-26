@@ -27,7 +27,7 @@ export const useStarWarsStore = defineStore('starWars', () => {
   const items = ref<Item[]>([])
   const selectedApi = ref(API_ENDPOINTS[0].api)
   const selectedItem = ref<Item | undefined>(undefined)
-  const searchInput = ref<string>('')
+  const selectInput = ref<string>('')
   const imgURL = ref('')
   const imgLoaded = ref(false)
   const result = ref('')
@@ -75,6 +75,9 @@ export const useStarWarsStore = defineStore('starWars', () => {
   // Specific method for search requests with limit of 5 items
   async function fetchSearchResults (searchTerm: string) {
     try {
+      console.log('🏪 Store: Fetching search results for:', searchTerm)
+      console.log('🏪 Store: Using API endpoint:', selectedApi.value)
+
       const response = await fetchData(
         selectedApi.value,
         1, // Always use page 1 for search
@@ -85,10 +88,11 @@ export const useStarWarsStore = defineStore('starWars', () => {
 
       // Store search results separately from main items
       searchResults.value = response.data
+      console.log('🏪 Store: Search results stored:', response.data.length, 'items')
 
       return response
     } catch (error) {
-      console.error('Failed to fetch search results:', error)
+      console.error('🏪 Store: Failed to fetch search results:', error)
       searchResults.value = []
       throw error
     }
@@ -182,7 +186,7 @@ export const useStarWarsStore = defineStore('starWars', () => {
     if (selectedApi.value !== endpoint) {
       selectedApi.value = endpoint
       currentPage.value = 1
-      searchInput.value = '' // Clear search when API changes
+      selectInput.value = '' // Clear search when API changes
       searchTerm.value = '' // Clear search term
       searchResults.value = [] // Clear search results
       fetchItems()
@@ -224,7 +228,7 @@ export const useStarWarsStore = defineStore('starWars', () => {
     items,
     selectedApi,
     selectedItem,
-    searchInput,
+    selectInput,
     imgURL,
     imgLoaded,
     result,

@@ -28,11 +28,6 @@
     delay: 200,
   })
 
-  const DropList = defineAsyncComponent({
-    loader: () => import('@/components/DropList.vue'),
-    delay: 100,
-  })
-
   interface Props {
     role: string
     side: string
@@ -55,7 +50,6 @@
 
   // Computed properties для доступа к состоянию хранилища
   const items = computed(() => starWarsStore.filteredItems)
-  const searchResults = computed(() => starWarsStore.searchResults)
   const selectedApi = computed({
     get: () => starWarsStore.selectedApi,
     set: value => starWarsStore.setApiEndpoint(value),
@@ -64,8 +58,8 @@
     get: () => starWarsStore.selectedItem,
     set: value => value && starWarsStore.selectItem(value),
   })
-  const searchInput = computed({
-    get: () => starWarsStore.searchInput,
+  const selectInput = computed({
+    get: () => starWarsStore.selectInput,
     set: value => starWarsStore.setSearchTerm(value || ''),
   })
   const imgURL = computed(() => starWarsStore.imgURL)
@@ -78,56 +72,55 @@
   const isLoading = computed(() => starWarsStore.isLoading)
   const error = computed(() => starWarsStore.error)
 
-  // Additional state for the old-style functionality
-  const search = ref('')
+  // Additional state for text field search functionality
+  const searchInput = ref('')
   const isShownDropDown = ref(false)
-  const isKeyupArrowDown = ref(false)
-  const selectedField = ref('name')
 
-  // Handle input with debounce for search functionality
-  let inputTimeout: ReturnType<typeof setTimeout>
-  const onInput = (event: Event) => {
+  // Computed for search results
+  const searchAutocompleteItems = computed(() => starWarsStore.searchResults)
+
+  // Debounced search function for text field
+  let searchTimeout: ReturnType<typeof setTimeout>
+  const onSearchInputChange = (event: Event) => {
     const value = (event.target as HTMLInputElement).value
-    search.value = value
+    searchInput.value = value
 
-    if (!value) {
-      isShownDropDown.value = false
-      // Clear search results when search is cleared
+    console.log('🔍 Search input changed:', value)
+
+    if (!value || value.length < 3) {
+      console.log('❌ Search cleared or too short, clearing results')
       starWarsStore.searchResults = []
+      isShownDropDown.value = false
       return
     }
 
-    clearTimeout(inputTimeout)
+    clearTimeout(searchTimeout)
+    searchTimeout = setTimeout(async () => {
+      try {
+        console.log('🔍 Performing search for:', value)
+        console.log('📡 Selected API:', starWarsStore.selectedApi)
 
-    if (value.length >= 3) {
-      inputTimeout = setTimeout(async () => {
-        try {
-          console.log('🔍 Performing search for:', value)
-          // Update store search term only when actually searching
-          starWarsStore.setSearchTerm(value)
-          // Fetch data with search term, no caching, and limit of 5 items
-          await starWarsStore.fetchSearchResults(value)
+        // Update store search term only when actually searching
+        starWarsStore.setSearchTerm(value)
+
+        // Fetch data with search term, no caching, and limit of 5 items
+        await starWarsStore.fetchSearchResults(value)
+
+        if (starWarsStore.searchResults.length > 0) {
           isShownDropDown.value = true
-          console.log('✅ Search completed, results:', starWarsStore.searchResults.length)
-        } catch (error) {
-          console.error('❌ Search failed:', error)
-          isShownDropDown.value = false
         }
-      }, 500) // 500ms debounce as requested
-    } else {
-      isShownDropDown.value = false
-    }
-  }
 
-  // Handle keyup events
-  const onKeyup = (event: KeyboardEvent) => {
-    if (event.code === 'ArrowDown') {
-      isKeyupArrowDown.value = true
-    }
+        console.log('✅ Search completed, results:', starWarsStore.searchResults.length)
+        console.log('📋 Search results:', starWarsStore.searchResults.map(item => item.name))
+      } catch (error) {
+        console.error('❌ Search failed:', error)
+        isShownDropDown.value = false
+      }
+    }, 500)
   }
 
   // Handle blur event to hide dropdown
-  const onBlur = () => {
+  const onSearchBlur = () => {
     // Use timeout to allow click on dropdown items before hiding
     setTimeout(() => {
       isShownDropDown.value = false
@@ -136,9 +129,16 @@
 
   // Handle selection from dropdown
   const onSelectFromDropList = async (selectedName: string) => {
-    // Use the separate function for search selection
     await starWarsStore.selectFromSearch(selectedName)
+    searchInput.value = ''
     isShownDropDown.value = false
+  }
+
+  // Highlight matching text function
+  const highlightText = (text: string, searchTerm: string) => {
+    if (!searchTerm) return text
+    const regex = new RegExp(`(${searchTerm})`, 'gi')
+    return text.replace(regex, '<span class="text-primary">$1</span>')
   }
 
   const onSelect = async (item: Item) => {
@@ -152,7 +152,7 @@
   const onApiSelect = () => {
     starWarsStore.setPage(1)
     // Clear search when API changes
-    search.value = ''
+    searchInput.value = ''
     isShownDropDown.value = false
   }
 
@@ -166,8 +166,8 @@
 
   onUnmounted(() => {
     // Clear search timeout when component is unmounted
-    if (inputTimeout) {
-      clearTimeout(inputTimeout)
+    if (searchTimeout) {
+      clearTimeout(searchTimeout)
     }
   })
 </script>
@@ -216,7 +216,7 @@
       <v-col cols="12" sm="3" style="position: relative" xs="12">
         <v-autocomplete
           v-model="selectedItem"
-          v-model:search-input="searchInput"
+          v-model:search-input="selectInput"
           clearable
           :density="density"
           :item-title="'name'"
@@ -230,26 +230,33 @@
       </v-col>
       <v-col cols="12" sm="3" style="position: relative" xs="12">
         <v-text-field
-          v-model="search"
+          v-model="searchInput"
           clearable
           :density="density"
           :label="`Search ${selectedApi}`"
           :loading="isLoading"
-          @blur="onBlur"
-          @input="onInput"
-          @keyup="onKeyup"
+          :menu-props="{ scrim: true, scrollStrategy: 'close' }"
+          @blur="onSearchBlur"
+          @input="onSearchInputChange"
         />
-        <DropList
-          v-if="searchResults.length > 0 && isShownDropDown"
-          class="drop-list"
-          :is-keyup-arrow-down="isKeyupArrowDown"
-          :items="searchResults"
-          :search="search"
-          :selected-api="selectedApi"
-          :selected-field="selectedField"
-          @reset="isKeyupArrowDown = false"
-          @select="onSelectFromDropList"
-        />
+        <v-card
+          v-if="searchAutocompleteItems.length > 0 && isShownDropDown"
+          class="search-dropdown"
+          flat
+        >
+          <v-list>
+            <v-list-item
+              v-for="(item, i) in searchAutocompleteItems"
+              :key="i"
+              density="compact"
+              @click="onSelectFromDropList(item.name)"
+            >
+              <v-list-item-title>
+                <span v-html="highlightText(item.name, searchInput)" />
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-card>
       </v-col>
     </v-row>
 
@@ -301,6 +308,16 @@
 <style>
 .links {
   color: v-bind(isDark ? 'lightblue' : 'rgb(36, 125, 199)');
+}
+
+.search-dropdown {
+  position: absolute;
+  top: -20px;
+  right: 0;
+  left: 0;
+  z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 .scale-enter-active, .scale-leave-active {

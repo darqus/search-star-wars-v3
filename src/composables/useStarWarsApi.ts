@@ -55,6 +55,9 @@ export const useStarWarsApi = () => {
       }
 
       const cacheKey = `${endpoint}?${params}`
+      const fullUrl = `${API_URL}/${endpoint}?${params}`
+
+      console.log('🌐 Making API request to:', fullUrl)
 
       // Don't use cache for search requests as specified
       const shouldUseCache = isCachingEnabled.value && useCache && !search
