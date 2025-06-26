@@ -53,7 +53,7 @@
       ? '(rgba(0, 20, 40, 0.95), rgba(30, 10, 20, 0.9))'
       : '(rgba(200, 220, 240, 0.95), rgba(230, 210, 220, 0.9))'
 
-    return `background-image: linear-gradient${currentGradient}, url("img/${currentBg}.jpg");
+    return `background-image: linear-gradient${currentGradient}, url("img/${currentBg}.webp");
   background-position: center;
   background-size: cover;`
   })
