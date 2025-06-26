@@ -37,26 +37,18 @@ export const useStarWarsStore = defineStore('starWars', () => {
   // Computed
   const isLoading = computed(() => apiIsLoading.value)
   const error = computed(() => apiError.value)
-  const filteredItems = computed(() => {
-    if (!searchInput.value) {
-      return items.value
-    }
-
-    const searchTerm = searchInput.value.toLowerCase()
-    return items.value.filter(item => {
-      return item.name.toLowerCase().includes(searchTerm)
-        || item.description.toLowerCase().includes(searchTerm)
-    })
-  })
+  // Return items directly since server-side filtering is used
+  const filteredItems = computed(() => items.value)
 
   // Actions
-  async function fetchItems (skipCache = false) {
+  async function fetchItems (skipCache = false, searchTerm?: string) {
     try {
       const response = await fetchData(
         selectedApi.value,
         currentPage.value,
         DEFAULT_PAGE_SIZE,
         !skipCache, // useCache parameter
+        searchTerm, // search parameter
       )
 
       items.value = response.data
@@ -70,6 +62,28 @@ export const useStarWarsStore = defineStore('starWars', () => {
     } catch (error) {
       console.error('Failed to fetch data:', error)
       resetSelection()
+      throw error
+    }
+  }
+
+  // Specific method for search requests with limit of 5 items
+  async function fetchSearchResults (searchTerm: string) {
+    try {
+      const response = await fetchData(
+        selectedApi.value,
+        1, // Always use page 1 for search
+        5, // Limit to 5 items for dropdown
+        false, // Never cache search results
+        searchTerm,
+      )
+
+      items.value = response.data
+      // Don't update totalPages for search results
+
+      return response
+    } catch (error) {
+      console.error('Failed to fetch search results:', error)
+      items.value = []
       throw error
     }
   }
@@ -117,6 +131,7 @@ export const useStarWarsStore = defineStore('starWars', () => {
     if (selectedApi.value !== endpoint) {
       selectedApi.value = endpoint
       currentPage.value = 1
+      searchInput.value = '' // Clear search when API changes
       fetchItems()
     }
   }
@@ -139,8 +154,28 @@ export const useStarWarsStore = defineStore('starWars', () => {
     setCachingEnabled(enabled)
   }
 
+  // Search debounce timeout
+  let searchTimeout: ReturnType<typeof setTimeout>
+
   function setSearchTerm (term: string) {
+    console.log('Searched term:', term)
     searchInput.value = term
+
+    // Clear previous timeout
+    if (searchTimeout) {
+      clearTimeout(searchTimeout)
+    }
+
+    // Only search if we have 3 or more characters
+    if (term.length >= 3) {
+      searchTimeout = setTimeout(() => {
+        // Force skipCache=true for search requests (no caching)
+        fetchItems(true, term)
+      }, 300) // Reduced timeout for better UX
+    } else if (term.length === 0) {
+      // Reset to regular fetch when search is cleared
+      fetchItems()
+    }
   }
 
   function resetSelection () {
@@ -169,6 +204,7 @@ export const useStarWarsStore = defineStore('starWars', () => {
 
     // Actions
     fetchItems,
+    fetchSearchResults,
     selectItem,
     setApiEndpoint,
     setPage,

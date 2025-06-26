@@ -1,6 +1,6 @@
 <template>
   <v-card
-    v-if="filteredItems.length > 0 && search"
+    v-if="limitedItems.length > 0 && search"
     class="drop-list-card"
     elevation="8"
   >
@@ -41,15 +41,8 @@
 
   const LIMIT_AUTOCOMPLETE_ITEMS = 5
 
-  // Filter items based on search
-  const filteredItems = computed(() => {
-    if (!props.search) return []
-
-    const searchTerm = props.search.toLowerCase()
-    return props.items.filter(item =>
-      item.name.toLowerCase().includes(searchTerm),
-    )
-  })
+  // Use items directly from props since filtering is done server-side
+  const filteredItems = computed(() => props.items)
 
   // Limit the number of items shown
   const limitedItems = computed(() =>

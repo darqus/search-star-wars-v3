@@ -83,29 +83,32 @@
   const isKeyupArrowDown = ref(false)
   const selectedField = ref('name')
 
-  // Text highlighting function
-  const highlightText = (text: string, searchTerm: string) => {
-    if (!searchTerm) return text
-    const regex = new RegExp(`(${searchTerm})`, 'gi')
-    return text.replace(regex, '<span class="text-primary">$1</span>')
-  }
-
-  // Handle input with debounce (like old project)
+  // Handle input with debounce for search functionality
   let inputTimeout: ReturnType<typeof setTimeout>
-  const onInput = (value: string) => {
+  const onInput = (event: Event) => {
+    const value = (event.target as HTMLInputElement).value
+    search.value = value
+
     if (!value) {
-      search.value = ''
       isShownDropDown.value = false
       return
     }
 
-    isShownDropDown.value = true
     clearTimeout(inputTimeout)
 
     if (value.length >= 3) {
-      inputTimeout = setTimeout(() => {
-        starWarsStore.setSearchTerm(value)
-      }, 500)
+      inputTimeout = setTimeout(async () => {
+        try {
+          // Fetch data with search term, no caching, and limit of 5 items
+          await starWarsStore.fetchSearchResults(value)
+          isShownDropDown.value = true
+        } catch (error) {
+          console.error('Search failed:', error)
+          isShownDropDown.value = false
+        }
+      }, 300) // Reduced timeout for better UX
+    } else {
+      isShownDropDown.value = false
     }
   }
 
@@ -116,11 +119,23 @@
     }
   }
 
+  // Handle blur event to hide dropdown
+  const onBlur = () => {
+    // Use timeout to allow click on dropdown items before hiding
+    setTimeout(() => {
+      isShownDropDown.value = false
+    }, 200)
+  }
+
   // Handle selection from dropdown
   const onSelectFromDropList = (selectedName: string) => {
     search.value = selectedName
     isShownDropDown.value = false
-    starWarsStore.selectItem(selectedName)
+    // Find the selected item and select it
+    const selectedItem = items.value.find(item => item.name === selectedName)
+    if (selectedItem) {
+      starWarsStore.selectItem(selectedItem)
+    }
   }
 
   const onSelect = async (item: Item) => {
@@ -133,6 +148,9 @@
 
   const onApiSelect = () => {
     starWarsStore.setPage(1)
+    // Clear search when API changes
+    search.value = ''
+    isShownDropDown.value = false
   }
 
   const onDialog = (value: boolean) => {
@@ -207,6 +225,7 @@
           :density="density"
           :label="`Search ${selectedApi}`"
           :loading="isLoading"
+          @blur="onBlur"
           @input="onInput"
           @keyup="onKeyup"
         />

@@ -39,6 +39,7 @@ export const useStarWarsApi = () => {
     page = 1,
     limit = 20,
     useCache = true,
+    search?: string,
   ): Promise<ApiResponse> => {
     isLoading.value = true
     error.value = null
@@ -49,10 +50,17 @@ export const useStarWarsApi = () => {
         limit: limit.toString(),
       })
 
+      if (search) {
+        params.append('search', search)
+      }
+
       const cacheKey = `${endpoint}?${params}`
 
-      // Try to get from cache first
-      if (isCachingEnabled.value && useCache) {
+      // Don't use cache for search requests as specified
+      const shouldUseCache = isCachingEnabled.value && useCache && !search
+
+      // Try to get from cache first (but not for search requests)
+      if (shouldUseCache) {
         const cachedData = apiCache.get<ApiResponse>(cacheKey)
         if (cachedData) {
           console.log(`Cache hit for ${cacheKey}`)
@@ -87,8 +95,8 @@ export const useStarWarsApi = () => {
         },
       }
 
-      // Store in cache
-      if (isCachingEnabled.value) {
+      // Store in cache (but not search results)
+      if (isCachingEnabled.value && !search) {
         apiCache.set<ApiResponse>(cacheKey, data)
       }
 
