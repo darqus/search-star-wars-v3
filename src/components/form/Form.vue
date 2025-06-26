@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import type { Item } from '@/types/api'
-  import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
+  import { computed, defineAsyncComponent, onMounted, onUnmounted, ref } from 'vue'
   import { useDisplay } from 'vuetify'
   import { API_ENDPOINTS } from '@/constants/api'
   import { useStarWarsStore } from '@/stores/starWars'
@@ -79,10 +79,7 @@
   const error = computed(() => starWarsStore.error)
 
   // Additional state for the old-style functionality
-  const search = computed({
-    get: () => starWarsStore.searchTerm,
-    set: value => starWarsStore.setSearchTerm(value || ''),
-  })
+  const search = ref('')
   const isShownDropDown = ref(false)
   const isKeyupArrowDown = ref(false)
   const selectedField = ref('name')
@@ -95,6 +92,8 @@
 
     if (!value) {
       isShownDropDown.value = false
+      // Clear search results when search is cleared
+      starWarsStore.searchResults = []
       return
     }
 
@@ -103,14 +102,18 @@
     if (value.length >= 3) {
       inputTimeout = setTimeout(async () => {
         try {
+          console.log('🔍 Performing search for:', value)
+          // Update store search term only when actually searching
+          starWarsStore.setSearchTerm(value)
           // Fetch data with search term, no caching, and limit of 5 items
           await starWarsStore.fetchSearchResults(value)
           isShownDropDown.value = true
+          console.log('✅ Search completed, results:', starWarsStore.searchResults.length)
         } catch (error) {
-          console.error('Search failed:', error)
+          console.error('❌ Search failed:', error)
           isShownDropDown.value = false
         }
-      }, 300) // Reduced timeout for better UX
+      }, 500) // 500ms debounce as requested
     } else {
       isShownDropDown.value = false
     }
@@ -148,7 +151,8 @@
 
   const onApiSelect = () => {
     starWarsStore.setPage(1)
-    // Clear search when API changes - this will be handled by the store
+    // Clear search when API changes
+    search.value = ''
     isShownDropDown.value = false
   }
 
@@ -158,6 +162,13 @@
 
   onMounted(() => {
     starWarsStore.fetchItems()
+  })
+
+  onUnmounted(() => {
+    // Clear search timeout when component is unmounted
+    if (inputTimeout) {
+      clearTimeout(inputTimeout)
+    }
   })
 </script>
 

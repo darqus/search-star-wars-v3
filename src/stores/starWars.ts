@@ -207,28 +207,9 @@ export const useStarWarsStore = defineStore('starWars', () => {
     setCachingEnabled(enabled)
   }
 
-  // Search debounce timeout
-  let searchTimeout: ReturnType<typeof setTimeout>
-
   function setSearchTerm (term: string) {
-    console.log('Searched term:', term)
+    console.log('Setting search term:', term)
     searchTerm.value = term
-
-    // Clear previous timeout
-    if (searchTimeout) {
-      clearTimeout(searchTimeout)
-    }
-
-    // Only search if we have 3 or more characters
-    if (term.length >= 3) {
-      searchTimeout = setTimeout(() => {
-        // Use fetchSearchResults instead of fetchItems
-        fetchSearchResults(term)
-      }, 300) // Reduced timeout for better UX
-    } else if (term.length === 0) {
-      // Clear search results when search is cleared
-      searchResults.value = []
-    }
   }
 
   function resetSelection () {
