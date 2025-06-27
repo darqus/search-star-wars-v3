@@ -61,7 +61,7 @@
       <div>
         <small>
           <span>{{ `1977 — ${new Date().getFullYear()}` }}</span>
-          <span class="ml-2">
+          <span style="margin-left: 1rem;">
             <span class="footer-icon">🌌</span>
             <span>&nbsp;</span>
             <FooterDropDownInfo />
