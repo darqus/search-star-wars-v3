@@ -82,6 +82,13 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    @media (width <= 700px) {
+      flex-direction: column;
+      gap: 1rem;
+      justify-content: center;
+      text-align: center;
+    }
   }
 
   .footer-links {
