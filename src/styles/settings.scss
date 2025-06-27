@@ -4,7 +4,18 @@
  * Configures SASS variables and Vuetify overwrites
  */
 
-/* https://vuetifyjs.com/features/sass-variables/`
-  @use 'vuetify/settings' with (
-  $color-pack: false
-); */
+/* https://vuetifyjs.com/features/sass-variables/ */
+@use "vuetify/settings" with (
+  $color-pack: false,
+  $utilities: false
+);
+
+/* Оптимизация шрифтов - принудительно применяем font-display: swap */
+.v-icon {
+  font-display: swap !important;
+}
+
+/* Оптимизация для Material Design Icons */
+.mdi::before {
+  font-display: swap !important;
+}

@@ -1,6 +1,5 @@
 import { fileURLToPath, URL } from 'node:url'
 import Vue from '@vitejs/plugin-vue'
-import Fonts from 'unplugin-fonts/vite'
 // Plugins
 import Components from 'unplugin-vue-components/vite'
 import VueRouter from 'unplugin-vue-router/vite'
@@ -15,40 +14,105 @@ function optimizeFontPreload () {
   return {
     name: 'optimize-font-preload',
     transformIndexHtml (html: string) {
-      // Удаляем все preload ссылки для шрифтов (woff, woff2, eot, ttf)
+      // Удаляем все preload ссылки для шрифтов более агрессивно
       let optimizedHtml = html
 
-      // Удаляем modulepreload для шрифтов
+      // Удаляем все ссылки с rel="preload" для файлов шрифтов
       optimizedHtml = optimizedHtml.replace(
-        /<link[^>]*rel="modulepreload"[^>]*href="[^"]*\.(woff2?|eot|ttf)"[^>]*>/g,
+        /<link[^>]*rel=["']preload["'][^>]*href=["'][^"']*\.(woff2?|eot|ttf)["'][^>]*>/gi,
         '',
       )
 
-      // Удаляем обычные preload для шрифтов
+      // Удаляем все ссылки с rel="modulepreload" для файлов шрифтов
       optimizedHtml = optimizedHtml.replace(
-        /<link[^>]*rel="preload"[^>]*href="[^"]*\.(woff2?|eot|ttf)"[^>]*>/g,
+        /<link[^>]*rel=["']modulepreload["'][^>]*href=["'][^"']*\.(woff2?|eot|ttf)["'][^>]*>/gi,
         '',
       )
 
-      // Удаляем preload для Material Design Icons и Roboto шрифтов
+      // Удаляем preload для Material Design Icons по имени файла
       optimizedHtml = optimizedHtml.replace(
-        /<link[^>]*rel="preload"[^>]*href="[^"]*(?:materialdesignicons|roboto)[^"]*"[^>]*>/g,
+        /<link[^>]*rel=["']preload["'][^>]*href=["'][^"']*materialdesignicons[^"']*["'][^>]*>/gi,
         '',
       )
 
-      // Добавляем более оптимальную загрузку основных шрифтов с font-display: swap
-      const fontOptimization = `
-    <style>
-      @font-face {
-        font-family: 'Roboto';
-        font-style: normal;
-        font-weight: 400;
-        font-display: swap;
-        src: local('Roboto Regular'), local('Roboto-Regular');
+      // Удаляем preload для Roboto шрифтов по имени файла
+      optimizedHtml = optimizedHtml.replace(
+        /<link[^>]*rel=["']preload["'][^>]*href=["'][^"']*roboto[^"']*["'][^>]*>/gi,
+        '',
+      )
+
+      // Удаляем все preload ссылки с as="font"
+      optimizedHtml = optimizedHtml.replace(
+        /<link[^>]*rel=["']preload["'][^>]*as=["']font["'][^>]*>/gi,
+        '',
+      )
+
+      // Удаляем пустые строки, которые могли остаться
+      optimizedHtml = optimizedHtml.replace(/^\s*\n/gm, '')
+
+      return optimizedHtml
+    },
+  }
+}
+
+// Дополнительный плагин для финальной очистки HTML от preload
+function finalHtmlCleanup () {
+  return {
+    name: 'final-html-cleanup',
+    generateBundle (_options: any, bundle: any) {
+      // Находим HTML файлы в бандле
+      for (const fileName of Object.keys(bundle)) {
+        if (fileName.endsWith('.html')) {
+          const htmlAsset = bundle[fileName]
+          if (htmlAsset.type === 'asset' && typeof htmlAsset.source === 'string') {
+            // Удаляем все preload ссылки из финального HTML
+            let cleanHtml = htmlAsset.source
+
+            // Удаляем все preload ссылки для шрифтов
+            cleanHtml = cleanHtml.replace(
+              /<link[^>]*rel=["']preload["'][^>]*as=["']font["'][^>]*>/gi,
+              '',
+            )
+
+            // Удаляем все modulepreload ссылки для шрифтов
+            cleanHtml = cleanHtml.replace(
+              /<link[^>]*rel=["']modulepreload["'][^>]*href=["'][^"']*\.(?:woff2?|eot|ttf)["'][^>]*>/gi,
+              '',
+            )
+
+            // Удаляем preload для конкретных шрифтов по имени
+            cleanHtml = cleanHtml.replace(
+              /<link[^>]*rel=["']preload["'][^>]*href=["'][^"']*(?:materialdesignicons|roboto)[^"']*["'][^>]*>/gi,
+              '',
+            )
+
+            // Очищаем лишние пробелы и переносы строк
+            cleanHtml = cleanHtml.replace(/\n\s*\n/g, '\n')
+            cleanHtml = cleanHtml.replace(/^\s*$/gm, '')
+
+            htmlAsset.source = cleanHtml
+          }
+        }
       }
-    </style>`
+    },
+    writeBundle (_options: any, bundle: any) {
+      // Дополнительная очистка на этапе записи
+      for (const fileName of Object.keys(bundle)) {
+        if (fileName.endsWith('.html')) {
+          const htmlAsset = bundle[fileName]
+          if (htmlAsset.type === 'asset') {
+            let cleanHtml = htmlAsset.source as string
 
-      return optimizedHtml.replace('</head>', `${fontOptimization}</head>`)
+            // Удаляем все preload ссылки
+            cleanHtml = cleanHtml.replace(
+              /<link[^>]*rel=["']preload["'][^>]*>/gi,
+              '',
+            )
+
+            htmlAsset.source = cleanHtml
+          }
+        }
+      }
     },
   }
 }
@@ -76,19 +140,8 @@ export default defineConfig({
     Components({
       dts: 'src/components.d.ts',
     }),
-    Fonts({
-      fontsource: {
-        families: [
-          {
-            name: 'Roboto',
-            weights: [400],
-            styles: ['normal'],
-            subset: 'latin', // Ограничить подмножества
-          },
-        ],
-      },
-    }),
     optimizeFontPreload(), // Добавляем кастомный плагин
+    finalHtmlCleanup(), // Финальная очистка HTML
   ],
   optimizeDeps: {
     exclude: [
@@ -130,7 +183,7 @@ export default defineConfig({
       output: {
         assetFileNames: 'assets/[name]-[hash][extname]',
         manualChunks: {
-          fonts: ['unplugin-fonts/vite'],
+          // Удалили fonts chunk так как больше не используем unplugin-fonts
         },
       },
       external: [
@@ -139,21 +192,7 @@ export default defineConfig({
       ],
     },
     // Отключить preload для шрифтов, чтобы избежать предупреждений
-    modulePreload: {
-      polyfill: false,
-      resolveDependencies: (url, deps) => {
-        // Фильтруем все зависимости, связанные со шрифтами
-        return deps.filter(dep =>
-          !dep.includes('font')
-          && !dep.includes('.woff')
-          && !dep.includes('.woff2')
-          && !dep.includes('.eot')
-          && !dep.includes('.ttf')
-          && !dep.includes('materialdesignicons')
-          && !dep.includes('roboto'),
-        )
-      },
-    },
+    modulePreload: false, // Полностью отключаем modulePreload
     // Отключаем создание preload директив для ресурсов
     assetsInlineLimit: 0,
   },
