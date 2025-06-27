@@ -46,7 +46,7 @@
       <div>
         <ThemeSwitcher :label="`Toggle side: ${side}`" />
       </div>
-      <div>
+      <div class="footer-links">
         <Link
           v-for="{ link, text } in links"
           :key="text"
