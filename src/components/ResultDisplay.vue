@@ -39,6 +39,7 @@
 
 <script setup lang="ts">
   import type { Item } from '@/types/api'
+  import { onMounted, ref, watch } from 'vue'
   import { useDisplay } from 'vuetify'
 
   interface Props {
@@ -49,13 +50,30 @@
     error: string | null
   }
 
-  defineProps<Props>()
+  const props = defineProps<Props>()
 
   defineEmits<{
     'show-dialog': []
   }>()
 
   const display = useDisplay()
+  const sound = ref<HTMLAudioElement | null>(null)
+
+  onMounted(() => {
+    sound.value = new Audio('snd/kotor-animal-sms.mp3')
+    sound.value.volume = 0.3 // Устанавливаем громкость на 30%
+  })
+
+  // Отслеживаем изменения URL картинки и воспроизводим звук
+  watch(() => props.imgURL, (newImgURL, oldImgURL) => {
+    if (newImgURL && oldImgURL && newImgURL !== oldImgURL && sound.value) {
+      // Останавливаем предыдущее воспроизведение если оно есть
+      sound.value.currentTime = 0
+      sound.value.play().catch(() => {
+        // Игнорируем ошибки воспроизведения (например, если пользователь еще не взаимодействовал со страницей)
+      })
+    }
+  })
 </script>
 
 <style scoped>
