@@ -42,10 +42,10 @@
 <template>
   <v-footer class="footer-custom">
     <v-container
-      class="d-grid align-center"
-      :class="
-        display.smAndDown.value ? 'grid-mobile' : 'grid-desktop'
-      "
+      class="d-grid"
+      :class="[
+        display.smAndDown.value ? 'grid-mobile align-center' : 'grid-desktop',
+      ]"
     >
       <SWCrawlText />
       <div
@@ -58,24 +58,14 @@
       >
         <ThemeSwitcher :label="`Toggle side: ${side}`" />
       </div>
-      <div
-        class="d-flex align-center"
-        :class="
-          display.smAndDown.value
-            ? 'justify-center'
-            : 'justify-start'
-        "
-      >
-        <div class="links">
-          <Link
-            v-for="{ link, text } in links"
-            :key="text"
-            class="px-1"
-            :font-size-rem="0.8"
-            :link="link"
-            :text="text"
-          />
-        </div>
+      <div class="footer-links">
+        <Link
+          v-for="{ link, text } in links"
+          :key="text"
+          :font-size-rem="0.8"
+          :link="link"
+          :text="text"
+        />
       </div>
       <div
         class="d-flex"
@@ -110,7 +100,7 @@
   </v-footer>
 </template>
 
-<style scoped>
+<style>
 .d-grid {
   display: grid;
 }
@@ -126,6 +116,7 @@
 .grid-mobile {
   grid-template-columns: initial;
   row-gap: 0.5rem;
+  justify-content: center;
 }
 
 .v-footer {
@@ -138,8 +129,15 @@
   padding: 0;
   background-color: transparent;
 
-  .links {
+  .footer-links {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+
     a {
+      padding-right: v-bind(display.smAndDown ? '0' : '1rem');
+      padding-left: v-bind(display.smAndDown ? '0' : '1rem');
       color: v-bind($vuetify.theme.current.dark ? 'lightblue' : 'rgb(23 99 161)');
     }
   }
