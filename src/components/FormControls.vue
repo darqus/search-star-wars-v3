@@ -1,6 +1,6 @@
 <template>
   <v-row style="position: relative; z-index: 2">
-    <v-col cols="12" sm="3" xs="12">
+    <v-col cols="12" md="3" sm="6" xs="12">
       <v-select
         v-model="selectedApi"
         :density="density"
@@ -12,7 +12,13 @@
         @update:model-value="onApiSelectHandler"
       />
     </v-col>
-    <v-col cols="12" sm="3" style="position: relative" xs="12">
+    <v-col
+      cols="12"
+      md="3"
+      sm="6"
+      style="position: relative"
+      xs="12"
+    >
       <v-pagination
         v-if="totalPages > 1"
         v-model="currentPage"
@@ -21,7 +27,13 @@
         @update:model-value="onPageChange"
       />
     </v-col>
-    <v-col cols="12" sm="3" style="position: relative" xs="12">
+    <v-col
+      cols="12"
+      md="3"
+      sm="6"
+      style="position: relative"
+      xs="12"
+    >
       <v-autocomplete
         v-model="selectedItem"
         v-model:search-input="selectInput"
@@ -37,7 +49,13 @@
         @update:model-value="onSelect"
       />
     </v-col>
-    <v-col cols="12" sm="3" style="position: relative" xs="12">
+    <v-col
+      cols="12"
+      md="3"
+      sm="6"
+      style="position: relative"
+      xs="12"
+    >
       <SearchField
         :density="density"
         :is-loading="isLoading"
