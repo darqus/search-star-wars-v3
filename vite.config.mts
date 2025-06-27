@@ -10,6 +10,20 @@ import { defineConfig } from 'vite'
 import stylelint from 'vite-plugin-stylelint'
 import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 
+// Кастомный плагин для оптимизации preload шрифтов
+function optimizeFontPreload () {
+  return {
+    name: 'optimize-font-preload',
+    transformIndexHtml (html: string) {
+      // Удаляем preload для шрифтов, которые не используются сразу
+      return html.replace(
+        /<link[^>]*rel="modulepreload"[^>]*href="[^"]*\.(woff2?|eot|ttf)"[^>]*>/g,
+        '',
+      )
+    },
+  }
+}
+
 // https://vitejs.dev/config/
 export default defineConfig({
   base: '/search-star-wars-v3/',
@@ -40,10 +54,12 @@ export default defineConfig({
             name: 'Roboto',
             weights: [400],
             styles: ['normal'],
+            subset: 'latin', // Ограничить подмножества
           },
         ],
       },
     }),
+    optimizeFontPreload(), // Добавляем кастомный плагин
   ],
   optimizeDeps: {
     exclude: [
@@ -80,18 +96,20 @@ export default defineConfig({
       },
     },
   },
-  experimental: {
-    renderBuiltUrl (filename) {
-      // Отключить preload для .eot файлов
-      if (filename.endsWith('.eot')) {
-        return { runtime: `"${filename}"` }
-      }
-    },
-  },
   build: {
     rollupOptions: {
       output: {
         assetFileNames: 'assets/[name]-[hash][extname]',
+        manualChunks: {
+          fonts: ['unplugin-fonts/vite'],
+        },
+      },
+    },
+    // Отключить preload для шрифтов, чтобы избежать предупреждений
+    modulePreload: {
+      polyfill: false,
+      resolveDependencies: (url, deps) => {
+        return deps.filter(dep => !dep.includes('font'))
       },
     },
   },
