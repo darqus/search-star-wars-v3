@@ -73,7 +73,7 @@
 
 <template>
   <v-container class="search-form">
-    <v-row align="center">
+    <v-row style="align-items: center;">
       <v-col cols="12" sm="4" xs="12">
         <Logo />
       </v-col>
