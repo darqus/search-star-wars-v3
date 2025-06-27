@@ -57,19 +57,42 @@
   }>()
 
   const display = useDisplay()
-  const sound = ref<HTMLAudioElement | null>(null)
+  const sounds = ref<HTMLAudioElement[]>([])
+
+  // Массив путей к звуковым файлам
+  const soundPaths = [
+    'snd/kotor-animal-sms.mp3',
+    'snd/r2-d2-sms.mp3',
+    'snd/r2d2-noise.mp3',
+    'snd/r2-d2-laugh.mp3',
+    'snd/r5-d4-star-wars.mp3',
+    'snd/star-wars-r2d2-1.mp3',
+    'snd/bb-8-hihi.mp3',
+    'snd/bb-8-sound-2.mp3',
+  ]
 
   onMounted(() => {
-    sound.value = new Audio('snd/kotor-animal-sms.mp3')
-    sound.value.volume = 0.3 // Устанавливаем громкость на 30%
+    // Создаем объекты Audio для каждого звукового файла
+    sounds.value = soundPaths.map(path => {
+      const audio = new Audio(path)
+      audio.volume = 0.3 // Устанавливаем громкость на 30%
+      return audio
+    })
   })
 
-  // Отслеживаем изменения URL картинки и воспроизводим звук
+  // Функция для получения случайного звука
+  const getRandomSound = () => {
+    const randomIndex = Math.floor(Math.random() * sounds.value.length)
+    return sounds.value[randomIndex]
+  }
+
+  // Отслеживаем изменения URL картинки и воспроизводим случайный звук
   watch(() => props.imgURL, (newImgURL, oldImgURL) => {
-    if (newImgURL && oldImgURL && newImgURL !== oldImgURL && sound.value) {
+    if (newImgURL && oldImgURL && newImgURL !== oldImgURL && sounds.value.length > 0) {
+      const randomSound = getRandomSound()
       // Останавливаем предыдущее воспроизведение если оно есть
-      sound.value.currentTime = 0
-      sound.value.play().catch(() => {
+      randomSound.currentTime = 0
+      randomSound.play().catch(() => {
         // Игнорируем ошибки воспроизведения (например, если пользователь еще не взаимодействовал со страницей)
       })
     }
