@@ -1,10 +1,8 @@
 <script setup lang="ts">
   import { computed, onMounted, ref, watch } from 'vue'
   import { AUDIO_ICONS } from '@/state/'
-  import { useThemeStore } from '@/stores/theme'
 
   const sound = new Audio('snd/star-wars-theme.m4a')
-  const themeStore = useThemeStore()
 
   const isPlayed = ref(false)
   const isLoop = ref(false)
@@ -14,7 +12,11 @@
   })
 
   const buttonColor = computed(() => {
-    return themeStore.isDark ? 'primary' : 'white'
+    return isPlayed.value ? 'info' : 'primary'
+  })
+
+  const buttonVariant = computed(() => {
+    return isPlayed.value ? 'elevated' : 'tonal'
   })
 
   onMounted(() => {
@@ -44,21 +46,31 @@
 </script>
 
 <template>
-  <div class="d-flex align-center ga-2">
-    <v-btn
-      :color="buttonColor"
-      icon
-      size="small"
-      @click="onToggle"
-    >
-      <v-icon size="30">{{ icon }}</v-icon>
-    </v-btn>
-    <v-checkbox
-      v-model="isLoop"
-      class="ma-0"
-      density="compact"
-      hide-details
-      label="loop"
-    />
-  </div>
+  <v-row
+    class="align-center justify-center"
+    dense
+  >
+    <v-col cols="auto">
+      <v-btn
+        :aria-label="isPlayed ? 'Stop audio' : 'Play audio'"
+        :color="buttonColor"
+        icon
+        size="small"
+        :variant="buttonVariant"
+        @click="onToggle"
+      >
+        <v-icon :size="28">{{ icon }}</v-icon>
+      </v-btn>
+    </v-col>
+
+    <v-col cols="auto">
+      <v-checkbox
+        v-model="isLoop"
+        color="primary"
+        density="compact"
+        hide-details
+        label="loop"
+      />
+    </v-col>
+  </v-row>
 </template>
