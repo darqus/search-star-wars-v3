@@ -40,25 +40,13 @@
 </script>
 
 <template>
-  <v-footer class="footer-custom">
-    <v-container
-      class="d-grid"
-      :class="[
-        display.smAndDown.value ? 'grid-mobile align-center' : 'grid-desktop',
-      ]"
-    >
-      <SWCrawlText />
-      <div
-        class="d-flex"
-        :class="
-          display.smAndDown.value
-            ? 'justify-center'
-            : 'justify-start'
-        "
-      >
+  <v-container class="footer-custom">
+    <SWCrawlText />
+    <div class="footer-row">
+      <div>
         <ThemeSwitcher :label="`Toggle side: ${side}`" />
       </div>
-      <div class="footer-links">
+      <div>
         <Link
           v-for="{ link, text } in links"
           :key="text"
@@ -67,24 +55,10 @@
           :text="text"
         />
       </div>
-      <div
-        class="d-flex"
-        :class="
-          display.smAndDown.value
-            ? 'justify-center'
-            : 'justify-end'
-        "
-      >
+      <div>
         <SoundButton />
       </div>
-      <div
-        class="d-flex align-center"
-        :class="
-          display.smAndDown.value
-            ? 'justify-center'
-            : 'justify-end'
-        "
-      >
+      <div>
         <small>
           <span>{{ `1977 — ${new Date().getFullYear()}` }}</span>
           <span class="ml-2">
@@ -96,38 +70,19 @@
           </span>
         </small>
       </div>
-    </v-container>
-  </v-footer>
+    </div>
+  </v-container>
 </template>
 
 <style>
-.d-grid {
-  display: grid;
-}
-
-.align-center {
-  align-items: center;
-}
-
-.grid-desktop {
-  grid-template-columns: repeat(4, 1fr);
-}
-
-.grid-mobile {
-  grid-template-columns: initial;
-  row-gap: 0.5rem;
-  justify-content: center;
-}
-
-.v-footer {
-  opacity: .8;
-}
-
 .footer-custom {
   position: relative;
-  flex: initial;
-  padding: 0;
-  background-color: transparent;
+
+  .footer-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 
   .footer-links {
     display: flex;

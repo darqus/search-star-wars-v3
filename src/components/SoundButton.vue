@@ -46,10 +46,7 @@
 </script>
 
 <template>
-  <v-row
-    class="align-center justify-center"
-    dense
-  >
+  <v-row dense>
     <v-col cols="auto">
       <v-btn
         :aria-label="isPlayed ? 'Stop audio' : 'Play audio'"
