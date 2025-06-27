@@ -15,11 +15,40 @@ function optimizeFontPreload () {
   return {
     name: 'optimize-font-preload',
     transformIndexHtml (html: string) {
-      // Удаляем preload для шрифтов, которые не используются сразу
-      return html.replace(
+      // Удаляем все preload ссылки для шрифтов (woff, woff2, eot, ttf)
+      let optimizedHtml = html
+
+      // Удаляем modulepreload для шрифтов
+      optimizedHtml = optimizedHtml.replace(
         /<link[^>]*rel="modulepreload"[^>]*href="[^"]*\.(woff2?|eot|ttf)"[^>]*>/g,
         '',
       )
+
+      // Удаляем обычные preload для шрифтов
+      optimizedHtml = optimizedHtml.replace(
+        /<link[^>]*rel="preload"[^>]*href="[^"]*\.(woff2?|eot|ttf)"[^>]*>/g,
+        '',
+      )
+
+      // Удаляем preload для Material Design Icons и Roboto шрифтов
+      optimizedHtml = optimizedHtml.replace(
+        /<link[^>]*rel="preload"[^>]*href="[^"]*(?:materialdesignicons|roboto)[^"]*"[^>]*>/g,
+        '',
+      )
+
+      // Добавляем более оптимальную загрузку основных шрифтов с font-display: swap
+      const fontOptimization = `
+    <style>
+      @font-face {
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: local('Roboto Regular'), local('Roboto-Regular');
+      }
+    </style>`
+
+      return optimizedHtml.replace('</head>', `${fontOptimization}</head>`)
     },
   }
 }
@@ -104,13 +133,28 @@ export default defineConfig({
           fonts: ['unplugin-fonts/vite'],
         },
       },
+      external: [
+        // Исключаем неиспользуемые шрифты из сборки
+        /.*\.eot$/,
+      ],
     },
     // Отключить preload для шрифтов, чтобы избежать предупреждений
     modulePreload: {
       polyfill: false,
       resolveDependencies: (url, deps) => {
-        return deps.filter(dep => !dep.includes('font'))
+        // Фильтруем все зависимости, связанные со шрифтами
+        return deps.filter(dep =>
+          !dep.includes('font')
+          && !dep.includes('.woff')
+          && !dep.includes('.woff2')
+          && !dep.includes('.eot')
+          && !dep.includes('.ttf')
+          && !dep.includes('materialdesignicons')
+          && !dep.includes('roboto'),
+        )
       },
     },
+    // Отключаем создание preload директив для ресурсов
+    assetsInlineLimit: 0,
   },
 })
