@@ -218,6 +218,14 @@ export function useCharacterSearch (
   const handleSearchError = (err: unknown): void => {
     console.error('Search failed:', err)
 
+    // Clear results but preserve the error
+    state.value.results = []
+    state.value.totalCount = 0
+    state.value.currentPage = 1
+    state.value.hasNextPage = false
+    state.value.hasPrevPage = false
+
+    // Set error message
     if (err instanceof InvalidSearchTermError) {
       state.value.error = err.userMessage
     } else if (err instanceof Error) {
@@ -225,8 +233,6 @@ export function useCharacterSearch (
     } else {
       state.value.error = 'Произошла ошибка при поиске'
     }
-
-    clearResults()
   }
 
   return {

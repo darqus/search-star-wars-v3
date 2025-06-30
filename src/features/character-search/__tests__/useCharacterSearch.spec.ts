@@ -106,7 +106,7 @@ describe('useCharacterSearch', () => {
     const searchError = new Error('Network error')
     mockSearch.mockRejectedValue(searchError)
 
-    const { searchImmediate, error } = useCharacterSearch(
+    const { searchImmediate, error, searchResults } = useCharacterSearch(
       mockRepository,
       'characters',
     )
@@ -115,6 +115,7 @@ describe('useCharacterSearch', () => {
     await nextTick()
 
     expect(error.value).toBe('Network error')
+    expect(searchResults.value).toEqual([])
   })
 
   it('should handle pagination', async () => {
