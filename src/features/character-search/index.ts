@@ -1,6 +1,6 @@
 import type { ICharacterRepository } from './domain/repositories/ICharacterRepository'
 
-import { inject } from '@/shared/di/Container'
+import { inject, TOKENS } from '@/shared/di/Container'
 
 import { useCharacterSearch } from './composables/useCharacterSearch'
 import { setupCharacterSearchDI } from './infrastructure/setup'
@@ -75,7 +75,7 @@ class CharacterSearchFeatureImpl implements CharacterSearchFeature {
    */
   getRepository (): ICharacterRepository {
     this.ensureSetup()
-    return inject<ICharacterRepository>('ICharacterRepository')
+    return inject<ICharacterRepository>(TOKENS.CHARACTER_REPOSITORY)
   }
 
   /**
