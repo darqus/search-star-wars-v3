@@ -55,8 +55,8 @@ export const useStarWarsStore = defineStore('starWars', () => {
         searchTerm, // search parameter
       )
 
-      items.value = response.data
-      totalPages.value = response.info.total
+      items.value = response.results
+      totalPages.value = response.pages
 
       if (items.value.length > 0) {
         await selectItem(items.value[0])
@@ -87,8 +87,8 @@ export const useStarWarsStore = defineStore('starWars', () => {
       )
 
       // Store search results separately from main items
-      searchResults.value = response.data
-      // console.log('🏪 Store: Search results stored:', response.data.length, 'items')
+      searchResults.value = response.results
+      // console.log('🏪 Store: Search results stored:', response.results.length, 'items')
 
       return response
     } catch (error) {

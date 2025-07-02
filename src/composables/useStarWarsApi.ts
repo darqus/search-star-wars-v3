@@ -7,7 +7,7 @@ const {
   VITE_APP_IMAGE_BASE_URL: IMAGE_BASE_URL,
 } = import.meta.env
 
-const transformImageUrl = (endpoint: string, image: string): string => {
+const transformImageUrl = (image: string): string => {
   // Return absolute URLs without transformation
   if (image.startsWith('http')) {
     return image
@@ -16,17 +16,8 @@ const transformImageUrl = (endpoint: string, image: string): string => {
   // Clean up any leading/trailing slashes
   const cleanImage = image.replace(/^\/+|\/+$/g, '')
 
-  // Check if the image path contains the endpoint already
-  if (cleanImage.includes(`${endpoint}/`) || cleanImage.includes(`${endpoint}\\`)) {
-    return `${IMAGE_BASE_URL}/${cleanImage}`
-  }
-
-  // For paths that start with "images/"
-  if (cleanImage.startsWith('images/')) {
-    return `${IMAGE_BASE_URL}/${endpoint}/${cleanImage}`
-  }
-
-  return `${IMAGE_BASE_URL}/${endpoint}/images/${cleanImage}`
+  // New API format: images are already in correct format (img/category/filename)
+  return `${IMAGE_BASE_URL}/${cleanImage}`
 }
 
 export const useStarWarsApi = () => {
@@ -84,18 +75,16 @@ export const useStarWarsApi = () => {
 
       // Transform data to match our API interface
       const data: ApiResponse = {
-        data: rawData.data.map((item: Item) => ({
+        results: rawData.results.map((item: Item) => ({
           ...item,
           // Ensure image URL has the correct format
-          image: transformImageUrl(endpoint, item.image),
+          image: transformImageUrl(item.image),
         })),
-        info: {
-          total: rawData.info.total,
-          page: rawData.info.page,
-          limit: rawData.info.limit,
-          next: rawData.info.next,
-          prev: rawData.info.prev,
-        },
+        total: rawData.total,
+        count: rawData.count,
+        limit: rawData.limit,
+        page: rawData.page,
+        pages: rawData.pages,
       }
 
       // Store in cache (but not search results)

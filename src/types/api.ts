@@ -6,14 +6,12 @@ export interface Item {
 }
 
 export interface ApiResponse {
-  data: Item[]
-  info: {
-    total: number
-    page: number
-    limit: number
-    next: string | null
-    prev: string | null
-  }
+  results: Item[]
+  total: number
+  count: number
+  limit: number
+  page: number
+  pages: number
 }
 
 export interface SearchApiItem {

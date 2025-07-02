@@ -51,7 +51,9 @@ export class Character {
       return this.image
     }
 
-    return `${baseUrl}/${this.endpoint}/${this.image}`
+    // New API format: images come with full path like 'img/characters/filename.webp'
+    const cleanImage = this.image.replace(/^\/+|\/+$/g, '')
+    return `${baseUrl}/${cleanImage}`
   }
 
   /**
@@ -111,16 +113,16 @@ export class SearchResult {
    * Create from API response
    */
   static fromApiResponse (data: any, endpoint: string): SearchResult {
-    const characters = data.data.map((item: any) =>
+    const characters = data.results.map((item: any) =>
       Character.fromApiResponse(item, endpoint),
     )
 
     return new SearchResult(
       characters,
-      data.info.total,
-      data.info.page,
-      data.info.next !== null,
-      data.info.prev !== null,
+      data.total,
+      data.page,
+      data.page < data.pages,
+      data.page > 1,
     )
   }
 
