@@ -1,6 +1,8 @@
 import type { Character, SearchResult } from '../domain/entities/Character'
 import type { ICacheRepository, ICharacterRepository, SearchParams } from '../domain/repositories/ICharacterRepository'
 
+import { Character as CharacterEntity, SearchResult as SearchResultEntity } from '../domain/entities/Character'
+
 /**
  * Cache configuration
  */
@@ -45,7 +47,8 @@ export class CachedCharacterRepository implements ICharacterRepository {
       // Try to get from cache first
       const cached = await this.cache.get<Character>(cacheKey)
       if (cached) {
-        return cached
+        // Reconstruct Character instance from cached data
+        return this.reconstructCharacter(cached)
       }
     } catch (error) {
       // Cache miss or error - continue to fetch from repository
@@ -82,7 +85,8 @@ export class CachedCharacterRepository implements ICharacterRepository {
       // Try to get from cache first
       const cached = await this.cache.get<SearchResult>(cacheKey)
       if (cached) {
-        return cached
+        // Reconstruct SearchResult instance from cached data
+        return this.reconstructSearchResult(cached)
       }
     } catch (error) {
       // Cache miss or error - continue to fetch from repository
@@ -164,5 +168,35 @@ export class CachedCharacterRepository implements ICharacterRepository {
     }
 
     return parts.join(':')
+  }
+
+  /**
+   * Reconstruct Character instance from cached plain object
+   */
+  private reconstructCharacter (cached: any): Character {
+    return new CharacterEntity(
+      cached.id,
+      cached.name,
+      cached.description,
+      cached.image,
+      cached.endpoint,
+    )
+  }
+
+  /**
+   * Reconstruct SearchResult instance from cached plain object
+   */
+  private reconstructSearchResult (cached: any): SearchResult {
+    const reconstructedCharacters = cached.characters.map((char: any) =>
+      this.reconstructCharacter(char),
+    )
+
+    return new SearchResultEntity(
+      reconstructedCharacters,
+      cached.totalCount,
+      cached.currentPage,
+      cached.hasNextPage,
+      cached.hasPrevPage,
+    )
   }
 }
