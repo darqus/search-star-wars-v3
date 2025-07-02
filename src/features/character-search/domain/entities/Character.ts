@@ -51,9 +51,9 @@ export class Character {
       return this.image
     }
 
-    // New API format: images come with full path like 'img/characters/filename.webp'
+    // Combine base URL with endpoint and image path
     const cleanImage = this.image.replace(/^\/+|\/+$/g, '')
-    return `${baseUrl}/${cleanImage}`
+    return `${baseUrl}/${this.endpoint}/${cleanImage}`
   }
 
   /**

@@ -42,10 +42,14 @@ describe('useCharacterSearch', () => {
 
   it('should perform search when query is long enough', async () => {
     const mockResult = SearchResult.fromApiResponse({
-      data: [
+      results: [
         { id: '1', name: 'Luke Skywalker', description: 'Jedi' },
       ],
-      info: { total: 1, page: 1, next: null, prev: null },
+      total: 1,
+      page: 1,
+      pages: 1,
+      count: 1,
+      limit: 20,
     }, 'characters')
 
     mockSearch.mockResolvedValue(mockResult)
@@ -90,8 +94,12 @@ describe('useCharacterSearch', () => {
 
     // First, perform a search
     mockSearch.mockResolvedValue(SearchResult.fromApiResponse({
-      data: [{ id: '1', name: 'Luke' }],
-      info: { total: 1, page: 1, next: null, prev: null },
+      results: [{ id: '1', name: 'Luke' }],
+      total: 1,
+      page: 1,
+      pages: 1,
+      count: 1,
+      limit: 20,
     }, 'characters'))
 
     await searchImmediate('Luke')
@@ -120,8 +128,12 @@ describe('useCharacterSearch', () => {
 
   it('should handle pagination', async () => {
     const mockResult = SearchResult.fromApiResponse({
-      data: [{ id: '1', name: 'Luke' }],
-      info: { total: 50, page: 2, next: 'next-url', prev: 'prev-url' },
+      results: [{ id: '1', name: 'Luke' }],
+      total: 50,
+      page: 2,
+      pages: 3,
+      count: 1,
+      limit: 20,
     }, 'characters')
 
     mockSearch.mockResolvedValue(mockResult)

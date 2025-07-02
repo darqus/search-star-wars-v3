@@ -5,7 +5,7 @@ import { useStarWarsStore } from '../starWars'
 // Mock composable
 vi.mock('@/composables/useStarWarsApi', () => {
   const mockData = {
-    data: [
+    results: [
       {
         id: '1',
         name: 'Luke Skywalker',
@@ -19,13 +19,11 @@ vi.mock('@/composables/useStarWarsApi', () => {
         image: 'characters/vader.webp',
       },
     ],
-    info: {
-      total: 2,
-      page: 1,
-      limit: 10,
-      next: null,
-      prev: null,
-    },
+    total: 2,
+    count: 2,
+    limit: 10,
+    page: 1,
+    pages: 1,
   }
 
   return {
@@ -73,7 +71,7 @@ describe('Star Wars Store', () => {
     expect(store.items[0].name).toBe('Luke Skywalker')
     expect(store.selectedItem).toBeDefined()
     expect(store.selectedItem?.name).toBe('Luke Skywalker')
-    expect(store.totalPages).toBe(2)
+    expect(store.totalPages).toBe(1)
   })
 
   it('should filter items based on search input', async () => {
