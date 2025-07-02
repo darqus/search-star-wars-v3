@@ -1,11 +1,13 @@
 import type { Ref } from 'vue'
 
-import type { Character, SearchResult } from '../domain/entities/Character'
+import type { SearchResult } from '../domain/entities/Character'
 import type { ICharacterRepository } from '../domain/repositories/ICharacterRepository'
 
 import { computed, readonly, ref } from 'vue'
 
 import { InvalidSearchTermError } from '@/shared/errors/AppError'
+
+import { Character } from '../domain/entities/Character'
 
 /**
  * Search state interface
@@ -65,7 +67,23 @@ export function useCharacterSearch (
   // Computed properties
   const searchQuery = computed(() => state.value.query)
   const isLoading = computed(() => state.value.isLoading)
-  const searchResults = computed(() => state.value.results)
+  const searchResults = computed(() => {
+    // Ensure we return proper Character instances
+    return state.value.results.map(result => {
+      // If it's already a Character instance, return it as is
+      if (result instanceof Character) {
+        return result
+      }
+      // Otherwise, reconstruct it as a Character instance
+      return new Character(
+        result.id,
+        result.name,
+        result.description,
+        result.image,
+        result.endpoint,
+      )
+    })
+  })
   const error = computed(() => state.value.error)
   const isEmpty = computed(() => state.value.results.length === 0 && !state.value.isLoading)
   const totalCount = computed(() => state.value.totalCount)
@@ -239,7 +257,7 @@ export function useCharacterSearch (
     // State
     searchQuery: readonly(searchQuery),
     isLoading: readonly(isLoading),
-    searchResults: readonly(searchResults),
+    searchResults, // Don't wrap with readonly to preserve Character class instances
     error: readonly(error),
     isEmpty: readonly(isEmpty),
     totalCount: readonly(totalCount),

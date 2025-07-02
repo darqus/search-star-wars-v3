@@ -144,8 +144,8 @@
    * Component emits
    */
   interface Emits {
-    characterSelect: [character: Character]
-    searchStateChange: [state: { isLoading: boolean, hasResults: boolean }]
+    'character-select': [character: Character]
+    'search-state-change': [state: { isLoading: boolean, hasResults: boolean }]
   }
 
   const emit = defineEmits<Emits>()
@@ -176,12 +176,8 @@
     isEmpty,
     totalCount,
     currentPage,
-    hasNextPage,
-    hasPrevPage,
     onSearchInput,
     searchImmediate,
-    nextPage,
-    prevPage,
     goToPage,
     clearSearch,
     clearResults,
@@ -216,14 +212,14 @@
    * Handle character selection
    */
   const onCharacterSelect = (character: Character): void => {
-    emit('characterSelect', character)
+    emit('character-select', character)
   }
 
   /**
    * Watch search state changes
    */
   watchEffect(() => {
-    emit('searchStateChange', {
+    emit('search-state-change', {
       isLoading: isLoading.value,
       hasResults: searchResults.value.length > 0,
     })
