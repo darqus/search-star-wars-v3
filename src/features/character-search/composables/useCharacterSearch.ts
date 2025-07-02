@@ -222,11 +222,16 @@ export function useCharacterSearch (
    * Update state from search result
    */
   const updateStateFromResult = (result: SearchResult, query: string, page: number): void => {
-    state.value.results = result.characters
-    state.value.totalCount = result.totalCount
+    if (!result) {
+      console.warn('updateStateFromResult called with undefined result')
+      return
+    }
+
+    state.value.results = result.characters || []
+    state.value.totalCount = result.totalCount || 0
     state.value.currentPage = page
-    state.value.hasNextPage = result.hasNextPage
-    state.value.hasPrevPage = result.hasPrevPage
+    state.value.hasNextPage = result.hasNextPage || false
+    state.value.hasPrevPage = result.hasPrevPage || false
     state.value.query = query
   }
 

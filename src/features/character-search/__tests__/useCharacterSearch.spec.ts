@@ -183,6 +183,16 @@ describe('useCharacterSearch', () => {
   it('should debounce search input', async () => {
     vi.useFakeTimers()
 
+    // Set up mock return value
+    mockSearch.mockResolvedValue(SearchResult.fromApiResponse({
+      results: [{ id: '1', name: 'Luke Skywalker' }],
+      total: 1,
+      page: 1,
+      pages: 1,
+      count: 1,
+      limit: 20,
+    }, 'characters'))
+
     const { onSearchInput } = useCharacterSearch(
       mockRepository,
       'characters',
@@ -194,6 +204,7 @@ describe('useCharacterSearch', () => {
 
     // Fast forward time
     vi.advanceTimersByTime(300)
+    await nextTick() // Wait for the async search to complete
 
     // Only last search should be executed
     expect(mockSearch).toHaveBeenCalledTimes(1)
