@@ -69,7 +69,17 @@ export class HttpCharacterRepository implements ICharacterRepository {
         { params: queryParams },
       )
 
-      return SearchResultEntity.fromApiResponse(response, params.endpoint)
+      // Transform API response to match SearchResult.fromApiResponse expectations
+      const transformedResponse = {
+        results: response.data,
+        total: response.info.total,
+        page: response.info.page,
+        pages: Math.ceil(response.info.total / response.info.limit),
+        count: response.data.length,
+        limit: response.info.limit,
+      }
+
+      return SearchResultEntity.fromApiResponse(transformedResponse, params.endpoint)
     } catch (error) {
       throw this.mapError(error)
     }

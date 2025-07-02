@@ -3,10 +3,32 @@ import { createVuetify } from 'vuetify'
 
 import { characterSearchFeature } from '@/features/character-search'
 import { configService } from '@/shared/config/ConfigService'
-import { errorHandlerService } from '@/shared/services/ErrorHandlerService'
+import { ConsoleLogger, ErrorHandlerService } from '@/shared/services/ErrorHandlerService'
 
 import App from './App.vue'
 import router from './router'
+
+// Extend Window interface for development helpers
+declare global {
+  interface Window {
+    __APP_DEBUG__?: {
+      configService: any
+      characterSearchFeature: any
+      errorHandlerService: any
+    }
+  }
+}
+
+// Create error handler instance
+const errorHandlerService = new ErrorHandlerService(
+  new ConsoleLogger(),
+  {
+    error: (message: string) => console.error(message),
+    warning: (message: string) => console.warn(message),
+    success: (message: string) => console.log(message),
+    info: (message: string) => console.info(message),
+  },
+)
 
 /**
  * Setup application features
@@ -42,7 +64,7 @@ function createApplication () {
   // Global error handler
   app.config.errorHandler = (error, instance, info) => {
     console.error('Vue error:', error, info)
-    errorHandlerService.handle(error)
+    errorHandlerService.handle(error as Error)
   }
 
   return app
@@ -129,8 +151,8 @@ if (configService.isDevelopment()) {
   window.addEventListener('load', () => {
     const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming
     console.info('Performance metrics:', {
-      domContentLoaded: Math.round(navigation.domContentLoadedEventEnd - navigation.navigationStart),
-      loadComplete: Math.round(navigation.loadEventEnd - navigation.navigationStart),
+      domContentLoaded: Math.round(navigation.domContentLoadedEventEnd - navigation.fetchStart),
+      loadComplete: Math.round(navigation.loadEventEnd - navigation.fetchStart),
       firstPaint: Math.round(performance.getEntriesByName('first-paint')[0]?.startTime || 0),
       firstContentfulPaint: Math.round(performance.getEntriesByName('first-contentful-paint')[0]?.startTime || 0),
     })
