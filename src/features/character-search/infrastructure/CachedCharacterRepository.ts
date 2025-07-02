@@ -174,11 +174,16 @@ export class CachedCharacterRepository implements ICharacterRepository {
    * Reconstruct Character instance from cached plain object
    */
   private reconstructCharacter (cached: any): Character {
+    // Ensure we have all required properties
+    if (!cached.id || !cached.name || !cached.endpoint) {
+      throw new Error('Invalid cached character data')
+    }
+
     return new CharacterEntity(
       cached.id,
       cached.name,
-      cached.description,
-      cached.image,
+      cached.description || '',
+      cached.image || '',
       cached.endpoint,
     )
   }
@@ -187,16 +192,21 @@ export class CachedCharacterRepository implements ICharacterRepository {
    * Reconstruct SearchResult instance from cached plain object
    */
   private reconstructSearchResult (cached: any): SearchResult {
+    // Validate cached search result structure
+    if (!cached.characters || !Array.isArray(cached.characters)) {
+      throw new Error('Invalid cached search result data')
+    }
+
     const reconstructedCharacters = cached.characters.map((char: any) =>
       this.reconstructCharacter(char),
     )
 
     return new SearchResultEntity(
       reconstructedCharacters,
-      cached.totalCount,
-      cached.currentPage,
-      cached.hasNextPage,
-      cached.hasPrevPage,
+      cached.totalCount || 0,
+      cached.currentPage || 1,
+      cached.hasNextPage || false,
+      cached.hasPrevPage || false,
     )
   }
 }
