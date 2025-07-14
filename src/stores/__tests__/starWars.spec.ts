@@ -99,7 +99,7 @@ describe('Star Wars Store', () => {
     expect(store.imgURL).toBe('characters/vader.webp')
   })
 
-  it('should change API endpoint and reset page', async () => {
+  it('should change API endpoint and reset page', () => {
     const store = useStarWarsStore()
 
     const fetchMock = vi.fn((skipCache?: boolean, term?: string) => {
@@ -114,7 +114,7 @@ describe('Star Wars Store', () => {
     expect(store.currentPage).toBe(1)
   })
 
-  it('should change page and fetch items', async () => {
+  it('should change page and fetch items', () => {
     const store = useStarWarsStore()
 
     const fetchMock = vi.fn((skipCache?: boolean, term?: string) => {
