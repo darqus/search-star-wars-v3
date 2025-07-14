@@ -50,7 +50,7 @@ export class ConfigValidationError extends Error {
   constructor(
     message: string,
     public readonly field: string,
-    public readonly value: any
+    public readonly value: unknown
   ) {
     super(message)
     this.name = 'ConfigValidationError'
@@ -136,7 +136,7 @@ export class ConfigService {
    * Get build version if available
    */
   getVersion(): string {
-    return import.meta.env.VITE_APP_VERSION || 'unknown'
+    return import.meta.env.VITE_APP_VERSION ?? 'unknown'
   }
 
   /**
