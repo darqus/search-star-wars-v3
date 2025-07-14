@@ -2,11 +2,11 @@
  * Simple Dependency Injection Container
  */
 export class Container {
-  private readonly dependencies = new Map<string, any>()
+  private readonly dependencies = new Map<string, () => unknown>()
 
-  private readonly singletons = new Map<string, any>()
+  private readonly singletons = new Map<string, () => unknown>()
 
-  private readonly singletonInstances = new Map<string, any>()
+  private readonly singletonInstances = new Map<string, unknown>()
 
   /**
    * Register a dependency
@@ -25,17 +25,20 @@ export class Container {
   resolve<T>(token: string): T {
     // Check for singleton instance first
     if (this.singletonInstances.has(token)) {
-      return this.singletonInstances.get(token)
+      return this.singletonInstances.get(token) as T
     }
 
     // Check for singleton factory
     if (this.singletons.has(token)) {
       const factory = this.singletons.get(token)
+
+      if (!factory) {throw new Error('Singleton factory is undefined')}
+
       const instance = factory()
 
       this.singletonInstances.set(token, instance)
 
-      return instance
+      return instance as T
     }
 
     // Check for regular dependency
@@ -45,7 +48,7 @@ export class Container {
       throw new Error(`Dependency '${token}' not found. Make sure it's registered.`)
     }
 
-    return factory()
+    return factory() as T
   }
 
   /**
