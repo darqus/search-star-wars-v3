@@ -85,8 +85,6 @@ export function useCharacterSearch(
   const hasNextPage = computed(() => state.value.hasNextPage)
   const hasPrevPage = computed(() => state.value.hasPrevPage)
 
-  const currentEndpoint = computed(() => (typeof endpoint === 'string' ? endpoint : endpoint.value))
-
   /**
    * Perform search with the current query
    */
@@ -105,11 +103,10 @@ export function useCharacterSearch(
     state.value.error = null
 
     try {
-      const result = await repository.search({
-        endpoint: currentEndpoint.value,
+      const result = await repository.searchCharacters({
+        search: query,
         page,
         limit: searchConfig.pageSize,
-        search: query,
       })
 
       updateStateFromResult(result, query, page)

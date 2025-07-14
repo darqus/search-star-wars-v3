@@ -5,28 +5,22 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useCharacterSearch } from '../composables/useCharacterSearch'
 import { SearchResult } from '../domain/entities/Character'
 
-import type { ICharacterRepository, SearchParams } from '../domain/repositories/ICharacterRepository'
+import type { ICharacterRepository, CharacterFilter } from '../domain/repositories/ICharacterRepository'
 import type { MockedFunction } from 'vitest'
 
 // Mock repository
-const createMockRepository = (): ICharacterRepository => {
-  const mockRepository = {
-    findById: vi.fn(),
-    search: vi.fn(),
-    findByEndpoint: vi.fn(),
-    clearCache: vi.fn(),
-  }
-
-  return mockRepository as ICharacterRepository
-}
+const createMockRepository = (): ICharacterRepository => ({
+  searchCharacters: vi.fn(),
+  getCharacter: vi.fn(),
+})
 
 describe('useCharacterSearch', () => {
   let mockRepository: ICharacterRepository
-  let mockSearch: MockedFunction<(params: SearchParams) => Promise<SearchResult>>
+  let mockSearch: MockedFunction<(params: CharacterFilter) => Promise<SearchResult>>
 
-  beforeEach(() => {
+  beforeEach(function (this: void) {
     mockRepository = createMockRepository()
-    mockSearch = mockRepository.search as MockedFunction<(params: SearchParams) => Promise<SearchResult>>
+    mockSearch = mockRepository.searchCharacters as MockedFunction<(params: CharacterFilter) => Promise<SearchResult>>
   })
 
   it('should initialize with empty state', () => {
@@ -45,8 +39,6 @@ describe('useCharacterSearch', () => {
         total: 1,
         page: 1,
         pages: 1,
-        count: 1,
-        limit: 20,
       },
       'characters'
     )
@@ -90,8 +82,6 @@ describe('useCharacterSearch', () => {
           total: 1,
           page: 1,
           pages: 1,
-          count: 1,
-          limit: 20,
         },
         'characters'
       )
@@ -126,8 +116,6 @@ describe('useCharacterSearch', () => {
         total: 50,
         page: 2,
         pages: 3,
-        count: 1,
-        limit: 20,
       },
       'characters'
     )
@@ -180,8 +168,6 @@ describe('useCharacterSearch', () => {
           total: 1,
           page: 1,
           pages: 1,
-          count: 1,
-          limit: 20,
         },
         'characters'
       )

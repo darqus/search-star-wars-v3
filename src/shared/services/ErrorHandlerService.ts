@@ -258,3 +258,48 @@ export class ErrorHandlerService {
     return new Promise((resolve) => setTimeout(resolve, ms))
   }
 }
+
+/**
+ * Simple console logger implementation
+ */
+export class ConsoleLogger implements ILogger {
+  error(message: string, context?: Record<string, unknown>) {
+    if (context) {
+       
+      console.error(message, context)
+    } else {
+       
+      console.error(message)
+    }
+  }
+
+  warn(message: string, context?: Record<string, unknown>) {
+    if (context) {
+       
+      console.warn(message, context)
+    } else {
+       
+      console.warn(message)
+    }
+  }
+
+  info(message: string, context?: Record<string, unknown>) {
+    if (context) {
+      // eslint-disable-next-line no-console
+      console.info(message, context)
+    } else {
+      // eslint-disable-next-line no-console
+      console.info(message)
+    }
+  }
+
+  debug(message: string, context?: Record<string, unknown>) {
+    if (context) {
+      // eslint-disable-next-line no-console
+      console.debug(message, context)
+    } else {
+      // eslint-disable-next-line no-console
+      console.debug(message)
+    }
+  }
+}
