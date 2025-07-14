@@ -10,7 +10,7 @@ export abstract class AppError extends Error {
 
   constructor(
     message: string,
-    public readonly context?: Record<string, any>,
+    public readonly context?: Record<string, unknown>,
     public readonly cause?: Error
   ) {
     super(message)
@@ -39,8 +39,8 @@ export abstract class AppError extends Error {
   /**
    * Create error with additional context
    */
-  withContext(context: Record<string, any>): this {
-    return new (this.constructor as any)(this.message, { ...this.context, ...context }, this.cause)
+  withContext(context: Record<string, unknown>): this {
+    return new (this.constructor as new (...args: unknown[]) => this)(this.message, { ...this.context, ...context }, this.cause)
   }
 }
 
@@ -54,8 +54,8 @@ export class ValidationError extends AppError {
 
   readonly userMessage = 'Введенные данные некорректны'
 
-  constructor(message: string, context?: Record<string, any>) {
-    super(message, context)
+  constructor(message: string, context?: Record<string, unknown>) {
+    super(message, context as Record<string, unknown>)
   }
 }
 
@@ -74,7 +74,7 @@ export class ApiError extends AppError {
 
   readonly userMessage = 'Произошла ошибка при загрузке данных. Попробуйте еще раз.'
 
-  constructor(message: string, statusCode = 500, context?: Record<string, any>) {
+  constructor(message: string, statusCode = 500, context?: Record<string, unknown>) {
     super(message, context)
     this.statusCode = statusCode
   }
@@ -151,7 +151,7 @@ export const ErrorFactory = {
     return new NetworkError('Network request failed', { originalMessage: originalError.message }, originalError)
   },
 
-  createValidationError(field: string, value: any, rule: string): ValidationError {
+  createValidationError(field: string, value: unknown, rule: string): ValidationError {
     return new ValidationError(`Validation failed for field ${field}`, { field, value, rule })
   },
 }
