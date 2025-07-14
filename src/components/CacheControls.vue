@@ -16,8 +16,12 @@ const onInvalidateCache = () => {
   store.invalidateCache()
 }
 
-const onRefresh = () => {
-  store.fetchItems(true) // skipCache=true
+const onRefresh = async () => {
+  try {
+    await store.fetchItems(true) // skipCache=true
+  } catch (error) {
+    console.error('Failed to refresh items:', error)
+  }
 }
 </script>
 
