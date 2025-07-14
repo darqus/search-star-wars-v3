@@ -1,148 +1,66 @@
+// Core imports
 import { fileURLToPath, URL } from 'node:url'
 
+// Plugin imports
 import Vue from '@vitejs/plugin-vue'
-
-// Plugins
 import VueRouter from 'unplugin-vue-router/vite'
-
-// Utilities
 import { defineConfig } from 'vite'
 import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 
-// Кастомный плагин для оптимизации preload шрифтов
+import type { NormalizedOutputOptions, OutputAsset, OutputChunk } from 'rollup'
+
+// Custom font preload optimizer
 function optimizeFontPreload() {
   return {
     name: 'optimize-font-preload',
     transformIndexHtml(html: string) {
-      // Удаляем все preload ссылки для шрифтов более агрессивно
-      let optimizedHtml = html
-
-      // Удаляем все ссылки с rel="preload" для файлов шрифтов
-      optimizedHtml = optimizedHtml.replace(
-        /<link[^>]*rel=["']preload["'][^>]*href=["'][^"']*\.(woff2?|eot|ttf)["'][^>]*>/gi,
-        ''
-      )
-
-      // Удаляем все ссылки с rel="modulepreload" для файлов шрифтов
-      optimizedHtml = optimizedHtml.replace(
-        /<link[^>]*rel=["']modulepreload["'][^>]*href=["'][^"']*\.(woff2?|eot|ttf)["'][^>]*>/gi,
-        ''
-      )
-
-      // Удаляем preload для Material Design Icons по имени файла
-      optimizedHtml = optimizedHtml.replace(
-        /<link[^>]*rel=["']preload["'][^>]*href=["'][^"']*materialdesignicons[^"']*["'][^>]*>/gi,
-        ''
-      )
-
-      // Удаляем preload для Roboto шрифтов по имени файла
-      optimizedHtml = optimizedHtml.replace(
-        /<link[^>]*rel=["']preload["'][^>]*href=["'][^"']*roboto[^"']*["'][^>]*>/gi,
-        ''
-      )
-
-      // Удаляем все preload ссылки с as="font"
-      optimizedHtml = optimizedHtml.replace(
-        /<link[^>]*rel=["']preload["'][^>]*as=["']font["'][^>]*>/gi,
-        ''
-      )
-
-      // Удаляем пустые строки, которые могли остаться
-      optimizedHtml = optimizedHtml.replace(/^\s*\n/gm, '')
+      const optimizedHtml = html
+        .replace(/<link[^>]*rel=["']preload["'][^>]*href=["'][^"']*\.(woff2?|eot|ttf)["'][^>]*>/gi, '')
+        .replace(/<link[^>]*rel=["']modulepreload["'][^>]*href=["'][^"']*\.(woff2?|eot|ttf)["'][^>]*>/gi, '')
+        .replace(/<link[^>]*rel=["']preload["'][^>]*href=["'][^"']*materialdesignicons[^"']*["'][^>]*>/gi, '')
+        .replace(/<link[^>]*rel=["']preload["'][^>]*href=["'][^"']*roboto[^"']*["'][^>]*>/gi, '')
+        .replace(/<link[^>]*rel=["']preload["'][^>]*as=["']font["'][^>]*>/gi, '')
+        .replace(/^\s*\n/gm, '')
 
       return optimizedHtml
-    },
+    }
   }
 }
 
-// Дополнительный плагин для финальной очистки HTML от preload
+// Final HTML cleanup
 function finalHtmlCleanup() {
   return {
     name: 'final-html-cleanup',
-    generateBundle(_options: any, bundle: any) {
-      // Находим HTML файлы в бандле
-      for (const fileName of Object.keys(bundle)) {
-        if (fileName.endsWith('.html')) {
-          const htmlAsset = bundle[fileName]
-
-          if (
-            htmlAsset.type === 'asset' &&
-            typeof htmlAsset.source === 'string'
-          ) {
-            // Удаляем все preload ссылки из финального HTML
-            let cleanHtml = htmlAsset.source
-
-            // Удаляем все preload ссылки для шрифтов
-            cleanHtml = cleanHtml.replace(
-              /<link[^>]*rel=["']preload["'][^>]*as=["']font["'][^>]*>/gi,
-              ''
-            )
-
-            // Удаляем все modulepreload ссылки для шрифтов
-            cleanHtml = cleanHtml.replace(
-              /<link[^>]*rel=["']modulepreload["'][^>]*href=["'][^"']*\.(?:woff2?|eot|ttf)["'][^>]*>/gi,
-              ''
-            )
-
-            // Удаляем preload для конкретных шрифтов по имени
-            cleanHtml = cleanHtml.replace(
-              /<link[^>]*rel=["']preload["'][^>]*href=["'][^"']*(?:materialdesignicons|roboto)[^"']*["'][^>]*>/gi,
-              ''
-            )
-
-            // Очищаем лишние пробелы и переносы строк
-            cleanHtml = cleanHtml.replace(/\n\s*\n/g, '\n')
-            cleanHtml = cleanHtml.replace(/^\s*$/gm, '')
-
-            htmlAsset.source = cleanHtml
-          }
-        }
-      }
+    transformIndexHtml(html: string) {
+      return html
+        .replace(/<link[^>]*rel=["']preload["'][^>]*as=["']font["'][^>]*>/gi, '')
+        .replace(/<link[^>]*rel=["']modulepreload["'][^>]*href=["'][^"']*\.(woff2?|eot|ttf)["'][^>]*>/gi, '')
+        .replace(/<link[^>]*rel=["']preload["'][^>]*href=["'][^"']*(materialdesignicons|roboto)[^"']*["'][^>]*>/gi, '')
+        .replace(/\n\s*\n/g, '\n')
     },
-    writeBundle(_options: any, bundle: any) {
-      // Дополнительная очистка на этапе записи
-      for (const fileName of Object.keys(bundle)) {
-        if (fileName.endsWith('.html')) {
-          const htmlAsset = bundle[fileName]
-
-          if (htmlAsset.type === 'asset') {
-            let cleanHtml = htmlAsset.source as string
-
-            // Удаляем все preload ссылки
-            cleanHtml = cleanHtml.replace(
-              /<link[^>]*rel=["']preload["'][^>]*>/gi,
-              ''
-            )
-
-            htmlAsset.source = cleanHtml
+    generateBundle(options: NormalizedOutputOptions, bundle: Record<string, OutputAsset | OutputChunk>) {
+      Object.entries(bundle)
+        .filter(([ fileName ]) => fileName.endsWith('.html'))
+        .forEach(([ , asset ]) => {
+          if (asset.type === 'asset' && typeof asset.source === 'string') {
+            asset.source = this.transformIndexHtml(asset.source)
           }
-        }
-      }
-    },
+        })
+    }
   }
 }
 
-// https://vitejs.dev/config/
 export default defineConfig({
   base: '/search-star-wars-v3/',
   plugins: [
-    VueRouter({
-      dts: 'src/typed-router.d.ts',
-    }),
-    Vue({
-      template: { transformAssetUrls },
-    }),
-
-    // https://github.com/vuetifyjs/vuetify-loader/tree/master/packages/vite-plugin#readme
+    VueRouter({ dts: 'src/typed-router.d.ts' }),
+    Vue({ template: { transformAssetUrls } }),
     Vuetify({
       autoImport: true,
-      styles: {
-        configFile: 'src/styles/settings.scss',
-      },
+      styles: { configFile: 'src/styles/settings.scss' }
     }),
-
-    optimizeFontPreload(), // Добавляем кастомный плагин
-    finalHtmlCleanup(), // Финальная очистка HTML
+    optimizeFontPreload(),
+    finalHtmlCleanup()
   ],
   optimizeDeps: {
     exclude: [
@@ -150,44 +68,22 @@ export default defineConfig({
       'vue-router',
       'unplugin-vue-router/runtime',
       'unplugin-vue-router/data-loaders',
-      'unplugin-vue-router/data-loaders/basic',
-    ],
+      'unplugin-vue-router/data-loaders/basic'
+    ]
   },
   define: { 'process.env': {} },
   resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('src', import.meta.url)),
-    },
-    extensions: [ '.js', '.json', '.jsx', '.mjs', '.ts', '.tsx', '.vue' ],
+    alias: { '@': fileURLToPath(new URL('src', import.meta.url)) },
+    extensions: [ '.js', '.json', '.jsx', '.mjs', '.ts', '.tsx', '.vue' ]
   },
-  server: {
-    port: 3000,
-    open: true, // Automatically open browser on server start
-  },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        additionalData: '',
-      },
-    },
-  },
+  server: { port: 3000, open: true },
+  css: { preprocessorOptions: { scss: { additionalData: '' } } },
   build: {
     rollupOptions: {
-      output: {
-        assetFileNames: 'assets/[name]-[hash][extname]',
-        manualChunks: {
-          // Удалили fonts chunk так как больше не используем unplugin-fonts
-        },
-      },
-      external: [
-        // Исключаем неиспользуемые шрифты из сборки
-        /.*\.eot$/,
-      ],
+      output: { assetFileNames: 'assets/[name]-[hash][extname]' },
+      external: [ /.*\.eot$/ ]
     },
-
-    // Отключить preload для шрифтов, чтобы избежать предупреждений
-    modulePreload: false, // Полностью отключаем modulePreload
-    // Отключаем создание preload директив для ресурсов
-    assetsInlineLimit: 0,
-  },
+    modulePreload: false,
+    assetsInlineLimit: 0
+  }
 })

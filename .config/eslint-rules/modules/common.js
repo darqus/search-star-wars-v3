@@ -1,6 +1,7 @@
 export const common = {
   semi: [ 'error', 'never' ],
   'no-extra-semi': 'error',
+  'import/no-empty-line-between': 'off',
   'import/order': [
     'error',
     {
