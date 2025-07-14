@@ -23,11 +23,6 @@ export const common = {
           position: 'before',
         },
         {
-          pattern: '*.scss',
-          group: 'external',
-          position: 'before',
-        },
-        {
           pattern: '**/types/**',
           group: 'internal',
           position: 'before',
