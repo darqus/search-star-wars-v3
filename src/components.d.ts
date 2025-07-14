@@ -11,7 +11,7 @@ declare module 'vue' {
     AsyncComponentWrapper: typeof import('./components/AsyncComponentWrapper.vue')['default']
     CacheControls: typeof import('./components/CacheControls.vue')['default']
     Dialog: typeof import('./components/AppDialog.vue')['default']
-    Footer: typeof import('./components/footer/Footer.vue')['default']
+    Footer: typeof import('./components/footer/AppFooter.vue')['default']
     FooterDropDownInfo: typeof import('./components/footer/FooterDropDownInfo.vue')['default']
     Form: typeof import('./components/form/AppForm.vue')['default']
     FormControls: typeof import('./components/FormControls.vue')['default']

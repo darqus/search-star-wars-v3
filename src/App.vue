@@ -16,7 +16,7 @@ import { BGS, ROLES, SIDES } from './state'
   }) */
 
 const Footer = defineAsyncComponent({
-  loader: () => import('@/components/footer/Footer.vue'),
+  loader: () => import('@/components/footer/AppFooter.vue'),
   loadingComponent: AsyncComponentWrapper,
   delay: 200,
   timeout: 10_000,
