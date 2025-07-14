@@ -10,7 +10,6 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
     "format": "bash format.sh",
-    "deploy": "npm run build && npx gh-pages -d dist",
     "test:unit": "vitest",
     "test:unit:ci": "vitest run"
   },
