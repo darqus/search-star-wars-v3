@@ -25,6 +25,8 @@ export function createSafeComputed<T>(getter: () => T | undefined, defaultValue:
 /**
  * Создает типизированный объект методов для работы с хранилищем
  */
-export function createStoreActions<T extends Record<string, (...args: any[]) => any>>(actions: T): T {
+export function createStoreActions<
+  T extends Record<string, (...args: never[]) => unknown>
+>(actions: T): T {
   return actions
 }

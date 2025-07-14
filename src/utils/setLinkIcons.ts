@@ -1,7 +1,10 @@
 import { FAVICONS } from '../state/index'
 
 const toggleFavicon = (icon: string): void => {
-  const headTitle = document.querySelector('head')!
+  const headTitle = document.querySelector('head')
+
+  if (!headTitle) {return}
+
   const newFavicon = document.createElement('link')
 
   newFavicon.setAttribute('rel', 'icon')
