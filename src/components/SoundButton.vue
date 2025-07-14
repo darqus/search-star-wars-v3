@@ -43,7 +43,7 @@ const onPauseSound = () => {
 const onToggle = () => {
   isPlayed.value = !isPlayed.value
   if (isPlayed.value) {
-    onPlaySound()
+    void onPlaySound()
   } else {
     onPauseSound()
   }
