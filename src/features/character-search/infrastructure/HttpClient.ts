@@ -13,7 +13,7 @@ type HttpClientConfig = {
  * Request configuration
  */
 type RequestConfig = {
-  params?: Record<string, any>
+  params?: Record<string, unknown>
   headers?: Record<string, string>
   timeout?: number
 }
@@ -42,14 +42,14 @@ export class HttpClient {
   /**
    * Perform POST request
    */
-  async post<T>(url: string, data?: any, config?: RequestConfig): Promise<T> {
+  async post<T>(url: string, data?: unknown, config?: RequestConfig): Promise<T> {
     return this.request<T>('POST', url, data, config)
   }
 
   /**
    * Perform PUT request
    */
-  async put<T>(url: string, data?: any, config?: RequestConfig): Promise<T> {
+  async put<T>(url: string, data?: unknown, config?: RequestConfig): Promise<T> {
     return this.request<T>('PUT', url, data, config)
   }
 
@@ -63,8 +63,8 @@ export class HttpClient {
   /**
    * Generic request method with retry logic
    */
-  private async request<T>(method: string, url: string, data?: any, config?: RequestConfig): Promise<T> {
-    let lastError: Error
+  private async request<T>(method: string, url: string, data?: unknown, config?: RequestConfig): Promise<T> {
+    let lastError: Error | undefined
 
     for (let attempt = 0; attempt <= this.config.retries; attempt++) {
       try {
@@ -91,13 +91,17 @@ export class HttpClient {
       }
     }
 
-    throw lastError!
+    if (lastError) {
+      throw lastError
+    } else {
+      throw new Error('Unknown error occurred in HTTP request')
+    }
   }
 
   /**
    * Perform the actual HTTP request
    */
-  private async performRequest<T>(method: string, url: string, data?: any, config?: RequestConfig): Promise<T> {
+  private async performRequest<T>(method: string, url: string, data?: unknown, config?: RequestConfig): Promise<T> {
     const fullUrl = this.buildUrl(url, config?.params)
     const requestConfig = this.buildRequestConfig(method, data, config)
 
@@ -131,11 +135,11 @@ export class HttpClient {
 
       if (error instanceof Error) {
         if (error.name === 'AbortError') {
-          throw new NetworkError('Request timeout', error)
+          throw new NetworkError('Request timeout', { name: error.name, message: error.message, stack: error.stack })
         }
 
         if (error.message.includes('fetch')) {
-          throw new NetworkError('Network request failed', error)
+          throw new NetworkError('Network request failed', { name: error.name, message: error.message, stack: error.stack })
         }
       }
 
@@ -150,7 +154,7 @@ export class HttpClient {
   /**
    * Build full URL with query parameters
    */
-  private buildUrl(url: string, params?: Record<string, any>): string {
+  private buildUrl(url: string, params?: Record<string, unknown>): string {
     let fullUrl = this.config.baseURL ? `${this.config.baseURL}${url}` : url
 
     if (params && Object.keys(params).length > 0) {
@@ -158,7 +162,25 @@ export class HttpClient {
 
       for (const [ key, value ] of Object.entries(params)) {
         if (value !== undefined && value !== null) {
-          searchParams.append(key, String(value))
+          let stringValue: string
+          const isPlainObject = Object.prototype.toString.call(value) === '[object Object]'
+
+          if (Array.isArray(value) || isPlainObject) {
+            stringValue = JSON.stringify(value)
+          } else {
+            if (typeof value === 'string') {
+              stringValue = value
+            } else if (
+              typeof value === 'number' ||
+              typeof value === 'boolean' ||
+              typeof value === 'bigint'
+            ) {
+              stringValue = value.toString()
+            } else {
+              throw new Error(`Cannot serialize parameter "${key}" of unsupported type`)
+            }
+          }
+          searchParams.append(key, stringValue)
         }
       }
 
@@ -175,7 +197,7 @@ export class HttpClient {
   /**
    * Build fetch request configuration
    */
-  private buildRequestConfig(method: string, data?: any, config?: RequestConfig): RequestInit {
+  private buildRequestConfig(method: string, data?: unknown, config?: RequestConfig): RequestInit {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       ...config?.headers,
