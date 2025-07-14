@@ -51,7 +51,7 @@
       "source.fixAll.eslint": "explicit",
       "source.organizeImports": "never"
     },
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     "editor.formatOnPaste": true,
     "editor.formatOnSave": true
   },
@@ -61,7 +61,7 @@
       "source.fixAll.prettier": "never",
       "source.organizeImports": "never"
     },
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     "editor.formatOnPaste": true,
     "editor.formatOnSave": true
   },
@@ -92,11 +92,14 @@
   "css.validate": false,
   "editor.bracketPairColorization.enabled": true,
   "editor.guides.bracketPairs": true,
-  "eslint.format.enable": false,
+  "eslint.format.enable": true,
   "eslint.validate": ["javascript", "typescript", "vue"],
   "eslint.codeAction.showDocumentation": {
     "enable": true
   },
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
   "eslint.codeActionsOnSave.mode": "problems",
   "scss.validate": false,
   "stylelint.packageManager": "yarn",
