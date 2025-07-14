@@ -107,7 +107,7 @@ export class HttpClient {
 
     try {
       const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), config?.timeout || this.config.timeout)
+      const timeoutId = setTimeout(() => controller.abort(), config?.timeout ?? this.config.timeout)
 
       const response = await fetch(fullUrl, {
         ...requestConfig,
