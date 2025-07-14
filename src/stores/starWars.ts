@@ -44,14 +44,14 @@ export const useStarWarsStore = defineStore('starWars', () => {
   const filteredItems = computed(() => items.value)
 
   // Actions
-  async function fetchItems(skipCache = false, searchTerm?: string) {
+  async function fetchItems(skipCache = false, term?: string) {
     try {
       const response = await fetchData(
         selectedApi.value,
         currentPage.value,
         DEFAULT_PAGE_SIZE,
         !skipCache, // useCache parameter
-        searchTerm // search parameter
+        term // search parameter
       )
 
       items.value = response.results
@@ -64,15 +64,15 @@ export const useStarWarsStore = defineStore('starWars', () => {
       }
 
       return response
-    } catch (error) {
-      console.error('Failed to fetch data:', error)
+    } catch (err) {
+      console.error('Failed to fetch data:', err)
       resetSelection()
-      throw error
+      throw err
     }
   }
 
   // Specific method for search requests with limit of 5 items
-  async function fetchSearchResults(searchTerm: string) {
+  async function fetchSearchResults(term: string) {
     try {
       // console.log('🏪 Store: Fetching search results for:', searchTerm)
       // console.log('🏪 Store: Using API endpoint:', selectedApi.value)
@@ -82,7 +82,7 @@ export const useStarWarsStore = defineStore('starWars', () => {
         1, // Always use page 1 for search
         5, // Limit to 5 items for dropdown
         false, // Never cache search results
-        searchTerm
+        term
       )
 
       // Store search results separately from main items
@@ -91,10 +91,10 @@ export const useStarWarsStore = defineStore('starWars', () => {
       // console.log('🏪 Store: Search results stored:', response.results.length, 'items')
 
       return response
-    } catch (error) {
-      console.error('🏪 Store: Failed to fetch search results:', error)
+    } catch (err) {
+      console.error('🏪 Store: Failed to fetch search results:', err)
       searchResults.value = []
-      throw error
+      throw err
     }
   }
 
@@ -130,8 +130,8 @@ export const useStarWarsStore = defineStore('starWars', () => {
       imgURL.value = item.image
       imgLoaded.value = true
       result.value = JSON.stringify(item, null, 2)
-    } catch (error) {
-      console.error('Failed to load image:', error)
+    } catch (err) {
+      console.error('Failed to load image:', err)
       imgURL.value = ''
       imgLoaded.value = false
       result.value = JSON.stringify(item, null, 2)
@@ -165,8 +165,8 @@ export const useStarWarsStore = defineStore('starWars', () => {
         imgURL.value = item.image
         imgLoaded.value = true
         result.value = JSON.stringify(item, null, 2)
-      } catch (error) {
-        console.error('Failed to load image:', error)
+      } catch (err) {
+        console.error('Failed to load image:', err)
         imgURL.value = ''
         imgLoaded.value = false
         result.value = JSON.stringify(item, null, 2)
@@ -188,21 +188,21 @@ export const useStarWarsStore = defineStore('starWars', () => {
       selectInput.value = '' // Clear search when API changes
       searchTerm.value = '' // Clear search term
       searchResults.value = [] // Clear search results
-      fetchItems()
+      void fetchItems()
     }
   }
 
   function setPage(page: number) {
     if (currentPage.value !== page) {
       currentPage.value = page
-      fetchItems()
+      void fetchItems()
     }
   }
 
   // Cache management functions
   function invalidateCache() {
     setCacheExpiry(0) // Set expiry to 0 to force refresh
-    fetchItems() // Re-fetch data
+    void fetchItems() // Re-fetch data
     setCacheExpiry(DEFAULT_CACHE_EXPIRY) // Restore default expiry
   }
 
