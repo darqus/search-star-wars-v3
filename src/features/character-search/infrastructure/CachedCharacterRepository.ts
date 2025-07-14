@@ -1,7 +1,7 @@
 import { Character as CharacterEntity, SearchResult as SearchResultEntity } from '../domain/entities/Character'
 
 import type { Character, SearchResult } from '../domain/entities/Character'
-import type { ICacheRepository, ICharacterRepository, SearchParams } from '../domain/repositories/ICharacterRepository'
+import type { ICacheRepository, ICharacterRepository } from '../domain/repositories/ICharacterRepository'
 
 /**
  * Cache configuration
@@ -34,36 +34,35 @@ export class CachedCharacterRepository implements ICharacterRepository {
   }
 
   /**
-   * Find character by ID with caching
+   * Get character by ID with caching
    */
-  async findById(id: string, endpoint: string): Promise<Character | null> {
+  async getCharacter(id: string): Promise<Character | null> {
     if (!this.config.enabled) {
-      return this.repository.findById(id, endpoint)
+      return this.repository.getCharacter(id)
     }
 
-    const cacheKey = this.buildCharacterCacheKey(id, endpoint)
+    const cacheKey = this.buildCharacterCacheKey(id)
 
     try {
       // Try to get from cache first
       const cached = await this.cache.get<Character>(cacheKey)
 
       if (cached) {
-        // Reconstruct Character instance from cached data
         return this.reconstructCharacter(cached)
       }
-    } catch (error) {
+    } catch (error: unknown) {
       // Cache miss or error - continue to fetch from repository
       console.warn('Cache get failed:', error)
     }
 
     // Fetch from repository
-    const character = await this.repository.findById(id, endpoint)
+    const character = await this.repository.getCharacter(id)
 
     // Cache the result if found
     if (character) {
       try {
         await this.cache.set(cacheKey, character, this.config.characterTtl)
-      } catch (error) {
+      } catch (error: unknown) {
         // Cache set failed - log but don't throw
         console.warn('Cache set failed:', error)
       }
@@ -75,33 +74,32 @@ export class CachedCharacterRepository implements ICharacterRepository {
   /**
    * Search characters with caching
    */
-  async search(params: SearchParams): Promise<SearchResult> {
+  async searchCharacters(filter: { search?: string; page?: number; limit?: number }): Promise<SearchResult> {
     if (!this.config.enabled) {
-      return this.repository.search(params)
+      return this.repository.searchCharacters(filter)
     }
 
-    const cacheKey = this.buildSearchCacheKey(params)
+    const cacheKey = this.buildSearchCacheKey(filter)
 
     try {
       // Try to get from cache first
       const cached = await this.cache.get<SearchResult>(cacheKey)
 
       if (cached) {
-        // Reconstruct SearchResult instance from cached data
         return this.reconstructSearchResult(cached)
       }
-    } catch (error) {
+    } catch (error: unknown) {
       // Cache miss or error - continue to fetch from repository
       console.warn('Cache get failed:', error)
     }
 
     // Fetch from repository
-    const result = await this.repository.search(params)
+    const result = await this.repository.searchCharacters(filter)
 
     // Cache the result
     try {
       await this.cache.set(cacheKey, result, this.config.searchTtl)
-    } catch (error) {
+    } catch (error: unknown) {
       // Cache set failed - log but don't throw
       console.warn('Cache set failed:', error)
     }
@@ -110,22 +108,15 @@ export class CachedCharacterRepository implements ICharacterRepository {
   }
 
   /**
-   * Get characters by endpoint with caching
-   */
-  async findByEndpoint(endpoint: string, page: number, limit: number): Promise<SearchResult> {
-    return this.search({ endpoint, page, limit })
-  }
-
-  /**
    * Clear all cache
    */
   clearCache(): void {
-    this.cache.clear().catch((error) => {
+    this.cache.clear().catch((error: unknown) => {
       console.warn('Cache clear failed:', error)
     })
-
-    // Also clear the underlying repository cache if it has one
-    this.repository.clearCache()
+    if (typeof (this.repository as { clearCache?: () => void }).clearCache === 'function') {
+      (this.repository as { clearCache?: () => void }).clearCache?.()
+    }
   }
 
   /**
@@ -150,19 +141,19 @@ export class CachedCharacterRepository implements ICharacterRepository {
   /**
    * Build cache key for individual character
    */
-  private buildCharacterCacheKey(id: string, endpoint: string): string {
-    return `character:${endpoint}:${id}`
+  private buildCharacterCacheKey(id: string): string {
+    return `character:${id}`
   }
 
   /**
    * Build cache key for search results
    */
-  private buildSearchCacheKey(params: SearchParams): string {
-    const parts = [ 'search', params.endpoint, `page:${params.page}`, `limit:${params.limit}` ]
+  private buildSearchCacheKey(params: { search?: string; page?: number; limit?: number }): string {
+    const parts = [ 'search' ]
 
-    if (params.search) {
-      parts.push(`term:${params.search}`)
-    }
+    if (params.search) {parts.push(`term:${params.search}`)}
+    if (params.page !== undefined) {parts.push(`page:${params.page}`)}
+    if (params.limit !== undefined) {parts.push(`limit:${params.limit}`)}
 
     return parts.join(':')
   }
@@ -170,32 +161,53 @@ export class CachedCharacterRepository implements ICharacterRepository {
   /**
    * Reconstruct Character instance from cached plain object
    */
-  private reconstructCharacter(cached: any): Character {
-    // Ensure we have all required properties
-    if (!cached.id || !cached.name || !cached.endpoint) {
-      throw new Error('Invalid cached character data')
-    }
+  private reconstructCharacter(cached: unknown): Character {
+    if (
+      typeof cached === 'object' &&
+      cached !== null &&
+      'id' in cached &&
+      'name' in cached
+    ) {
+      const c = cached as { id: string; name: string; description?: string; image?: string; endpoint?: string }
 
-    return new CharacterEntity(cached.id, cached.name, cached.description || '', cached.image || '', cached.endpoint)
+      return new CharacterEntity(
+        c.id,
+        c.name,
+        c.description ?? '',
+        c.image ?? '',
+        c.endpoint ?? ''
+      )
+    }
+    throw new Error('Invalid cached character data')
   }
 
   /**
    * Reconstruct SearchResult instance from cached plain object
    */
-  private reconstructSearchResult(cached: any): SearchResult {
-    // Validate cached search result structure
-    if (!cached.characters || !Array.isArray(cached.characters)) {
-      throw new Error('Invalid cached search result data')
+  private reconstructSearchResult(cached: unknown): SearchResult {
+    if (
+      typeof cached === 'object' &&
+      cached !== null &&
+      'characters' in cached &&
+      Array.isArray((cached as { characters: unknown[] }).characters)
+    ) {
+      const c = cached as {
+        characters: unknown[]
+        totalCount?: number
+        currentPage?: number
+        hasNextPage?: boolean
+        hasPrevPage?: boolean
+      }
+      const reconstructedCharacters = c.characters.map((char) => this.reconstructCharacter(char))
+
+      return new SearchResultEntity(
+        reconstructedCharacters,
+        c.totalCount ?? 0,
+        c.currentPage ?? 1,
+        c.hasNextPage ?? false,
+        c.hasPrevPage ?? false
+      )
     }
-
-    const reconstructedCharacters = cached.characters.map((char: any) => this.reconstructCharacter(char))
-
-    return new SearchResultEntity(
-      reconstructedCharacters,
-      cached.totalCount || 0,
-      cached.currentPage || 1,
-      cached.hasNextPage || false,
-      cached.hasPrevPage || false
-    )
+    throw new Error('Invalid cached search result data')
   }
 }
