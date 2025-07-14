@@ -1,22 +1,24 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
-  import { DEFAULT_CACHE_ENABLED } from '@/constants/api'
-  import { useStarWarsStore } from '@/stores/starWars'
+import { ref } from 'vue'
 
-  const store = useStarWarsStore()
-  const cachingEnabled = ref(DEFAULT_CACHE_ENABLED)
+import { useStarWarsStore } from '@/stores/starWars'
 
-  const onToggleCaching = () => {
-    store.toggleCaching(cachingEnabled.value)
-  }
+import { DEFAULT_CACHE_ENABLED } from '@/constants/api'
 
-  const onInvalidateCache = () => {
-    store.invalidateCache()
-  }
+const store = useStarWarsStore()
+const cachingEnabled = ref(DEFAULT_CACHE_ENABLED)
 
-  const onRefresh = () => {
-    store.fetchItems(true) // skipCache=true
-  }
+const onToggleCaching = () => {
+  store.toggleCaching(cachingEnabled.value)
+}
+
+const onInvalidateCache = () => {
+  store.invalidateCache()
+}
+
+const onRefresh = () => {
+  store.fetchItems(true) // skipCache=true
+}
 </script>
 
 <template>
@@ -26,8 +28,8 @@
       <v-switch
         v-model="cachingEnabled"
         color="primary"
-        hide-details
         label="Enable API caching"
+        hide-details
         @change="onToggleCaching"
       />
 

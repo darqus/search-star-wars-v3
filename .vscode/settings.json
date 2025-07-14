@@ -1,60 +1,33 @@
 {
-  "cSpell.words": [
-    "fontsource",
-    "pinia",
-    "stylelint",
-    "swctext",
-    "unplugin",
-    "VITE",
-    "vitest",
-    "vuetify"
-  ],
-  "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
-    "source.fixAll.stylelint": "explicit"
-  },
-  "eslint.validate": [
-    "javascript",
-    "typescript",
-    "vue"
-  ],
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "[vue]": {
+  "[css]": {
     "editor.codeActionsOnSave": {
-      "source.fixAll.ts": "explicit",
-      "source.fixAll.prettier": "explicit",
-      "source.fixAll.eslint": "explicit",
-      "source.organizeImports": "never"
+      "source.fixAll.stylelint": "explicit"
     },
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "editor.defaultFormatter": "vscode.css-language-features",
+    "editor.formatOnPaste": true,
     "editor.formatOnSave": true
   },
-  "[typescript]": {
+  "[scss]": {
     "editor.codeActionsOnSave": {
-      "source.fixAll.ts": "explicit",
-      "source.fixAll.prettier": "explicit",
-      "source.fixAll.eslint": "explicit",
-      "source.organizeImports": "never"
-    },
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-    "editor.formatOnSave": true
-  },
-  "[typescript][vue]": {
-    "editor.codeActionsOnSave": {
-      "source.fixAll.ts": "explicit",
-      "source.fixAll.prettier": "explicit",
-      "source.fixAll.eslint": "explicit",
-      "source.organizeImports": "never"
+      "source.fixAll.stylelint": "explicit"
     },
     "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true
+  },
+  "[html]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.fixAll.stylelint": "never"
+    },
+    "editor.defaultFormatter": "vscode.html-language-features",
+    "editor.formatOnPaste": true,
     "editor.formatOnSave": true
   },
   "[javascript]": {
     "editor.codeActionsOnSave": {
-      "source.fixAll.prettier": "explicit",
       "source.fixAll.eslint": "explicit",
+      "source.fixAll.prettier": "never",
       "source.fixAll.stylelint": "never",
       "source.organizeImports": "never"
     },
@@ -62,22 +35,75 @@
     "editor.formatOnPaste": true,
     "editor.formatOnSave": true
   },
-  "stylelint.validate": [
-    "css",
-    "scss",
-    "vue"
-  ],
-  "css.validate": false,
-  "scss.validate": false,
-  "files.associations": {
-    "*.scss": "scss",
-    "*.vue": "vue"
+  "[typescript]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit",
+      "source.fixAll.prettier": "never",
+      "source.organizeImports": "never"
+    },
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true
   },
-  "vue.inlayHints.optionsWrapper": false,
-  "vue.inlayHints.missingProps": false,
-  "explorer.fileNesting.enabled": true,
-  "explorer.fileNesting.patterns": {
-    "*.ts": "${capture}.js, ${capture}.d.ts, ${capture}.spec.ts",
-    "*.vue": "${capture}.scss, ${capture}.spec.ts"
-  }
+  "[typescript][vue]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.prettier": "explicit",
+      "source.fixAll.eslint": "explicit",
+      "source.organizeImports": "never"
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true
+  },
+  "[vue]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit",
+      "source.fixAll.prettier": "never",
+      "source.organizeImports": "never"
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true
+  },
+  "[json]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit"
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true
+  },
+  "[jsonc]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit"
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true
+  },
+  "[markdown]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.markdownlint": "explicit"
+    },
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true
+  },
+  "css.validate": false,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": true,
+  "eslint.format.enable": false,
+  "eslint.validate": ["javascript", "typescript", "vue"],
+  "eslint.codeAction.showDocumentation": {
+    "enable": true
+  },
+  "eslint.codeActionsOnSave.mode": "problems",
+  "scss.validate": false,
+  "stylelint.packageManager": "yarn",
+  "stylelint.validate": ["html", "scss"],
+  "npm.packageManager": "yarn",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "gitPrefix.replacement": "$1 | ",
+  "cSpell.words": []
 }

@@ -8,18 +8,20 @@
 import { createApp } from 'vue'
 
 // Config
+import App from './App.vue'
+
 import { validateEnv } from '@/config/env'
 
 // Plugins
 import { registerPlugins } from '@/plugins'
 
 // Components
-import App from './App.vue'
 
 // Styles
 // Прямой импорт шрифтов для Vuetify
 // import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
+
 // import '@fontsource/roboto/500.css'
 // import '@fontsource/roboto/700.css'
 import '@mdi/font/css/materialdesignicons.css'

@@ -1,6 +1,5 @@
 {
   "recommendations": [
-    "vue.volar",
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
     "editorconfig.editorconfig",
@@ -14,6 +13,7 @@
     "vitest.explorer"
   ],
   "unwantedRecommendations": [
+    "vue.volar",
     "octref.vetur",
     "hookyqr.beautify",
     "dbaeumer.jshint",
