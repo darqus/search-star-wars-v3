@@ -100,7 +100,7 @@ export const characterSearchFeature: CharacterSearchFeature = new CharacterSearc
 /**
  * Convenience function to create search composable with repository injection
  */
-export function createCharacterSearch(endpoint: string, config?: any) {
+export function createCharacterSearch(endpoint: string, config?: Record<string, unknown>) {
   const repository = characterSearchFeature.getRepository()
 
   return characterSearchFeature.useCharacterSearch(repository, endpoint, config)
