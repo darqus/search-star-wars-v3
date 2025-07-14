@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const VERSION = import.meta.env.VITE_APP_VERSION
 const BUILD_DATE =
-  import.meta.env.VITE_APP_BUILD_DATE || new Date().toISOString().split('T')[0]
+  import.meta.env.VITE_APP_BUILD_DATE ?? new Date().toISOString().split('T')[0]
 
 const info = [ `version: ${VERSION}`, `build: ${BUILD_DATE}` ].join('<br>')
 </script>
