@@ -1,22 +1,19 @@
 import { Character as CharacterEntity, SearchResult as SearchResultEntity } from '../domain/entities/Character'
 
 import type { Character, SearchResult } from '../domain/entities/Character'
-import type { ICharacterRepository, SearchParams } from '../domain/repositories/ICharacterRepository'
+import type { ICharacterRepository } from '../domain/repositories/ICharacterRepository'
 
 import { ApiError, NetworkError } from '@/shared/errors/AppError'
 
-/**
- * HTTP client interface
- */
-type HttpClient = {
-  get: <T>(url: string, config?: { params?: Record<string, any> }) => Promise<T>
+type ApiCharacterResponse = {
+  id: string
+  name: string
+  description?: string
+  image?: string
 }
 
-/**
- * API response structure
- */
-type ApiResponse = {
-  data: any[]
+type ApiSearchResponse = {
+  data: ApiCharacterResponse[]
   info: {
     total: number
     page: number
@@ -25,6 +22,23 @@ type ApiResponse = {
     prev: string | null
   }
 }
+
+type CharacterFilter = {
+  search?: string
+  page?: number
+  limit?: number
+}
+
+/**
+ * HTTP client interface
+ */
+type HttpClient = {
+  get: <T>(url: string, config?: { params?: Record<string, unknown> }) => Promise<T>
+}
+
+/**
+ * API response structure
+ */
 
 /**
  * HTTP-based character repository implementation
@@ -38,11 +52,11 @@ export class HttpCharacterRepository implements ICharacterRepository {
   /**
    * Find character by ID
    */
-  async findById(id: string, endpoint: string): Promise<Character | null> {
+  async getCharacter(id: string): Promise<Character | null> {
     try {
-      const response = await this.httpClient.get<any>(`${this.baseUrl}/${endpoint}/${id}`)
+      const response = await this.httpClient.get<ApiCharacterResponse>(`${this.baseUrl}/people/${id}`)
 
-      return CharacterEntity.fromApiResponse(response, endpoint)
+      return CharacterEntity.fromApiResponse(response, 'people')
     } catch (error) {
       if (this.isNotFoundError(error)) {
         return null
@@ -54,9 +68,16 @@ export class HttpCharacterRepository implements ICharacterRepository {
   /**
    * Search characters with parameters
    */
-  async search(params: SearchParams): Promise<SearchResult> {
+  async searchCharacters(filter: CharacterFilter): Promise<SearchResult> {
+    const params = {
+      endpoint: 'people',
+      search: filter.search,
+      page: filter.page ?? 1,
+      limit: filter.limit ?? 10
+    }
+
     try {
-      const queryParams: Record<string, any> = {
+      const queryParams: Record<string, string> = {
         page: params.page.toString(),
         limit: params.limit.toString(),
       }
@@ -65,7 +86,7 @@ export class HttpCharacterRepository implements ICharacterRepository {
         queryParams.search = params.search
       }
 
-      const response = await this.httpClient.get<ApiResponse>(`${this.baseUrl}/${params.endpoint}`, {
+      const response = await this.httpClient.get<ApiSearchResponse>(`${this.baseUrl}/${params.endpoint}`, {
         params: queryParams,
       })
 
@@ -88,9 +109,6 @@ export class HttpCharacterRepository implements ICharacterRepository {
   /**
    * Get characters by endpoint with pagination
    */
-  async findByEndpoint(endpoint: string, page: number, limit: number): Promise<SearchResult> {
-    return this.search({ endpoint, page, limit })
-  }
 
   /**
    * Clear cache (no-op for HTTP repository)
@@ -102,24 +120,46 @@ export class HttpCharacterRepository implements ICharacterRepository {
   /**
    * Check if error is 404 Not Found
    */
-  private isNotFoundError(error: any): boolean {
-    return error?.response?.status === 404 || error?.status === 404
+  private isNotFoundError(error: unknown): boolean {
+    if (typeof error !== 'object' || error === null) {
+      return false
+    }
+
+    const axiosError = error as { response?: { status?: number }, status?: number }
+
+    return axiosError.response?.status === 404 || axiosError.status === 404
   }
 
   /**
    * Map HTTP errors to domain errors
    */
-  private mapError(error: any): Error {
-    if (error?.code === 'NETWORK_ERROR' || error?.message?.includes('fetch')) {
-      return new NetworkError('Network request failed', error)
+  private mapError(error: unknown): Error {
+    if (typeof error !== 'object' || error === null) {
+      return new NetworkError('Unknown network error')
     }
 
-    const status = error?.response?.status || error?.status || 500
-    const message = error?.response?.statusText || error?.message || 'Unknown API error'
+    const _error = error as {
+      code?: string
+      message?: string
+      response?: {
+        status?: number
+        statusText?: string
+      }
+      status?: number
+      config?: { url?: string }
+      url?: string
+    }
+
+    if (_error.code === 'NETWORK_ERROR' || _error.message?.includes('fetch')) {
+      return new NetworkError('Network request failed', _error)
+    }
+
+    const status = _error.response?.status || _error.status || 500
+    const message = _error.response?.statusText || _error.message || 'Unknown API error'
 
     return new ApiError(`API request failed: ${message}`, status, {
-      originalError: error?.message,
-      url: error?.config?.url || error?.url,
+      originalError: _error.message,
+      url: _error.config?.url || _error.url,
     })
   }
 }

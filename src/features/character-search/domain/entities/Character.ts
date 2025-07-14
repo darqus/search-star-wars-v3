@@ -1,3 +1,17 @@
+type ApiCharacterResponse = {
+  id: string
+  name: string
+  description?: string
+  image?: string
+}
+
+type ApiSearchResponse = {
+  results: ApiCharacterResponse[]
+  total: number
+  page: number
+  pages: number
+}
+
 /**
  * Character domain entity
  */
@@ -15,8 +29,14 @@ export class Character {
   /**
    * Create from API response
    */
-  static fromApiResponse(data: any, endpoint: string): Character {
-    return new Character(data.id, data.name, data.description || '', data.image || '', endpoint)
+  static fromApiResponse(data: ApiCharacterResponse, endpoint: string): Character {
+    return new Character(
+      data.id,
+      data.name,
+      data.description ?? '',
+      data.image ?? '',
+      endpoint
+    )
   }
 
   /**
@@ -107,10 +127,16 @@ export class SearchResult {
   /**
    * Create from API response
    */
-  static fromApiResponse(data: any, endpoint: string): SearchResult {
-    const characters = data.results.map((item: any) => Character.fromApiResponse(item, endpoint))
+  static fromApiResponse(data: ApiSearchResponse, endpoint: string): SearchResult {
+    const characters = data.results.map((item) => Character.fromApiResponse(item, endpoint))
 
-    return new SearchResult(characters, data.total, data.page, data.page < data.pages, data.page > 1)
+    return new SearchResult(
+      characters,
+      data.total,
+      data.page,
+      data.page < data.pages,
+      data.page > 1
+    )
   }
 
   /**
