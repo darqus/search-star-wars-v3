@@ -20,7 +20,7 @@ src/components/
 ├── SearchField.vue           # Компонент поля поиска
 ├── ResultDisplay.vue         # Компонент отображения результатов
 ├── AppDialog.vue                # Модальное окно
-├── Link.vue                  # Компонент ссылки
+├── AppLink.vue                  # Компонент ссылки
 ├── Logo.vue                  # Логотип
 ├── Mandala.vue               # Анимированный фон
 └── __tests__/                # Тесты компонентов

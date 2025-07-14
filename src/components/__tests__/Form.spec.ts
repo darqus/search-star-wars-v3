@@ -19,7 +19,7 @@ vi.mock('@/components/AppDialog.vue', () => ({
   },
 }))
 
-vi.mock('@/components/Link.vue', () => ({
+vi.mock('@/components/AppLink.vue', () => ({
   __esModule: true,
   default: {
     name: 'MockLink',

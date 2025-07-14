@@ -24,7 +24,7 @@ const Dialog = defineAsyncComponent({
 })
 
 const Link = defineAsyncComponent({
-  loader: () => import('@/components/Link.vue'),
+  loader: () => import('@/components/AppLink.vue'),
   delay: COMPONENT_DELAY_FAST,
 })
 

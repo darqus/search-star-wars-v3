@@ -11,7 +11,7 @@ const FooterDropDownInfo = defineAsyncComponent({
 })
 
 const Link = defineAsyncComponent({
-  loader: () => import('@/components/Link.vue'),
+  loader: () => import('@/components/AppLink.vue'),
   delay: 100,
 })
 
