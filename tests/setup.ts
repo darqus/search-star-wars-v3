@@ -8,6 +8,7 @@ afterEach(() => {
 // Мокирование localStorage
 const localStorageMock = (() => {
   let store: Record<string, string> = {}
+
   return {
     getItem: vi.fn((key: string): string | null => {
       return store[key] || null
