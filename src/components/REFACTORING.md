@@ -14,7 +14,7 @@
 ```
 src/components/
 ├── form/
-│   ├── Form.vue              # Главный компонент формы (контейнер)
+│   ├── AppForm.vue              # Главный компонент формы (контейнер)
 │   └── scss/form.scss        # Стили формы
 ├── FormControls.vue          # Компонент управления формой
 ├── SearchField.vue           # Компонент поля поиска
@@ -28,7 +28,7 @@ src/components/
 
 ## Компоненты
 
-### Form.vue
+### AppForm.vue
 
 **Главный компонент формы**
 

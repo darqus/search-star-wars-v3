@@ -13,7 +13,7 @@ declare module 'vue' {
     Dialog: typeof import('./components/AppDialog.vue')['default']
     Footer: typeof import('./components/footer/Footer.vue')['default']
     FooterDropDownInfo: typeof import('./components/footer/FooterDropDownInfo.vue')['default']
-    Form: typeof import('./components/form/Form.vue')['default']
+    Form: typeof import('./components/form/AppForm.vue')['default']
     FormControls: typeof import('./components/FormControls.vue')['default']
     Link: typeof import('./components/AppLink.vue')['default']
     Logo: typeof import('./components/AppLogo.vue')['default']

@@ -149,7 +149,7 @@ onUnmounted(() => {
 </template>
 
 <style>
-@import './scss/form.scss';
+@import './scss/app-form.scss';
 
 .header-links {
   color: v-bind('isDark() ? "lightblue" : "rgb(36, 125, 199)"');

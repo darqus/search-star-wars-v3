@@ -23,7 +23,7 @@ const Footer = defineAsyncComponent({
 })
 
 const Form = defineAsyncComponent({
-  loader: () => import('@/components/form/Form.vue'),
+  loader: () => import('@/components/form/AppForm.vue'),
   loadingComponent: AsyncComponentWrapper,
   delay: 200,
   timeout: 10_000,

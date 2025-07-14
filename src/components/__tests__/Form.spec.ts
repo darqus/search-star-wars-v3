@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
-import Form from '../form/Form.vue'
+import Form from '../form/AppForm.vue'
 
 // Simplified Vue component mocks to avoid __isTeleport issues
 vi.mock('@/components/AppDialog.vue', () => ({
