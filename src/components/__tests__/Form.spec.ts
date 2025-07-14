@@ -42,7 +42,7 @@ vi.mock('@/components/AppLogo.vue', () => ({
   },
 }))
 
-vi.mock('@/components/Mandala.vue', () => ({
+vi.mock('@/components/AppMandala.vue', () => ({
   __esModule: true,
   default: {
     name: 'MockMandala',

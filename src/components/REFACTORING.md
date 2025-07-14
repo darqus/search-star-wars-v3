@@ -22,7 +22,7 @@ src/components/
 ├── AppDialog.vue                # Модальное окно
 ├── AppLink.vue                  # Компонент ссылки
 ├── AppLogo.vue                  # Логотип
-├── Mandala.vue               # Анимированный фон
+├── AppMandala.vue               # Анимированный фон
 └── __tests__/                # Тесты компонентов
 ```
 

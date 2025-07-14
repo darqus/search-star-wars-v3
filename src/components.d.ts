@@ -17,7 +17,7 @@ declare module 'vue' {
     FormControls: typeof import('./components/FormControls.vue')['default']
     Link: typeof import('./components/AppLink.vue')['default']
     Logo: typeof import('./components/AppLogo.vue')['default']
-    Mandala: typeof import('./components/Mandala.vue')['default']
+    Mandala: typeof import('./components/AppMandala.vue')['default']
     ResultDisplay: typeof import('./components/ResultDisplay.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

@@ -34,7 +34,7 @@ const Logo = defineAsyncComponent({
 })
 
 const Mandala = defineAsyncComponent({
-  loader: () => import('@/components/Mandala.vue'),
+  loader: () => import('@/components/AppMandala.vue'),
   delay: COMPONENT_DELAY_MEDIUM,
 })
 
