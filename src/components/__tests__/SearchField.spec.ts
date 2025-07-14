@@ -50,7 +50,7 @@ describe('SearchField', () => {
     expect(wrapper.find('label').text()).toContain('Search people')
   })
 
-  it('shows dropdown when search results are available', async () => {
+  it('shows dropdown when search results are available', () => {
     const wrapper = mount(SearchField, {
       global: {
         plugins: [ vuetify ],
