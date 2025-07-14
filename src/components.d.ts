@@ -10,7 +10,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     AsyncComponentWrapper: typeof import('./components/AsyncComponentWrapper.vue')['default']
     CacheControls: typeof import('./components/CacheControls.vue')['default']
-    Dialog: typeof import('./components/Dialog.vue')['default']
+    Dialog: typeof import('./components/AppDialog.vue')['default']
     Footer: typeof import('./components/footer/Footer.vue')['default']
     FooterDropDownInfo: typeof import('./components/footer/FooterDropDownInfo.vue')['default']
     Form: typeof import('./components/form/Form.vue')['default']

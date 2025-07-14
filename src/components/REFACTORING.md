@@ -19,7 +19,7 @@ src/components/
 ├── FormControls.vue          # Компонент управления формой
 ├── SearchField.vue           # Компонент поля поиска
 ├── ResultDisplay.vue         # Компонент отображения результатов
-├── Dialog.vue                # Модальное окно
+├── AppDialog.vue                # Модальное окно
 ├── Link.vue                  # Компонент ссылки
 ├── Logo.vue                  # Логотип
 ├── Mandala.vue               # Анимированный фон

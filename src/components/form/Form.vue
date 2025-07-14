@@ -19,7 +19,7 @@ import './scss/form.scss'
 
 // Lazy loaded components with loading indicators
 const Dialog = defineAsyncComponent({
-  loader: () => import('@/components/Dialog.vue'),
+  loader: () => import('@/components/AppDialog.vue'),
   delay: COMPONENT_DELAY_MEDIUM,
 })
 

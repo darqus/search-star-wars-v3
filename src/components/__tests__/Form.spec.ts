@@ -7,7 +7,7 @@ import * as directives from 'vuetify/directives'
 import Form from '../form/Form.vue'
 
 // Simplified Vue component mocks to avoid __isTeleport issues
-vi.mock('@/components/Dialog.vue', () => ({
+vi.mock('@/components/AppDialog.vue', () => ({
   __esModule: true,
   default: {
     name: 'MockDialog',

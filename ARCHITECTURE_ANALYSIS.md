@@ -525,7 +525,7 @@ src/
 │   │   ├── HttpClient.ts
 │   │   └── ApiError.ts
 │   ├── ui/                   # Переиспользуемые UI компоненты
-│   │   ├── Dialog.vue
+│   │   ├── AppDialog.vue
 │   │   ├── Logo.vue
 │   │   └── AsyncWrapper.vue
 │   ├── utils/
