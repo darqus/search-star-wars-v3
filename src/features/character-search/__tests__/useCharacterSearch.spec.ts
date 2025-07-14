@@ -51,7 +51,6 @@ describe('useCharacterSearch', () => {
     await nextTick()
 
     expect(mockSearch).toHaveBeenCalledWith({
-      endpoint: 'characters',
       page: 1,
       limit: 20,
       search: 'Luke',
@@ -131,7 +130,6 @@ describe('useCharacterSearch', () => {
     await goToPage(2)
 
     expect(mockSearch).toHaveBeenLastCalledWith({
-      endpoint: 'characters',
       page: 2,
       limit: 20,
       search: 'Luke',
@@ -149,12 +147,20 @@ describe('useCharacterSearch', () => {
     mockSearch.mockResolvedValue(SearchResult.empty())
 
     await searchImmediate('Luke')
-    expect(mockSearch).toHaveBeenCalledWith(expect.objectContaining({ endpoint: 'characters' }))
+    expect(mockSearch).toHaveBeenCalledWith({
+      page: 1,
+      limit: 20,
+      search: 'Luke',
+    })
 
     // Change endpoint
     endpoint.value = 'droids'
     await searchImmediate('R2D2')
-    expect(mockSearch).toHaveBeenCalledWith(expect.objectContaining({ endpoint: 'droids' }))
+    expect(mockSearch).toHaveBeenCalledWith({
+      page: 1,
+      limit: 20,
+      search: 'R2D2',
+    })
   })
 
   it('should debounce search input', async () => {
