@@ -92,12 +92,14 @@ export class BrowserCacheRepository implements ICacheRepository {
       }
 
       // Check cache size and cleanup if needed
-      await this.ensureCacheSize()
+      this.ensureCacheSize()
 
       this.storage.setItem(cacheKey, JSON.stringify(entry))
     } catch (error) {
       console.warn('Cache set failed:', error)
     }
+
+    return Promise.resolve()
   }
 
   /**
@@ -111,6 +113,8 @@ export class BrowserCacheRepository implements ICacheRepository {
     } catch (error) {
       console.warn('Cache delete failed:', error)
     }
+
+    return Promise.resolve()
   }
 
   /**
@@ -126,6 +130,8 @@ export class BrowserCacheRepository implements ICacheRepository {
     } catch (error) {
       console.warn('Cache clear failed:', error)
     }
+
+    return Promise.resolve()
   }
 
   /**
@@ -152,7 +158,7 @@ export class BrowserCacheRepository implements ICacheRepository {
   /**
    * Cleanup expired entries
    */
-  async cleanup(): Promise<number> {
+  cleanup(): Promise<number> {
     let cleanedCount = 0
 
     try {
@@ -166,7 +172,7 @@ export class BrowserCacheRepository implements ICacheRepository {
         }
 
         try {
-          const entry: CacheEntry<any> = JSON.parse(item)
+          const entry: CacheEntry<unknown> = JSON.parse(item)
 
           if (this.isExpired(entry)) {
             this.storage.removeItem(cacheKey)
@@ -182,7 +188,7 @@ export class BrowserCacheRepository implements ICacheRepository {
       console.warn('Cache cleanup failed:', error)
     }
 
-    return cleanedCount
+    return Promise.resolve(cleanedCount)
   }
 
   /**
@@ -195,7 +201,7 @@ export class BrowserCacheRepository implements ICacheRepository {
   /**
    * Check if cache entry is expired
    */
-  private isExpired(entry: CacheEntry<any>): boolean {
+  private isExpired(entry: CacheEntry<unknown>): boolean {
     return Date.now() - entry.timestamp > entry.ttl
   }
 
@@ -209,7 +215,7 @@ export class BrowserCacheRepository implements ICacheRepository {
       for (let i = 0; i < this.storage.length; i++) {
         const key = this.storage.key(i)
 
-        if (key && key.startsWith(this.config.keyPrefix)) {
+        if (key?.startsWith(this.config.keyPrefix)) {
           keys.push(key)
         }
       }
@@ -223,7 +229,7 @@ export class BrowserCacheRepository implements ICacheRepository {
   /**
    * Ensure cache doesn't exceed max size
    */
-  private async ensureCacheSize(): Promise<void> {
+  private ensureCacheSize(): void {
     const keys = this.getCacheKeys()
 
     if (keys.length >= this.config.maxSize) {
@@ -235,7 +241,7 @@ export class BrowserCacheRepository implements ICacheRepository {
           const item = this.storage.getItem(key)
 
           if (item) {
-            const entry: CacheEntry<any> = JSON.parse(item)
+            const entry: CacheEntry<unknown> = JSON.parse(item)
 
             entries.push({ key, timestamp: entry.timestamp })
           }
