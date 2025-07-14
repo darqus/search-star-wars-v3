@@ -21,12 +21,12 @@ if (!fs.existsSync(dir)) {
 
 // Create the JavaScript file
 fs.writeFileSync(jsFilePath, jsCssContent)
-console.log(`Created JS mock for CSS at: ${jsFilePath}`)
+console.warn(`Created JS mock for CSS at: ${jsFilePath}`)
 
 // Optionally rename the CSS file so it won't be found directly
 if (fs.existsSync(cssFilePath)) {
   const backupPath = `${cssFilePath}.backup`
 
   fs.renameSync(cssFilePath, backupPath)
-  console.log(`Renamed original CSS file to: ${backupPath}`)
+  console.warn(`Renamed original CSS file to: ${backupPath}`)
 }
