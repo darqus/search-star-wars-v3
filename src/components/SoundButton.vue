@@ -28,8 +28,12 @@ watch(isLoop, (value) => {
   sound.loop = value
 })
 
-const onPlaySound = () => {
-  sound.play()
+const onPlaySound = async () => {
+  try {
+    await sound.play()
+  } catch (error) {
+    console.error('Audio playback failed:', error)
+  }
 }
 
 const onPauseSound = () => {
