@@ -49,7 +49,7 @@ class CharacterSearchFeatureImpl implements CharacterSearchFeature {
     try {
       setupCharacterSearchDI()
       this.isSetup = true
-      console.info('Character search feature initialized successfully')
+      console.warn('Character search feature initialized successfully')
     } catch (error) {
       console.error('Failed to setup character search feature:', error)
       throw error
@@ -67,7 +67,7 @@ class CharacterSearchFeatureImpl implements CharacterSearchFeature {
     try {
       // Cleanup will be handled by the DI container
       this.isSetup = false
-      console.info('Character search feature cleaned up successfully')
+      console.warn('Character search feature cleaned up successfully')
     } catch (error) {
       console.error('Failed to cleanup character search feature:', error)
     }
