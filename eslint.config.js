@@ -17,8 +17,6 @@ export default defineConfigWithVueTs(
       '**/package.json',
       '**/yarn.lock',
       'dist',
-      'src-capacitor',
-      'src-cordova',
       'node_modules',
     ],
   },
@@ -60,10 +58,7 @@ export default defineConfigWithVueTs(
         ...globals.node, // SSR, Electron, config files
         process: 'readonly', // process.env.*
         ga: 'readonly', // Google Analytics
-        cordova: 'readonly',
-        Capacitor: 'readonly',
-        chrome: 'readonly', // BEX related
-        browser: 'readonly', // BEX related
+        chrome: 'readonly',
       },
     },
   },
