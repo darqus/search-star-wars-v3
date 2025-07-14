@@ -38,7 +38,7 @@ export const useStarWarsStore = defineStore('starWars', () => {
 
   // Computed
   const isLoading = computed(() => apiIsLoading.value)
-  const error = computed(() => apiError.value)
+  const storeError = computed(() => apiError.value)
 
   // Return items directly since server-side filtering is used
   const filteredItems = computed(() => items.value)
@@ -240,7 +240,7 @@ export const useStarWarsStore = defineStore('starWars', () => {
 
     // Computed
     isLoading,
-    error,
+    error: storeError,
     filteredItems,
 
     // Actions
