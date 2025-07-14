@@ -154,12 +154,12 @@ export class HttpCharacterRepository implements ICharacterRepository {
       return new NetworkError('Network request failed', _error)
     }
 
-    const status = _error.response?.status || _error.status || 500
-    const message = _error.response?.statusText || _error.message || 'Unknown API error'
+    const status = _error.response?.status ?? _error.status ?? 500
+    const message = _error.response?.statusText ?? _error.message ?? 'Unknown API error'
 
     return new ApiError(`API request failed: ${message}`, status, {
       originalError: _error.message,
-      url: _error.config?.url || _error.url,
+      url: _error.config?.url ?? _error.url,
     })
   }
 }
