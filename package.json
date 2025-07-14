@@ -11,12 +11,6 @@
     "type-check": "vue-tsc --build --force",
     "format": "bash format.sh",
     "deploy": "npm run build && npx gh-pages -d dist",
-    "lint": "npm run lint:js && npm run lint:css",
-    "lint:js": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-    "lint:css": "stylelint \"**/*.{vue,scss,css}\" --fix",
-    "lint:vue": "eslint \"src/**/*.vue\" --fix",
-    "lint:vue:check": "eslint \"src/**/*.vue\"",
-    "lint:attributes": "eslint \"src/**/*.vue\" --fix --rule 'vue/attributes-order: error'",
     "test:unit": "vitest",
     "test:unit:ci": "vitest run"
   },
