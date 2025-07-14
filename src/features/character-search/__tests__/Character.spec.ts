@@ -27,6 +27,7 @@ describe('Character Entity', () => {
 
   it('should return display name', () => {
     const character = new Character('1', 'Luke Skywalker', '', '', 'characters')
+
     expect(character.getDisplayName()).toBe('Luke Skywalker')
   })
 

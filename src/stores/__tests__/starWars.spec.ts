@@ -1,5 +1,7 @@
 import { createPinia, setActivePinia } from 'pinia'
+
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { useStarWarsStore } from '../starWars'
 
 // Mock composable
@@ -101,6 +103,7 @@ describe('Star Wars Store', () => {
     await store.fetchItems()
 
     const item = store.items[1] // Выбираем Darth Vader
+
     await store.selectItem(item)
 
     expect(store.selectedItem).toBe(item)
@@ -119,6 +122,7 @@ describe('Star Wars Store', () => {
     // Temporarily replace fetchItems with our spy while maintaining original behavior
     store.fetchItems = vi.fn(async () => {
       fetchItemsSpy()
+
       return await originalFetchItems()
     })
 
@@ -143,6 +147,7 @@ describe('Star Wars Store', () => {
     // Temporarily replace fetchItems with our spy while maintaining original behavior
     store.fetchItems = vi.fn(async () => {
       fetchItemsSpy()
+
       return await originalFetchItems()
     })
 

@@ -1,11 +1,12 @@
-import type { MockedFunction } from 'vitest'
-import type { ICharacterRepository, SearchParams } from '../domain/repositories/ICharacterRepository'
+import { nextTick, ref } from 'vue'
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { nextTick, ref } from 'vue'
 
 import { useCharacterSearch } from '../composables/useCharacterSearch'
 import { SearchResult } from '../domain/entities/Character'
+
+import type { ICharacterRepository, SearchParams } from '../domain/repositories/ICharacterRepository'
+import type { MockedFunction } from 'vitest'
 
 // Mock repository
 const createMockRepository = (): ICharacterRepository => {
@@ -40,14 +41,14 @@ describe('useCharacterSearch', () => {
   it('should perform search when query is long enough', async () => {
     const mockResult = SearchResult.fromApiResponse(
       {
-        results: [{ id: '1', name: 'Luke Skywalker', description: 'Jedi' }],
+        results: [ { id: '1', name: 'Luke Skywalker', description: 'Jedi' } ],
         total: 1,
         page: 1,
         pages: 1,
         count: 1,
         limit: 20,
       },
-      'characters',
+      'characters'
     )
 
     mockSearch.mockResolvedValue(mockResult)
@@ -85,15 +86,15 @@ describe('useCharacterSearch', () => {
     mockSearch.mockResolvedValue(
       SearchResult.fromApiResponse(
         {
-          results: [{ id: '1', name: 'Luke' }],
+          results: [ { id: '1', name: 'Luke' } ],
           total: 1,
           page: 1,
           pages: 1,
           count: 1,
           limit: 20,
         },
-        'characters',
-      ),
+        'characters'
+      )
     )
 
     await searchImmediate('Luke')
@@ -106,6 +107,7 @@ describe('useCharacterSearch', () => {
 
   it('should handle search errors', async () => {
     const searchError = new Error('Network error')
+
     mockSearch.mockRejectedValue(searchError)
 
     const { searchImmediate, error, searchResults } = useCharacterSearch(mockRepository, 'characters')
@@ -120,21 +122,21 @@ describe('useCharacterSearch', () => {
   it('should handle pagination', async () => {
     const mockResult = SearchResult.fromApiResponse(
       {
-        results: [{ id: '1', name: 'Luke' }],
+        results: [ { id: '1', name: 'Luke' } ],
         total: 50,
         page: 2,
         pages: 3,
         count: 1,
         limit: 20,
       },
-      'characters',
+      'characters'
     )
 
     mockSearch.mockResolvedValue(mockResult)
 
     const { searchImmediate, goToPage, currentPage, hasNextPage, hasPrevPage } = useCharacterSearch(
       mockRepository,
-      'characters',
+      'characters'
     )
 
     await searchImmediate('Luke')
@@ -174,15 +176,15 @@ describe('useCharacterSearch', () => {
     mockSearch.mockResolvedValue(
       SearchResult.fromApiResponse(
         {
-          results: [{ id: '1', name: 'Luke Skywalker' }],
+          results: [ { id: '1', name: 'Luke Skywalker' } ],
           total: 1,
           page: 1,
           pages: 1,
           count: 1,
           limit: 20,
         },
-        'characters',
-      ),
+        'characters'
+      )
     )
 
     const { onSearchInput } = useCharacterSearch(mockRepository, 'characters', { debounceMs: 300 })

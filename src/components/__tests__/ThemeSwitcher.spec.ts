@@ -1,9 +1,12 @@
-import { mount } from '@vue/test-utils'
-import { createPinia, setActivePinia } from 'pinia'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createVuetify } from 'vuetify'
+
+import { createPinia, setActivePinia } from 'pinia'
+
+import { mount } from '@vue/test-utils'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
+
 import ThemeSwitcher from '../ThemeSwitcher.vue'
 
 // Создаем моковое хранилище
@@ -32,7 +35,7 @@ describe('ThemeSwitcher', () => {
   it('renders properly with default props', () => {
     const wrapper = mount(ThemeSwitcher, {
       global: {
-        plugins: [vuetify],
+        plugins: [ vuetify ],
       },
     })
 
@@ -45,7 +48,7 @@ describe('ThemeSwitcher', () => {
         label: 'Custom Label',
       },
       global: {
-        plugins: [vuetify],
+        plugins: [ vuetify ],
       },
     })
 
@@ -55,7 +58,7 @@ describe('ThemeSwitcher', () => {
   it('changes theme when toggled', async () => {
     const wrapper = mount(ThemeSwitcher, {
       global: {
-        plugins: [vuetify],
+        plugins: [ vuetify ],
       },
     })
 

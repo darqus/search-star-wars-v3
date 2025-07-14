@@ -1,5 +1,9 @@
 import { createPinia, setActivePinia } from 'pinia'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import {
+  afterEach, beforeEach, describe, expect, it, vi 
+} from 'vitest'
+
 import { useSearch } from '../useSearch'
 
 // Mock the store
@@ -16,6 +20,7 @@ vi.mock('@/stores/starWars', () => ({
 describe('useSearch', () => {
   beforeEach(() => {
     const pinia = createPinia()
+
     setActivePinia(pinia)
     vi.clearAllTimers()
     vi.useFakeTimers()
@@ -48,6 +53,7 @@ describe('useSearch', () => {
     const { highlightText } = useSearch()
 
     const result = highlightText('Luke Skywalker', 'luke')
+
     expect(result).toContain('<span class="text-primary">Luke</span>')
   })
 

@@ -1,9 +1,12 @@
-import { mount } from '@vue/test-utils'
-import { createPinia, setActivePinia } from 'pinia'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createVuetify } from 'vuetify'
+
+import { createPinia, setActivePinia } from 'pinia'
+
+import { mount } from '@vue/test-utils'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
+
 import SearchField from '../SearchField.vue'
 
 const vuetify = createVuetify({
@@ -27,13 +30,14 @@ vi.mock('@/composables/useSearch', () => ({
 describe('SearchField', () => {
   beforeEach(() => {
     const pinia = createPinia()
+
     setActivePinia(pinia)
   })
 
   it('renders correctly', () => {
     const wrapper = mount(SearchField, {
       global: {
-        plugins: [vuetify],
+        plugins: [ vuetify ],
       },
       props: {
         selectedApi: 'people',
@@ -49,7 +53,7 @@ describe('SearchField', () => {
   it('shows dropdown when search results are available', async () => {
     const wrapper = mount(SearchField, {
       global: {
-        plugins: [vuetify],
+        plugins: [ vuetify ],
       },
       props: {
         selectedApi: 'people',

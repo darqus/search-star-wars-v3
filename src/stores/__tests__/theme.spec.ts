@@ -1,5 +1,7 @@
 import { createPinia, setActivePinia } from 'pinia'
+
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { useThemeStore } from '../theme'
 
 // Мокаем зависимости
