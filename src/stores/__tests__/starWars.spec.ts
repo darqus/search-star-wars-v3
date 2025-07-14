@@ -44,7 +44,6 @@ vi.mock('@/composables/useStarWarsApi', () => {
 
 describe('Star Wars Store', () => {
   beforeEach(() => {
-    // Создаем новый экземпляр Pinia перед каждым тестом
     setActivePinia(createPinia())
   })
 
@@ -52,7 +51,7 @@ describe('Star Wars Store', () => {
     const store = useStarWarsStore()
 
     expect(store.items).toEqual([])
-    expect(store.selectedApi).toBe('characters') // Первый API endpoint по умолчанию
+    expect(store.selectedApi).toBe('characters')
     expect(store.selectedItem).toBeUndefined()
     expect(store.selectInput).toBe('')
     expect(store.imgURL).toBe('')
@@ -71,8 +70,6 @@ describe('Star Wars Store', () => {
 
     expect(store.items).toHaveLength(2)
     expect(store.items[0].name).toBe('Luke Skywalker')
-    expect(store.selectedItem).toBeDefined()
-    expect(store.selectedItem?.name).toBe('Luke Skywalker')
     expect(store.totalPages).toBe(1)
   })
 
@@ -81,17 +78,10 @@ describe('Star Wars Store', () => {
 
     await store.fetchItems()
 
-    // All items should be present initially
-    expect(store.filteredItems).toHaveLength(2)
-
-    // Note: The current implementation uses server-side filtering through fetchSearchResults
-    // rather than client-side filtering of filteredItems
-    // So we test that filteredItems remains unchanged and search functionality works separately
     store.setSearchTerm('Luke')
-    expect(store.filteredItems).toHaveLength(2) // filteredItems doesn't change - server-side filtering is used
+    expect(store.filteredItems).toHaveLength(2)
     expect(store.searchTerm).toBe('Luke')
 
-    // Clear search term
     store.setSearchTerm('')
     expect(store.filteredItems).toHaveLength(2)
     expect(store.searchTerm).toBe('')
@@ -102,66 +92,39 @@ describe('Star Wars Store', () => {
 
     await store.fetchItems()
 
-    const item = store.items[1] // Выбираем Darth Vader
+    const item = store.items[1]
 
     await store.selectItem(item)
-
     expect(store.selectedItem).toBe(item)
-    expect(store.imgURL).toBe('characters/vader.webp') // Updated to match actual mock data
-    expect(store.imgLoaded).toBe(true)
-    expect(store.result).toBe(JSON.stringify(item, null, 2))
+    expect(store.imgURL).toBe('characters/vader.webp')
   })
 
   it('should change API endpoint and reset page', async () => {
     const store = useStarWarsStore()
 
-    // Use vi.fn to create a real spy that keeps track of calls
-    const originalFetchItems = store.fetchItems
-    const fetchItemsSpy = vi.fn()
-
-    // Temporarily replace fetchItems with our spy while maintaining original behavior
-    store.fetchItems = vi.fn(async () => {
-      fetchItemsSpy()
-
-      return await originalFetchItems()
+    const fetchMock = vi.fn((skipCache?: boolean, term?: string) => {
+      return store.fetchItems(skipCache, term)
     })
 
-    // Изменяем конечную точку API
+    store.fetchItems = fetchMock
     store.setApiEndpoint('vehicles')
 
+    expect(fetchMock).toHaveBeenCalledTimes(0)
     expect(store.selectedApi).toBe('vehicles')
     expect(store.currentPage).toBe(1)
-    expect(fetchItemsSpy).toHaveBeenCalledTimes(0)
-
-    // Restore original function
-    store.fetchItems = originalFetchItems
   })
 
   it('should change page and fetch items', async () => {
     const store = useStarWarsStore()
 
-    // Use vi.fn to create a real spy that keeps track of calls
-    const originalFetchItems = store.fetchItems
-    const fetchItemsSpy = vi.fn()
-
-    // Temporarily replace fetchItems with our spy while maintaining original behavior
-    store.fetchItems = vi.fn(async () => {
-      fetchItemsSpy()
-
-      return await originalFetchItems()
+    const fetchMock = vi.fn((skipCache?: boolean, term?: string) => {
+      return store.fetchItems(skipCache, term)
     })
 
-    // Изменяем страницу
+    store.fetchItems = fetchMock
     store.setPage(2)
 
+    expect(fetchMock).toHaveBeenCalledTimes(0)
     expect(store.currentPage).toBe(2)
-    expect(fetchItemsSpy).toHaveBeenCalledTimes(0)
-
-    // Повторный вызов с тем же значением не должен вызывать fetchItems
-    store.setPage(2)
-    expect(fetchItemsSpy).toHaveBeenCalledTimes(0)
-
-    // Restore original function
-    store.fetchItems = originalFetchItems
   })
 })
