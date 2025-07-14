@@ -83,7 +83,7 @@ export class BrowserCacheRepository implements ICacheRepository {
 
     try {
       const cacheKey = this.buildKey(key)
-      const ttl = ttlMs || this.config.defaultTtl
+      const ttl = ttlMs ?? this.config.defaultTtl
 
       const entry: CacheEntry<T> = {
         data: value,
@@ -287,7 +287,7 @@ export class BrowserCacheRepository implements ICacheRepository {
 
     return {
       getItem(key: string): string | null {
-        return store.get(key) || null
+        return store.get(key) ?? null
       },
       setItem(key: string, value: string): void {
         store.set(key, value)
@@ -301,7 +301,7 @@ export class BrowserCacheRepository implements ICacheRepository {
       key(index: number): string | null {
         const keys = Array.from(store.keys())
 
-        return keys[index] || null
+        return keys[index] ?? null
       },
       get length(): number {
         return store.size
