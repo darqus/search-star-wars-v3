@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 
-export function useLoadingState () {
+export function useLoadingState() {
   const isLoading = ref(false)
   const loadingStates = ref<Record<string, boolean>>({})
 
@@ -20,10 +20,7 @@ export function useLoadingState () {
     return isLoading.value || Object.values(loadingStates.value).some(Boolean)
   }
 
-  const withLoading = async <T>(
-    operation: () => Promise<T>,
-    loadingName?: string,
-  ): Promise<T> => {
+  const withLoading = async <T>(operation: () => Promise<T>, loadingName?: string): Promise<T> => {
     try {
       if (loadingName) {
         setNamedLoading(loadingName, true)

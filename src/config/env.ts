@@ -1,4 +1,4 @@
-interface EnvConfig {
+type EnvConfig = {
   API_BASE_URL: string
   APP_NAME: string
   APP_VERSION: string
@@ -15,7 +15,7 @@ export const env: EnvConfig = {
 }
 
 export const validateEnv = (): void => {
-  const requiredVars = ['API_BASE_URL'] as const
+  const requiredVars = [ 'API_BASE_URL' ] as const
 
   for (const varName of requiredVars) {
     if (!env[varName]) {

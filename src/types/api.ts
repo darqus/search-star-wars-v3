@@ -1,11 +1,11 @@
-export interface Item {
+export type Item = {
   id: string
   name: string
   description: string
   image: string
 }
 
-export interface ApiResponse {
+export type ApiResponse = {
   results: Item[]
   total: number
   count: number
@@ -14,7 +14,7 @@ export interface ApiResponse {
   pages: number
 }
 
-export interface SearchApiItem {
+export type SearchApiItem = {
   api: string
   imgApiPath: string
 }

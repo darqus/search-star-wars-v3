@@ -1,10 +1,13 @@
-import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { useTheme } from 'vuetify'
-import { THEMES } from '@/state'
+
+import { defineStore } from 'pinia'
+
 import getBrowserTheme from '@/utils/getBrowserTheme'
 import { getItem, setItem } from '@/utils/persistenceStorage'
 import setLinkIcons from '@/utils/setLinkIcons'
+
+import { THEMES } from '@/state'
 
 const STORAGE_THEME_KEY = 'isThemeDark'
 
@@ -18,7 +21,7 @@ export const useThemeStore = defineStore('theme', () => {
   const isDark = computed(() => theme.global.current.value.dark)
 
   // Actions
-  function initTheme () {
+  function initTheme() {
     if (isInitialized.value) {
       return
     }
@@ -28,6 +31,7 @@ export const useThemeStore = defineStore('theme', () => {
     if (storedTheme === null) {
       const browserTheme = getBrowserTheme()
       const isBrowserThemeDark = browserTheme === THEMES.dark
+
       setTheme(isBrowserThemeDark)
     } else {
       setTheme(storedTheme)
@@ -36,13 +40,13 @@ export const useThemeStore = defineStore('theme', () => {
     isInitialized.value = true
   }
 
-  function setTheme (dark: boolean) {
+  function setTheme(dark: boolean) {
     theme.global.name.value = dark ? 'dark' : 'light'
     setItem(STORAGE_THEME_KEY, dark)
     setLinkIcons(dark)
   }
 
-  function toggleTheme () {
+  function toggleTheme() {
     setTheme(!isDark.value)
   }
 

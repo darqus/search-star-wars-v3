@@ -1,17 +1,13 @@
 import { ref } from 'vue'
 
-export interface ErrorHandlerOptions {
+export type ErrorHandlerOptions = {
   showToast?: boolean
   logError?: boolean
   defaultMessage?: string
 }
 
-export function useErrorHandler (options: ErrorHandlerOptions = {}) {
-  const {
-    showToast = true,
-    logError = true,
-    defaultMessage = 'An error occurred',
-  } = options
+export function useErrorHandler(options: ErrorHandlerOptions = {}) {
+  const { showToast = true, logError = true, defaultMessage = 'An error occurred' } = options
 
   const error = ref<string | null>(null)
   const isError = ref(false)

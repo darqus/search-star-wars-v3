@@ -8,13 +8,11 @@
 import type { App } from 'vue'
 
 // Plugins
-import { pinia } from '@/stores'
 import router from '../router'
 import vuetify from './vuetify'
 
-export function registerPlugins (app: App) {
-  app
-    .use(pinia)
-    .use(vuetify)
-    .use(router)
+import { pinia } from '@/stores'
+
+export function registerPlugins(app: App) {
+  app.use(pinia).use(vuetify).use(router)
 }

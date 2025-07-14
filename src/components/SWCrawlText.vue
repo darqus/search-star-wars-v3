@@ -1,29 +1,30 @@
 <script setup lang="ts">
-  import { computed } from 'vue'
-  import { useDisplay, useTheme } from 'vuetify'
-  import SWCTEXT from '@/state/swctext'
+import { computed } from 'vue'
+import { useDisplay, useTheme } from 'vuetify'
 
-  const display = useDisplay()
-  const theme = useTheme()
+import SWCTEXT from '@/state/swctext'
 
-  const text = SWCTEXT
+const display = useDisplay()
+const theme = useTheme()
 
-  const isDark = computed(() => theme.global.current.value.dark)
+const text = SWCTEXT
 
-  const color = computed(() => {
-    const colorValue = isDark.value
-      ? 'hsla(60, 100%, 50%, 0.308)'
-      : 'hsla(0, 0%, 0%, 0.308)'
+const isDark = computed(() => theme.global.current.value.dark)
 
-    return `color: ${colorValue}`
-  })
+const color = computed(() => {
+  const colorValue = isDark.value
+    ? 'hsla(60, 100%, 50%, 0.308)'
+    : 'hsla(0, 0%, 0%, 0.308)'
+
+  return `color: ${colorValue}`
+})
 </script>
 
 <template>
   <div
-    class="swct-mask"
     :class="{ mobile: display.smAndDown.value }"
     :style="color"
+    class="swct-mask"
   >
     <div class="shadow" />
     <div class="swct-container">
@@ -48,12 +49,8 @@
   position: absolute;
   inset: 0;
   height: 300px;
-  background: linear-gradient(
-    to top,
-    transparent,
-    rgb(0 0 0 / 12%) 100%
-  );
-  filter: opacity(.8);
+  background: linear-gradient(to top, transparent, rgb(0 0 0 / 12%) 100%);
+  filter: opacity(0.8);
 }
 
 .swct-mask.mobile {
@@ -81,6 +78,8 @@
 }
 
 :deep(.swct-mask ::selection) {
-  color: v-bind('isDark ? "hsl(60deg 100% 50% / 0.708)" : "hsl(60deg 100% 30% / 0.708)"');
+  color: v-bind(
+    'isDark ? "hsl(60deg 100% 50% / 0.708)" : "hsl(60deg 100% 30% / 0.708)"'
+  );
 }
 </style>

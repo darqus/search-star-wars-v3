@@ -55,6 +55,8 @@ export const AUDIO_ICONS = {
 
 export const NON_BREAKING_SPACE = String.fromCodePoint(160)
 
-export type Theme = typeof THEMES[keyof typeof THEMES]
-export type Side = typeof SIDES[keyof typeof SIDES]
-export type Role = typeof ROLES[keyof typeof ROLES]
+export type Theme = (typeof THEMES)[keyof typeof THEMES]
+
+export type Side = (typeof SIDES)[keyof typeof SIDES]
+
+export type Role = (typeof ROLES)[keyof typeof ROLES]

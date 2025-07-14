@@ -1,27 +1,28 @@
 <script setup lang="ts">
-  import { computed } from 'vue'
-  import { useThemeStore } from '@/stores/theme'
+import { computed } from 'vue'
 
-  interface Props {
-    label?: string
-  }
+import { useThemeStore } from '@/stores/theme'
 
-  defineProps<Props>()
+type Props = {
+  label?: string
+}
 
-  const themeStore = useThemeStore()
+defineProps<Props>()
 
-  const isDark = computed({
-    get: () => themeStore.isDark,
-    set: (value: boolean) => {
-      themeStore.setTheme(value)
-    },
-  })
+const themeStore = useThemeStore()
+
+const isDark = computed({
+  get: () => themeStore.isDark,
+  set: (value: boolean) => {
+    themeStore.setTheme(value)
+  },
+})
 </script>
 
 <template>
   <v-switch
     v-model="isDark"
-    hide-details
     :label="label"
+    hide-details
   />
 </template>

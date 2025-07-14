@@ -1,16 +1,17 @@
 <script setup lang="ts">
-  import { computed } from 'vue'
-  import { useTheme } from 'vuetify'
-  import logoSvgPath from '@/state/svgPaths'
+import { computed } from 'vue'
+import { useTheme } from 'vuetify'
 
-  const theme = useTheme()
-  const isDark = computed(() => theme.global.current.value.dark)
+import logoSvgPath from '@/state/svgPaths'
+
+const theme = useTheme()
+const isDark = computed(() => theme.global.current.value.dark)
 </script>
 
 <template>
   <svg
-    class="logo"
     :class="isDark ? 'dark' : 'light'"
+    class="logo"
     height="77.265"
     version="1.1"
     viewBox="0 0 72.026 34.441"
@@ -30,8 +31,7 @@
 }
 
 .logo.dark {
-  filter: invert(0.12) sepia(0.5)
-    drop-shadow(0 10px 8px rgb(255 255 255 / 40%));
+  filter: invert(0.12) sepia(0.5) drop-shadow(0 10px 8px rgb(255 255 255 / 40%));
 }
 
 .logo.light {

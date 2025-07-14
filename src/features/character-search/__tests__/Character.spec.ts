@@ -4,13 +4,7 @@ import { Character } from '../domain/entities/Character'
 
 describe('Character Entity', () => {
   it('should create a valid character', () => {
-    const character = new Character(
-      '1',
-      'Luke Skywalker',
-      'A young Jedi',
-      'luke.jpg',
-      'characters',
-    )
+    const character = new Character('1', 'Luke Skywalker', 'A young Jedi', 'luke.jpg', 'characters')
 
     expect(character.id).toBe('1')
     expect(character.name).toBe('Luke Skywalker')

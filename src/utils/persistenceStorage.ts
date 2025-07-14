@@ -1,9 +1,11 @@
 export const getItem = <T>(key: string): T | null => {
   try {
     const item = localStorage.getItem(key)
+
     return item ? JSON.parse(item) : null
   } catch (error) {
     console.error('Error getting data from localStorage', error)
+
     return null
   }
 }

@@ -1,15 +1,15 @@
 <script setup lang="ts">
-  interface Props {
-    link?: string
-    text?: string
-    fontSizeRem?: number
-  }
+type Props = {
+  link?: string
+  text?: string
+  fontSizeRem?: number
+}
 
-  withDefaults(defineProps<Props>(), {
-    link: '#',
-    text: '',
-    fontSizeRem: -1,
-  })
+withDefaults(defineProps<Props>(), {
+  link: '#',
+  text: '',
+  fontSizeRem: -1,
+})
 </script>
 
 <template>

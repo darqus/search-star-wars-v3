@@ -1,25 +1,29 @@
 <script setup lang="ts">
-  import { onErrorCaptured, ref } from 'vue'
+import { onErrorCaptured, ref } from 'vue'
 
-  const loading = ref(true)
-  const error = ref<Error | null>(null)
+const loading = ref(true)
+const error = ref<Error | null>(null)
 
-  // Set loading to false when component is mounted (after slot content is loaded)
-  onErrorCaptured(err => {
-    error.value = err as Error
-    loading.value = false
-    return true
-  })
+// Set loading to false when component is mounted (after slot content is loaded)
+onErrorCaptured((err) => {
+  error.value = err
+  loading.value = false
 
-  // Use setTimeout to simulate async loading and prevent layout shifts
-  setTimeout(() => {
-    loading.value = false
-  }, 300)
+  return true
+})
+
+// Use setTimeout to simulate async loading and prevent layout shifts
+setTimeout(() => {
+  loading.value = false
+}, 300)
 </script>
 
 <template>
   <slot v-if="!loading" />
-  <div v-else class="async-component-loader">
+  <div
+    v-else
+    class="async-component-loader"
+  >
     <v-progress-circular
       color="primary"
       indeterminate

@@ -1,12 +1,16 @@
 <script setup lang="ts">
-  const VERSION = import.meta.env.VITE_APP_VERSION
-  const BUILD_DATE = import.meta.env.VITE_APP_BUILD_DATE || new Date().toISOString().split('T')[0]
+const VERSION = import.meta.env.VITE_APP_VERSION
+const BUILD_DATE =
+  import.meta.env.VITE_APP_BUILD_DATE || new Date().toISOString().split('T')[0]
 
-  const info = [`version: ${VERSION}`, `build: ${BUILD_DATE}`].join('<br>')
+const info = [ `version: ${VERSION}`, `build: ${BUILD_DATE}` ].join('<br>')
 </script>
 
 <template>
-  <v-menu location="top" offset="8">
+  <v-menu
+    location="top"
+    offset="8"
+  >
     <template #activator="{ props }">
       <a v-bind="props">SkyNet</a>
     </template>

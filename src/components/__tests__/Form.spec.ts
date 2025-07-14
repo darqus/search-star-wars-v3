@@ -219,7 +219,7 @@ describe('Form Component', () => {
         plugins: [vuetify],
         stubs: {
           'async-component-wrapper': true,
-          'transition': true,
+          transition: true,
         },
       },
     })
@@ -240,7 +240,7 @@ describe('Form Component', () => {
         plugins: [vuetify],
         stubs: {
           'async-component-wrapper': true,
-          'transition': true,
+          transition: true,
         },
       },
     })
@@ -266,7 +266,7 @@ describe('Form Component', () => {
         plugins: [vuetify],
         stubs: {
           'async-component-wrapper': true,
-          'transition': true,
+          transition: true,
         },
       },
     })
@@ -292,7 +292,7 @@ describe('Form Component', () => {
         plugins: [vuetify],
         stubs: {
           'async-component-wrapper': true,
-          'transition': true,
+          transition: true,
         },
       },
     })
@@ -315,7 +315,7 @@ describe('Form Component', () => {
         plugins: [vuetify],
         stubs: {
           'async-component-wrapper': true,
-          'transition': true,
+          transition: true,
         },
       },
     })
@@ -334,7 +334,7 @@ describe('Form Component', () => {
         plugins: [vuetify],
         stubs: {
           'async-component-wrapper': true,
-          'transition': true,
+          transition: true,
         },
       },
     })
@@ -352,7 +352,7 @@ describe('Form Component', () => {
         plugins: [vuetify],
         stubs: {
           'async-component-wrapper': true,
-          'transition': true,
+          transition: true,
         },
       },
     })
@@ -374,7 +374,7 @@ describe('Form Component', () => {
         plugins: [vuetify],
         stubs: {
           'async-component-wrapper': true,
-          'transition': true,
+          transition: true,
         },
       },
     })
@@ -402,7 +402,7 @@ describe('Form Component', () => {
         plugins: [vuetify],
         stubs: {
           'async-component-wrapper': true,
-          'transition': true,
+          transition: true,
         },
       },
     })
@@ -422,7 +422,7 @@ describe('Form Component', () => {
         plugins: [vuetify],
         stubs: {
           'async-component-wrapper': true,
-          'transition': true,
+          transition: true,
         },
       },
     })

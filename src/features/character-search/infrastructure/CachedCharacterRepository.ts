@@ -1,12 +1,12 @@
+import { Character as CharacterEntity, SearchResult as SearchResultEntity } from '../domain/entities/Character'
+
 import type { Character, SearchResult } from '../domain/entities/Character'
 import type { ICacheRepository, ICharacterRepository, SearchParams } from '../domain/repositories/ICharacterRepository'
-
-import { Character as CharacterEntity, SearchResult as SearchResultEntity } from '../domain/entities/Character'
 
 /**
  * Cache configuration
  */
-interface CacheConfig {
+type CacheConfig = {
   characterTtl: number // TTL for individual characters
   searchTtl: number // TTL for search results
   enabled: boolean
@@ -23,10 +23,10 @@ export class CachedCharacterRepository implements ICharacterRepository {
     enabled: true,
   }
 
-  constructor (
+  constructor(
     private readonly repository: ICharacterRepository,
     private readonly cache: ICacheRepository,
-    config?: Partial<CacheConfig>,
+    config?: Partial<CacheConfig>
   ) {
     if (config) {
       this.config = { ...this.config, ...config }
@@ -36,7 +36,7 @@ export class CachedCharacterRepository implements ICharacterRepository {
   /**
    * Find character by ID with caching
    */
-  async findById (id: string, endpoint: string): Promise<Character | null> {
+  async findById(id: string, endpoint: string): Promise<Character | null> {
     if (!this.config.enabled) {
       return this.repository.findById(id, endpoint)
     }
@@ -46,6 +46,7 @@ export class CachedCharacterRepository implements ICharacterRepository {
     try {
       // Try to get from cache first
       const cached = await this.cache.get<Character>(cacheKey)
+
       if (cached) {
         // Reconstruct Character instance from cached data
         return this.reconstructCharacter(cached)
@@ -74,7 +75,7 @@ export class CachedCharacterRepository implements ICharacterRepository {
   /**
    * Search characters with caching
    */
-  async search (params: SearchParams): Promise<SearchResult> {
+  async search(params: SearchParams): Promise<SearchResult> {
     if (!this.config.enabled) {
       return this.repository.search(params)
     }
@@ -84,6 +85,7 @@ export class CachedCharacterRepository implements ICharacterRepository {
     try {
       // Try to get from cache first
       const cached = await this.cache.get<SearchResult>(cacheKey)
+
       if (cached) {
         // Reconstruct SearchResult instance from cached data
         return this.reconstructSearchResult(cached)
@@ -110,15 +112,15 @@ export class CachedCharacterRepository implements ICharacterRepository {
   /**
    * Get characters by endpoint with caching
    */
-  async findByEndpoint (endpoint: string, page: number, limit: number): Promise<SearchResult> {
+  async findByEndpoint(endpoint: string, page: number, limit: number): Promise<SearchResult> {
     return this.search({ endpoint, page, limit })
   }
 
   /**
    * Clear all cache
    */
-  clearCache (): void {
-    this.cache.clear().catch(error => {
+  clearCache(): void {
+    this.cache.clear().catch((error) => {
       console.warn('Cache clear failed:', error)
     })
 
@@ -129,14 +131,14 @@ export class CachedCharacterRepository implements ICharacterRepository {
   /**
    * Enable or disable caching
    */
-  setCacheEnabled (enabled: boolean): void {
+  setCacheEnabled(enabled: boolean): void {
     this.config.enabled = enabled
   }
 
   /**
    * Update cache TTL settings
    */
-  updateCacheTtl (characterTtl?: number, searchTtl?: number): void {
+  updateCacheTtl(characterTtl?: number, searchTtl?: number): void {
     if (characterTtl !== undefined) {
       this.config.characterTtl = characterTtl
     }
@@ -148,20 +150,15 @@ export class CachedCharacterRepository implements ICharacterRepository {
   /**
    * Build cache key for individual character
    */
-  private buildCharacterCacheKey (id: string, endpoint: string): string {
+  private buildCharacterCacheKey(id: string, endpoint: string): string {
     return `character:${endpoint}:${id}`
   }
 
   /**
    * Build cache key for search results
    */
-  private buildSearchCacheKey (params: SearchParams): string {
-    const parts = [
-      'search',
-      params.endpoint,
-      `page:${params.page}`,
-      `limit:${params.limit}`,
-    ]
+  private buildSearchCacheKey(params: SearchParams): string {
+    const parts = [ 'search', params.endpoint, `page:${params.page}`, `limit:${params.limit}` ]
 
     if (params.search) {
       parts.push(`term:${params.search}`)
@@ -173,40 +170,32 @@ export class CachedCharacterRepository implements ICharacterRepository {
   /**
    * Reconstruct Character instance from cached plain object
    */
-  private reconstructCharacter (cached: any): Character {
+  private reconstructCharacter(cached: any): Character {
     // Ensure we have all required properties
     if (!cached.id || !cached.name || !cached.endpoint) {
       throw new Error('Invalid cached character data')
     }
 
-    return new CharacterEntity(
-      cached.id,
-      cached.name,
-      cached.description || '',
-      cached.image || '',
-      cached.endpoint,
-    )
+    return new CharacterEntity(cached.id, cached.name, cached.description || '', cached.image || '', cached.endpoint)
   }
 
   /**
    * Reconstruct SearchResult instance from cached plain object
    */
-  private reconstructSearchResult (cached: any): SearchResult {
+  private reconstructSearchResult(cached: any): SearchResult {
     // Validate cached search result structure
     if (!cached.characters || !Array.isArray(cached.characters)) {
       throw new Error('Invalid cached search result data')
     }
 
-    const reconstructedCharacters = cached.characters.map((char: any) =>
-      this.reconstructCharacter(char),
-    )
+    const reconstructedCharacters = cached.characters.map((char: any) => this.reconstructCharacter(char))
 
     return new SearchResultEntity(
       reconstructedCharacters,
       cached.totalCount || 0,
       cached.currentPage || 1,
       cached.hasNextPage || false,
-      cached.hasPrevPage || false,
+      cached.hasPrevPage || false
     )
   }
 }

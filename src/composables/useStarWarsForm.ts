@@ -1,8 +1,10 @@
-import type { Item } from '@/types/api'
 import { computed } from 'vue'
+
+import type { Item } from '@/types/api'
+
 import { useStarWarsStore } from '@/stores/starWars'
 
-export function useStarWarsForm () {
+export function useStarWarsForm() {
   const starWarsStore = useStarWarsStore()
 
   // Computed properties для доступа к состоянию хранилища

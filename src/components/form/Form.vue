@@ -1,88 +1,113 @@
 <script setup lang="ts">
-  import { defineAsyncComponent, onMounted, onUnmounted, ref } from 'vue'
-  import FormControls from '@/components/FormControls.vue'
-  import ResultDisplay from '@/components/ResultDisplay.vue'
-  import { useStarWarsForm } from '@/composables/useStarWarsForm'
-  import { COMPONENT_DELAY_FAST, COMPONENT_DELAY_MEDIUM, FORM_DENSITY, HEADER_NAME_POSTFIX, HEADER_NAME_SHORT } from '@/constants/form'
-  import { useThemeStore } from '@/stores/theme'
-  import './scss/form.scss'
+import { defineAsyncComponent, onMounted, onUnmounted, ref } from 'vue'
 
-  // Lazy loaded components with loading indicators
-  const Dialog = defineAsyncComponent({
-    loader: () => import('@/components/Dialog.vue'),
-    delay: COMPONENT_DELAY_MEDIUM,
-  })
+import { useThemeStore } from '@/stores/theme'
 
-  const Link = defineAsyncComponent({
-    loader: () => import('@/components/Link.vue'),
-    delay: COMPONENT_DELAY_FAST,
-  })
+import FormControls from '@/components/FormControls.vue'
+import ResultDisplay from '@/components/ResultDisplay.vue'
 
-  const Logo = defineAsyncComponent({
-    loader: () => import('@/components/Logo.vue'),
-    delay: COMPONENT_DELAY_FAST,
-  })
+import { useStarWarsForm } from '@/composables/useStarWarsForm'
+import {
+  COMPONENT_DELAY_FAST,
+  COMPONENT_DELAY_MEDIUM,
+  FORM_DENSITY,
+  HEADER_NAME_POSTFIX,
+  HEADER_NAME_SHORT,
+} from '@/constants/form'
 
-  const Mandala = defineAsyncComponent({
-    loader: () => import('@/components/Mandala.vue'),
-    delay: COMPONENT_DELAY_MEDIUM,
-  })
+import './scss/form.scss'
 
-  interface Props {
-    role: string
-    side: string
-  }
+// Lazy loaded components with loading indicators
+const Dialog = defineAsyncComponent({
+  loader: () => import('@/components/Dialog.vue'),
+  delay: COMPONENT_DELAY_MEDIUM,
+})
 
-  defineProps<Props>()
+const Link = defineAsyncComponent({
+  loader: () => import('@/components/Link.vue'),
+  delay: COMPONENT_DELAY_FAST,
+})
 
-  const themeStore = useThemeStore()
-  const {
-    items,
-    selectedApi,
-    selectedItem,
-    imgURL,
-    result,
-    isLoading,
-    error,
-    fetchItems,
-  } = useStarWarsForm()
+const Logo = defineAsyncComponent({
+  loader: () => import('@/components/Logo.vue'),
+  delay: COMPONENT_DELAY_FAST,
+})
 
-  const isDialogShow = ref(false)
+const Mandala = defineAsyncComponent({
+  loader: () => import('@/components/Mandala.vue'),
+  delay: COMPONENT_DELAY_MEDIUM,
+})
 
-  const density = FORM_DENSITY
-  const API_URL = import.meta.env.VITE_APP_API_BASE_URL
+type Props = {
+  role: string
+  side: string
+}
 
-  const isDark = () => themeStore.isDark
+defineProps<Props>()
 
-  const onDialog = (value: boolean) => {
-    isDialogShow.value = value
-  }
+const themeStore = useThemeStore()
+const {
+  items,
+  selectedApi,
+  selectedItem,
+  imgURL,
+  result,
+  isLoading,
+  error,
+  fetchItems,
+} = useStarWarsForm()
 
-  const onShowDialog = () => {
-    isDialogShow.value = !isDialogShow.value
-  }
+const isDialogShow = ref(false)
 
-  onMounted(() => {
-    fetchItems()
-  })
+const density = FORM_DENSITY
+const API_URL = import.meta.env.VITE_APP_API_BASE_URL
 
-  onUnmounted(() => {
-    // Cleanup is handled in composables
-  })
+const isDark = () => themeStore.isDark
+
+const onDialog = (value: boolean) => {
+  isDialogShow.value = value
+}
+
+const onShowDialog = () => {
+  isDialogShow.value = !isDialogShow.value
+}
+
+onMounted(() => {
+  fetchItems()
+})
+
+onUnmounted(() => {
+  // Cleanup is handled in composables
+})
 </script>
 
 <template>
   <v-container class="search-form">
-    <v-row style="align-items: center;">
-      <v-col cols="12" sm="4" xs="12">
+    <v-row style="align-items: center">
+      <v-col
+        cols="12"
+        sm="4"
+        xs="12"
+      >
         <Logo />
       </v-col>
-      <v-col cols="12" sm="8" xs="12">
+      <v-col
+        cols="12"
+        sm="8"
+        xs="12"
+      >
         <div class="d-flex align-center justify-space-between">
-          <h1 class="header-text" :class="isDark() ? 'dark' : 'light'">
+          <h1
+            :class="isDark() ? 'dark' : 'light'"
+            class="header-text"
+          >
             <span>{{ HEADER_NAME_SHORT }}</span>
             <span>&nbsp;</span>
-            <Link class="header-links" :link="`${API_URL}/${selectedApi}`" :text="selectedApi" />
+            <Link
+              :link="`${API_URL}/${selectedApi}`"
+              :text="selectedApi"
+              class="header-links"
+            />
             <span>&nbsp;</span>
             <span>{{ HEADER_NAME_POSTFIX }}</span>
           </h1>
@@ -107,15 +132,18 @@
         />
         <Dialog
           v-if="imgURL && selectedItem"
-          class="my-5"
           :is-dialog-show="isDialogShow"
           :result="result"
           :search="selectedItem!"
+          class="my-5"
           @dialog="onDialog"
         />
         <template v-if="!$vuetify.display.smAndDown">
           <Mandala :side="side" />
-          <Mandala class-name="right" :side="side" />
+          <Mandala
+            :side="side"
+            class-name="right"
+          />
         </template>
       </v-col>
     </v-row>

@@ -14,6 +14,7 @@ const jsCssContent = 'export default {}\n'
 
 // Create the directory if it doesn't exist
 const dir = dirname(cssFilePath)
+
 if (!fs.existsSync(dir)) {
   fs.mkdirSync(dir, { recursive: true })
 }
@@ -24,7 +25,8 @@ console.log(`Created JS mock for CSS at: ${jsFilePath}`)
 
 // Optionally rename the CSS file so it won't be found directly
 if (fs.existsSync(cssFilePath)) {
-  const backupPath = cssFilePath + '.backup'
+  const backupPath = `${cssFilePath}.backup`
+
   fs.renameSync(cssFilePath, backupPath)
   console.log(`Renamed original CSS file to: ${backupPath}`)
 }

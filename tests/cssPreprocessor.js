@@ -1,5 +1,4 @@
 // Preprocessor for CSS files
-import type { Preprocessor } from 'vitest/config'
 
 export default {
   transform(code, id) {
@@ -7,11 +6,11 @@ export default {
     if (id.endsWith('.css') || id.endsWith('.scss') || id.endsWith('.sass')) {
       return {
         code: 'export default {}',
-        map: null
+        map: null,
       }
     }
 
     // Return null to let other preprocessors handle it
     return null
-  }
-} as Preprocessor
+  },
+}

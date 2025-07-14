@@ -29,10 +29,7 @@ describe('useCharacterSearch', () => {
   })
 
   it('should initialize with empty state', () => {
-    const { searchQuery, isLoading, searchResults, error } = useCharacterSearch(
-      mockRepository,
-      'characters',
-    )
+    const { searchQuery, isLoading, searchResults, error } = useCharacterSearch(mockRepository, 'characters')
 
     expect(searchQuery.value).toBe('')
     expect(isLoading.value).toBe(false)
@@ -41,23 +38,21 @@ describe('useCharacterSearch', () => {
   })
 
   it('should perform search when query is long enough', async () => {
-    const mockResult = SearchResult.fromApiResponse({
-      results: [
-        { id: '1', name: 'Luke Skywalker', description: 'Jedi' },
-      ],
-      total: 1,
-      page: 1,
-      pages: 1,
-      count: 1,
-      limit: 20,
-    }, 'characters')
+    const mockResult = SearchResult.fromApiResponse(
+      {
+        results: [{ id: '1', name: 'Luke Skywalker', description: 'Jedi' }],
+        total: 1,
+        page: 1,
+        pages: 1,
+        count: 1,
+        limit: 20,
+      },
+      'characters',
+    )
 
     mockSearch.mockResolvedValue(mockResult)
 
-    const { searchImmediate, searchResults, isLoading } = useCharacterSearch(
-      mockRepository,
-      'characters',
-    )
+    const { searchImmediate, searchResults, isLoading } = useCharacterSearch(mockRepository, 'characters')
 
     await searchImmediate('Luke')
     await nextTick()
@@ -74,10 +69,7 @@ describe('useCharacterSearch', () => {
   })
 
   it('should show error for short queries', async () => {
-    const { searchImmediate, error } = useCharacterSearch(
-      mockRepository,
-      'characters',
-    )
+    const { searchImmediate, error } = useCharacterSearch(mockRepository, 'characters')
 
     await searchImmediate('Lu')
     await nextTick()
@@ -87,20 +79,22 @@ describe('useCharacterSearch', () => {
   })
 
   it('should clear results for empty query', async () => {
-    const { searchImmediate, searchResults, clearSearch } = useCharacterSearch(
-      mockRepository,
-      'characters',
-    )
+    const { searchImmediate, searchResults, clearSearch } = useCharacterSearch(mockRepository, 'characters')
 
     // First, perform a search
-    mockSearch.mockResolvedValue(SearchResult.fromApiResponse({
-      results: [{ id: '1', name: 'Luke' }],
-      total: 1,
-      page: 1,
-      pages: 1,
-      count: 1,
-      limit: 20,
-    }, 'characters'))
+    mockSearch.mockResolvedValue(
+      SearchResult.fromApiResponse(
+        {
+          results: [{ id: '1', name: 'Luke' }],
+          total: 1,
+          page: 1,
+          pages: 1,
+          count: 1,
+          limit: 20,
+        },
+        'characters',
+      ),
+    )
 
     await searchImmediate('Luke')
     expect(searchResults.value).toHaveLength(1)
@@ -114,10 +108,7 @@ describe('useCharacterSearch', () => {
     const searchError = new Error('Network error')
     mockSearch.mockRejectedValue(searchError)
 
-    const { searchImmediate, error, searchResults } = useCharacterSearch(
-      mockRepository,
-      'characters',
-    )
+    const { searchImmediate, error, searchResults } = useCharacterSearch(mockRepository, 'characters')
 
     await searchImmediate('Luke')
     await nextTick()
@@ -127,14 +118,17 @@ describe('useCharacterSearch', () => {
   })
 
   it('should handle pagination', async () => {
-    const mockResult = SearchResult.fromApiResponse({
-      results: [{ id: '1', name: 'Luke' }],
-      total: 50,
-      page: 2,
-      pages: 3,
-      count: 1,
-      limit: 20,
-    }, 'characters')
+    const mockResult = SearchResult.fromApiResponse(
+      {
+        results: [{ id: '1', name: 'Luke' }],
+        total: 50,
+        page: 2,
+        pages: 3,
+        count: 1,
+        limit: 20,
+      },
+      'characters',
+    )
 
     mockSearch.mockResolvedValue(mockResult)
 
@@ -160,44 +154,38 @@ describe('useCharacterSearch', () => {
   it('should work with reactive endpoint', async () => {
     const endpoint = ref('characters')
 
-    const { searchImmediate } = useCharacterSearch(
-      mockRepository,
-      endpoint,
-    )
+    const { searchImmediate } = useCharacterSearch(mockRepository, endpoint)
 
     mockSearch.mockResolvedValue(SearchResult.empty())
 
     await searchImmediate('Luke')
-    expect(mockSearch).toHaveBeenCalledWith(
-      expect.objectContaining({ endpoint: 'characters' }),
-    )
+    expect(mockSearch).toHaveBeenCalledWith(expect.objectContaining({ endpoint: 'characters' }))
 
     // Change endpoint
     endpoint.value = 'droids'
     await searchImmediate('R2D2')
-    expect(mockSearch).toHaveBeenCalledWith(
-      expect.objectContaining({ endpoint: 'droids' }),
-    )
+    expect(mockSearch).toHaveBeenCalledWith(expect.objectContaining({ endpoint: 'droids' }))
   })
 
   it('should debounce search input', async () => {
     vi.useFakeTimers()
 
     // Set up mock return value
-    mockSearch.mockResolvedValue(SearchResult.fromApiResponse({
-      results: [{ id: '1', name: 'Luke Skywalker' }],
-      total: 1,
-      page: 1,
-      pages: 1,
-      count: 1,
-      limit: 20,
-    }, 'characters'))
-
-    const { onSearchInput } = useCharacterSearch(
-      mockRepository,
-      'characters',
-      { debounceMs: 300 },
+    mockSearch.mockResolvedValue(
+      SearchResult.fromApiResponse(
+        {
+          results: [{ id: '1', name: 'Luke Skywalker' }],
+          total: 1,
+          page: 1,
+          pages: 1,
+          count: 1,
+          limit: 20,
+        },
+        'characters',
+      ),
     )
+
+    const { onSearchInput } = useCharacterSearch(mockRepository, 'characters', { debounceMs: 300 })
 
     onSearchInput('Luke')
     onSearchInput('Luke Skywalker')
@@ -208,18 +196,13 @@ describe('useCharacterSearch', () => {
 
     // Only last search should be executed
     expect(mockSearch).toHaveBeenCalledTimes(1)
-    expect(mockSearch).toHaveBeenCalledWith(
-      expect.objectContaining({ search: 'Luke Skywalker' }),
-    )
+    expect(mockSearch).toHaveBeenCalledWith(expect.objectContaining({ search: 'Luke Skywalker' }))
 
     vi.useRealTimers()
   })
 
   it('should retry failed search', async () => {
-    const { searchImmediate, retrySearch } = useCharacterSearch(
-      mockRepository,
-      'characters',
-    )
+    const { searchImmediate, retrySearch } = useCharacterSearch(mockRepository, 'characters')
 
     // First search fails
     mockSearch.mockRejectedValueOnce(new Error('Network error'))

@@ -1,12 +1,13 @@
 // Cache implementation for API requests
-interface CacheItem<T> {
+type CacheItem<T> = {
   data: T
   timestamp: number
   expiry: number // Cache expiry time in milliseconds
 }
 
 class ApiCache {
-  private cache: Map<string, CacheItem<unknown>> = new Map()
+  private readonly cache: Map<string, CacheItem<unknown>> = new Map()
+
   private defaultExpiry: number = 5 * 60 * 1000 // 5 minutes default
 
   /**
@@ -14,7 +15,7 @@ class ApiCache {
    * @param key Cache key
    * @returns The cached data or null if not found or expired
    */
-  get<T> (key: string): T | null {
+  get<T>(key: string): T | null {
     const item = this.cache.get(key)
 
     if (!item) {
@@ -24,6 +25,7 @@ class ApiCache {
     // Check if cache entry has expired
     if (Date.now() - item.timestamp > item.expiry) {
       this.delete(key)
+
       return null
     }
 
@@ -36,7 +38,7 @@ class ApiCache {
    * @param data Data to cache
    * @param expiry Optional custom expiry time in milliseconds
    */
-  set<T> (key: string, data: T, expiry: number = this.defaultExpiry): void {
+  set<T>(key: string, data: T, expiry: number = this.defaultExpiry): void {
     this.cache.set(key, {
       data,
       timestamp: Date.now(),
@@ -48,7 +50,7 @@ class ApiCache {
    * Remove an item from cache
    * @param key Cache key
    */
-  delete (key: string): void {
+  delete(key: string): void {
     this.cache.delete(key)
   }
 
@@ -57,14 +59,16 @@ class ApiCache {
    * @param key Cache key
    * @returns True if item exists and is valid
    */
-  has (key: string): boolean {
+  has(key: string): boolean {
     const item = this.cache.get(key)
+
     if (!item) {
       return false
     }
 
     if (Date.now() - item.timestamp > item.expiry) {
       this.delete(key)
+
       return false
     }
 
@@ -74,7 +78,7 @@ class ApiCache {
   /**
    * Clear all cache entries
    */
-  clear (): void {
+  clear(): void {
     this.cache.clear()
   }
 
@@ -82,7 +86,7 @@ class ApiCache {
    * Set default expiry time for cache entries
    * @param expiry Expiry time in milliseconds
    */
-  setDefaultExpiry (expiry: number): void {
+  setDefaultExpiry(expiry: number): void {
     this.defaultExpiry = expiry
   }
 }

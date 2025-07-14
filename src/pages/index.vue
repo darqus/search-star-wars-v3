@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-  // Main logic moved to App.vue
+
+// Main logic moved to App.vue
 </script>
 
 <template>

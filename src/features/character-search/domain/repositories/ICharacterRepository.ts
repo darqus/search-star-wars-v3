@@ -3,7 +3,7 @@ import type { Character, SearchResult } from '../entities/Character'
 /**
  * Search parameters for character queries
  */
-export interface SearchParams {
+export type SearchParams = {
   endpoint: string
   page: number
   limit: number
@@ -14,7 +14,8 @@ export interface SearchParams {
  * Character repository interface
  * Defines contract for character data access
  */
-export interface ICharacterRepository {
+export type ICharacterRepository = {
+
   /**
    * Find character by ID
    */
@@ -39,7 +40,8 @@ export interface ICharacterRepository {
 /**
  * Cache repository interface
  */
-export interface ICacheRepository {
+export type ICacheRepository = {
+
   /**
    * Get value from cache
    */

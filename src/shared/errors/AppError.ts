@@ -3,13 +3,15 @@
  */
 export abstract class AppError extends Error {
   abstract readonly code: string
+
   abstract readonly statusCode: number
+
   abstract readonly userMessage: string
 
-  constructor (
+  constructor(
     message: string,
     public readonly context?: Record<string, any>,
-    public readonly cause?: Error,
+    public readonly cause?: Error
   ) {
     super(message)
     this.name = this.constructor.name
@@ -21,7 +23,7 @@ export abstract class AppError extends Error {
   /**
    * Serialize error for logging/monitoring
    */
-  toJSON () {
+  toJSON() {
     return {
       name: this.name,
       code: this.code,
@@ -37,12 +39,8 @@ export abstract class AppError extends Error {
   /**
    * Create error with additional context
    */
-  withContext (context: Record<string, any>): this {
-    return new (this.constructor as any)(
-      this.message,
-      { ...this.context, ...context },
-      this.cause,
-    )
+  withContext(context: Record<string, any>): this {
+    return new (this.constructor as any)(this.message, { ...this.context, ...context }, this.cause)
   }
 }
 
@@ -51,26 +49,32 @@ export abstract class AppError extends Error {
  */
 export class ValidationError extends AppError {
   readonly code = 'VALIDATION_ERROR'
+
   readonly statusCode = 400
+
   readonly userMessage = 'Введенные данные некорректны'
 
-  constructor (message: string, context?: Record<string, any>) {
+  constructor(message: string, context?: Record<string, any>) {
     super(message, context)
   }
 }
 
 export class NotFoundError extends AppError {
   readonly code = 'NOT_FOUND'
+
   readonly statusCode = 404
+
   readonly userMessage = 'Запрашиваемый ресурс не найден'
 }
 
 export class ApiError extends AppError {
   readonly code = 'API_ERROR'
+
   readonly statusCode: number
+
   readonly userMessage = 'Произошла ошибка при загрузке данных. Попробуйте еще раз.'
 
-  constructor (message: string, statusCode = 500, context?: Record<string, any>) {
+  constructor(message: string, statusCode = 500, context?: Record<string, any>) {
     super(message, context)
     this.statusCode = statusCode
   }
@@ -78,13 +82,17 @@ export class ApiError extends AppError {
 
 export class NetworkError extends AppError {
   readonly code = 'NETWORK_ERROR'
+
   readonly statusCode = 0
+
   readonly userMessage = 'Проблемы с сетевым соединением. Проверьте подключение к интернету.'
 }
 
 export class CacheError extends AppError {
   readonly code = 'CACHE_ERROR'
+
   readonly statusCode = 500
+
   readonly userMessage = 'Ошибка кэширования данных'
 }
 
@@ -93,30 +101,36 @@ export class CacheError extends AppError {
  */
 export class CharacterNotFoundError extends AppError {
   readonly code = 'CHARACTER_NOT_FOUND'
+
   readonly statusCode = 404
+
   readonly userMessage = 'Персонаж не найден'
 
-  constructor (characterId: string) {
+  constructor(characterId: string) {
     super(`Character with ID ${characterId} not found`, { characterId })
   }
 }
 
 export class InvalidSearchTermError extends AppError {
   readonly code = 'INVALID_SEARCH_TERM'
+
   readonly statusCode = 400
+
   readonly userMessage = 'Поисковый запрос должен содержать минимум 3 символа'
 
-  constructor (term: string) {
+  constructor(term: string) {
     super(`Invalid search term: ${term}`, { term, minLength: 3 })
   }
 }
 
 export class ImageLoadError extends AppError {
   readonly code = 'IMAGE_LOAD_ERROR'
+
   readonly statusCode = 500
+
   readonly userMessage = 'Не удалось загрузить изображение'
 
-  constructor (imageUrl: string, cause?: Error) {
+  constructor(imageUrl: string, cause?: Error) {
     super(`Failed to load image: ${imageUrl}`, { imageUrl }, cause)
   }
 }
@@ -125,30 +139,19 @@ export class ImageLoadError extends AppError {
  * Error factory for creating specific error types
  */
 export const ErrorFactory = {
-  createApiError (response: Response): ApiError {
-    return new ApiError(
-      `API request failed: ${response.status} ${response.statusText}`,
-      response.status,
-      {
-        url: response.url,
-        status: response.status,
-        statusText: response.statusText,
-      },
-    )
+  createApiError(response: Response): ApiError {
+    return new ApiError(`API request failed: ${response.status} ${response.statusText}`, response.status, {
+      url: response.url,
+      status: response.status,
+      statusText: response.statusText,
+    })
   },
 
-  createNetworkError (originalError: Error): NetworkError {
-    return new NetworkError(
-      'Network request failed',
-      { originalMessage: originalError.message },
-      originalError,
-    )
+  createNetworkError(originalError: Error): NetworkError {
+    return new NetworkError('Network request failed', { originalMessage: originalError.message }, originalError)
   },
 
-  createValidationError (field: string, value: any, rule: string): ValidationError {
-    return new ValidationError(
-      `Validation failed for field ${field}`,
-      { field, value, rule },
-    )
+  createValidationError(field: string, value: any, rule: string): ValidationError {
+    return new ValidationError(`Validation failed for field ${field}`, { field, value, rule })
   },
 }

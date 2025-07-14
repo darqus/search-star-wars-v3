@@ -1,8 +1,10 @@
 import { computed, ref } from 'vue'
-import { SEARCH_DEBOUNCE_DELAY, SEARCH_DROPDOWN_DELAY, SEARCH_MIN_LENGTH } from '@/constants/form'
+
 import { useStarWarsStore } from '@/stores/starWars'
 
-export function useSearch () {
+import { SEARCH_DEBOUNCE_DELAY, SEARCH_DROPDOWN_DELAY, SEARCH_MIN_LENGTH } from '@/constants/form'
+
+export function useSearch() {
   const starWarsStore = useStarWarsStore()
 
   const searchInput = ref('')
@@ -19,6 +21,7 @@ export function useSearch () {
       // console.log('❌ Search cleared or too short, clearing results')
       starWarsStore.searchResults = []
       isShownDropDown.value = false
+
       return
     }
 
@@ -45,7 +48,8 @@ export function useSearch () {
   }
 
   const onSearchInputChange = (event: Event) => {
-    const value = (event.target as HTMLInputElement).value
+    const { value } = event.target as HTMLInputElement
+
     searchInput.value = value
     performSearch(value)
   }
@@ -66,7 +70,9 @@ export function useSearch () {
     if (!searchTerm) {
       return text
     }
+
     const regex = new RegExp(`(${searchTerm})`, 'gi')
+
     return text.replace(regex, '<span class="text-primary">$1</span>')
   }
 

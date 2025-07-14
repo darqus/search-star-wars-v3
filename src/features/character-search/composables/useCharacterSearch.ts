@@ -1,18 +1,17 @@
 import type { Ref } from 'vue'
+import { computed, readonly, ref } from 'vue'
+
+import { Character } from '../domain/entities/Character'
 
 import type { SearchResult } from '../domain/entities/Character'
 import type { ICharacterRepository } from '../domain/repositories/ICharacterRepository'
 
-import { computed, readonly, ref } from 'vue'
-
 import { InvalidSearchTermError } from '@/shared/errors/AppError'
-
-import { Character } from '../domain/entities/Character'
 
 /**
  * Search state interface
  */
-interface SearchState {
+type SearchState = {
   query: string
   isLoading: boolean
   results: Character[]
@@ -26,7 +25,7 @@ interface SearchState {
 /**
  * Search configuration
  */
-interface SearchConfig {
+type SearchConfig = {
   minQueryLength: number
   debounceMs: number
   pageSize: number
@@ -36,10 +35,10 @@ interface SearchConfig {
  * Character search composable
  * Handles search functionality with debouncing and pagination
  */
-export function useCharacterSearch (
-  repository: ICharacterRepository,
-  endpoint: Ref<string> | string,
-  config: Partial<SearchConfig> = {},
+export function useCharacterSearch(
+    repository: ICharacterRepository,
+    endpoint: Ref<string> | string,
+    config: Partial<SearchConfig> = {}
 ) {
   // Configuration with defaults
   const searchConfig: SearchConfig = {
@@ -69,19 +68,14 @@ export function useCharacterSearch (
   const isLoading = computed(() => state.value.isLoading)
   const searchResults = computed(() => {
     // Ensure we return proper Character instances
-    return state.value.results.map(result => {
+    return state.value.results.map((result) => {
       // If it's already a Character instance, return it as is
       if (result instanceof Character) {
         return result
       }
+
       // Otherwise, reconstruct it as a Character instance
-      return new Character(
-        result.id,
-        result.name,
-        result.description,
-        result.image,
-        result.endpoint,
-      )
+      return new Character(result.id, result.name, result.description, result.image, result.endpoint)
     })
   })
   const error = computed(() => state.value.error)
@@ -91,9 +85,7 @@ export function useCharacterSearch (
   const hasNextPage = computed(() => state.value.hasNextPage)
   const hasPrevPage = computed(() => state.value.hasPrevPage)
 
-  const currentEndpoint = computed(() =>
-    typeof endpoint === 'string' ? endpoint : endpoint.value,
-  )
+  const currentEndpoint = computed(() => (typeof endpoint === 'string' ? endpoint : endpoint.value))
 
   /**
    * Perform search with the current query
@@ -105,6 +97,7 @@ export function useCharacterSearch (
       } else {
         clearResults()
       }
+
       return
     }
 
@@ -224,6 +217,7 @@ export function useCharacterSearch (
   const updateStateFromResult = (result: SearchResult, query: string, page: number): void => {
     if (!result) {
       console.warn('updateStateFromResult called with undefined result')
+
       return
     }
 

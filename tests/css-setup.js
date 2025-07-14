@@ -3,11 +3,11 @@ import { vi } from 'vitest'
 
 // Mock CSS
 class CSSStyleSheet {
-  replace () {
+  replace() {
     return Promise.resolve(this)
   }
 
-  replaceSync () {}
+  replaceSync() {}
 }
 
 // Add CSS constructable stylesheets API

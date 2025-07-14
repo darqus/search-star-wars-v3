@@ -1,12 +1,12 @@
 import { createApp } from 'vue'
 import { createVuetify } from 'vuetify'
 
+import App from './App.vue'
+import router from './router'
+
 import { characterSearchFeature } from '@/features/character-search'
 import { configService } from '@/shared/config/ConfigService'
 import { ConsoleLogger, ErrorHandlerService } from '@/shared/services/ErrorHandlerService'
-
-import App from './App.vue'
-import router from './router'
 
 // Extend Window interface for development helpers
 declare global {
@@ -20,20 +20,17 @@ declare global {
 }
 
 // Create error handler instance
-const errorHandlerService = new ErrorHandlerService(
-  new ConsoleLogger(),
-  {
-    error: (message: string) => console.error(message),
-    warning: (message: string) => console.warn(message),
-    success: (message: string) => console.log(message),
-    info: (message: string) => console.info(message),
-  },
-)
+const errorHandlerService = new ErrorHandlerService(new ConsoleLogger(), {
+  error: (message: string) => console.error(message),
+  warning: (message: string) => console.warn(message),
+  success: (message: string) => console.log(message),
+  info: (message: string) => console.info(message),
+})
 
 /**
  * Setup application features
  */
-function setupFeatures (): void {
+function setupFeatures(): void {
   try {
     // Initialize character search feature
     characterSearchFeature.setup()
@@ -48,7 +45,7 @@ function setupFeatures (): void {
 /**
  * Create and configure Vue application
  */
-function createApplication () {
+function createApplication() {
   const app = createApp(App)
 
   // Setup Vuetify
@@ -73,15 +70,13 @@ function createApplication () {
 /**
  * Bootstrap application
  */
-async function bootstrap () {
+async function bootstrap() {
   try {
     // Validate configuration
     console.info('Configuration loaded:', {
       environment: configService.getEnvironment(),
       apiBaseUrl: configService.isDevelopment() ? configService.getApiConfig().baseUrl : '***',
-      features: Object.keys(configService.get('features')).filter(key =>
-        configService.isFeatureEnabled(key as any),
-      ),
+      features: Object.keys(configService.get('features')).filter((key) => configService.isFeatureEnabled(key as any)),
     })
 
     // Setup features
@@ -89,6 +84,7 @@ async function bootstrap () {
 
     // Create and mount app
     const app = createApplication()
+
     app.mount('#app')
 
     console.info('Application started successfully')
@@ -97,6 +93,7 @@ async function bootstrap () {
 
     // Show user-friendly error
     const errorElement = document.createElement('div')
+
     errorElement.innerHTML = `
       <div style="
         display: flex;
@@ -150,6 +147,7 @@ if (configService.isDevelopment()) {
   // Log performance metrics
   window.addEventListener('load', () => {
     const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming
+
     console.info('Performance metrics:', {
       domContentLoaded: Math.round(navigation.domContentLoadedEventEnd - navigation.fetchStart),
       loadComplete: Math.round(navigation.loadEventEnd - navigation.fetchStart),

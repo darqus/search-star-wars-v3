@@ -3,7 +3,7 @@ import type { ICacheRepository } from '../domain/repositories/ICharacterReposito
 /**
  * Cache entry interface
  */
-interface CacheEntry<T> {
+type CacheEntry<T> = {
   data: T
   timestamp: number
   ttl: number
@@ -12,7 +12,7 @@ interface CacheEntry<T> {
 /**
  * Cache configuration
  */
-interface CacheConfig {
+type CacheConfig = {
   enabled: boolean
   defaultTtl: number
   maxSize: number
@@ -24,9 +24,10 @@ interface CacheConfig {
  */
 export class BrowserCacheRepository implements ICacheRepository {
   private readonly config: CacheConfig
+
   private readonly storage: Storage
 
-  constructor (config: Partial<CacheConfig> = {}) {
+  constructor(config: Partial<CacheConfig> = {}) {
     this.config = {
       enabled: true,
       defaultTtl: 300_000, // 5 minutes
@@ -42,7 +43,7 @@ export class BrowserCacheRepository implements ICacheRepository {
   /**
    * Get value from cache
    */
-  async get<T> (key: string): Promise<T | null> {
+  async get<T>(key: string): Promise<T | null> {
     if (!this.config.enabled) {
       return null
     }
@@ -60,12 +61,14 @@ export class BrowserCacheRepository implements ICacheRepository {
       // Check if expired
       if (this.isExpired(entry)) {
         await this.delete(key)
+
         return null
       }
 
       return entry.data
     } catch (error) {
       console.warn('Cache get failed:', error)
+
       return null
     }
   }
@@ -73,7 +76,7 @@ export class BrowserCacheRepository implements ICacheRepository {
   /**
    * Set value in cache
    */
-  async set<T> (key: string, value: T, ttlMs?: number): Promise<void> {
+  async set<T>(key: string, value: T, ttlMs?: number): Promise<void> {
     if (!this.config.enabled) {
       return
     }
@@ -100,9 +103,10 @@ export class BrowserCacheRepository implements ICacheRepository {
   /**
    * Delete value from cache
    */
-  async delete (key: string): Promise<void> {
+  async delete(key: string): Promise<void> {
     try {
       const cacheKey = this.buildKey(key)
+
       this.storage.removeItem(cacheKey)
     } catch (error) {
       console.warn('Cache delete failed:', error)
@@ -112,9 +116,10 @@ export class BrowserCacheRepository implements ICacheRepository {
   /**
    * Clear all cache
    */
-  async clear (): Promise<void> {
+  async clear(): Promise<void> {
     try {
       const keys = this.getCacheKeys()
+
       for (const key of keys) {
         this.storage.removeItem(key)
       }
@@ -126,26 +131,28 @@ export class BrowserCacheRepository implements ICacheRepository {
   /**
    * Check if key exists in cache
    */
-  async has (key: string): Promise<boolean> {
+  async has(key: string): Promise<boolean> {
     const value = await this.get(key)
+
     return value !== null
   }
 
   /**
    * Get cache statistics
    */
-  getStats (): { size: number, keys: string[] } {
+  getStats(): { size: number; keys: string[] } {
     const keys = this.getCacheKeys()
+
     return {
       size: keys.length,
-      keys: keys.map(key => key.replace(this.config.keyPrefix, '')),
+      keys: keys.map((key) => key.replace(this.config.keyPrefix, '')),
     }
   }
 
   /**
    * Cleanup expired entries
    */
-  async cleanup (): Promise<number> {
+  async cleanup(): Promise<number> {
     let cleanedCount = 0
 
     try {
@@ -153,12 +160,14 @@ export class BrowserCacheRepository implements ICacheRepository {
 
       for (const cacheKey of keys) {
         const item = this.storage.getItem(cacheKey)
+
         if (!item) {
           continue
         }
 
         try {
           const entry: CacheEntry<any> = JSON.parse(item)
+
           if (this.isExpired(entry)) {
             this.storage.removeItem(cacheKey)
             cleanedCount++
@@ -179,26 +188,27 @@ export class BrowserCacheRepository implements ICacheRepository {
   /**
    * Build cache key with prefix
    */
-  private buildKey (key: string): string {
+  private buildKey(key: string): string {
     return `${this.config.keyPrefix}${key}`
   }
 
   /**
    * Check if cache entry is expired
    */
-  private isExpired (entry: CacheEntry<any>): boolean {
+  private isExpired(entry: CacheEntry<any>): boolean {
     return Date.now() - entry.timestamp > entry.ttl
   }
 
   /**
    * Get all cache keys for this repository
    */
-  private getCacheKeys (): string[] {
+  private getCacheKeys(): string[] {
     const keys: string[] = []
 
     try {
       for (let i = 0; i < this.storage.length; i++) {
         const key = this.storage.key(i)
+
         if (key && key.startsWith(this.config.keyPrefix)) {
           keys.push(key)
         }
@@ -213,18 +223,20 @@ export class BrowserCacheRepository implements ICacheRepository {
   /**
    * Ensure cache doesn't exceed max size
    */
-  private async ensureCacheSize (): Promise<void> {
+  private async ensureCacheSize(): Promise<void> {
     const keys = this.getCacheKeys()
 
     if (keys.length >= this.config.maxSize) {
       // Remove oldest entries (simple LRU)
-      const entries: Array<{ key: string, timestamp: number }> = []
+      const entries: Array<{ key: string; timestamp: number }> = []
 
       for (const key of keys) {
         try {
           const item = this.storage.getItem(key)
+
           if (item) {
             const entry: CacheEntry<any> = JSON.parse(item)
+
             entries.push({ key, timestamp: entry.timestamp })
           }
         } catch {
@@ -238,6 +250,7 @@ export class BrowserCacheRepository implements ICacheRepository {
 
       // Remove oldest entries to make room
       const toRemove = Math.max(1, Math.floor(this.config.maxSize * 0.1)) // Remove 10%
+
       for (let i = 0; i < toRemove && i < entries.length; i++) {
         this.storage.removeItem(entries[i].key)
       }
@@ -247,11 +260,13 @@ export class BrowserCacheRepository implements ICacheRepository {
   /**
    * Check if localStorage is available
    */
-  private isStorageAvailable (): boolean {
+  private isStorageAvailable(): boolean {
     try {
       const test = '__test__'
+
       localStorage.setItem(test, test)
       localStorage.removeItem(test)
+
       return true
     } catch {
       return false
@@ -261,27 +276,28 @@ export class BrowserCacheRepository implements ICacheRepository {
   /**
    * Create in-memory storage fallback
    */
-  private createMemoryStorage (): Storage {
+  private createMemoryStorage(): Storage {
     const store = new Map<string, string>()
 
     return {
-      getItem (key: string): string | null {
+      getItem(key: string): string | null {
         return store.get(key) || null
       },
-      setItem (key: string, value: string): void {
+      setItem(key: string, value: string): void {
         store.set(key, value)
       },
-      removeItem (key: string): void {
+      removeItem(key: string): void {
         store.delete(key)
       },
-      clear (): void {
+      clear(): void {
         store.clear()
       },
-      key (index: number): string | null {
+      key(index: number): string | null {
         const keys = Array.from(store.keys())
+
         return keys[index] || null
       },
-      get length (): number {
+      get length(): number {
         return store.size
       },
     }

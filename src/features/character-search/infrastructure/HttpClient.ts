@@ -3,7 +3,7 @@ import { ApiError, NetworkError } from '@/shared/errors/AppError'
 /**
  * HTTP client configuration
  */
-interface HttpClientConfig {
+type HttpClientConfig = {
   timeout: number
   retries: number
   baseURL?: string
@@ -12,7 +12,7 @@ interface HttpClientConfig {
 /**
  * Request configuration
  */
-interface RequestConfig {
+type RequestConfig = {
   params?: Record<string, any>
   headers?: Record<string, string>
   timeout?: number
@@ -24,7 +24,7 @@ interface RequestConfig {
 export class HttpClient {
   private readonly config: HttpClientConfig
 
-  constructor (config: HttpClientConfig) {
+  constructor(config: HttpClientConfig) {
     this.config = {
       timeout: config.timeout || 10_000,
       retries: config.retries || 3,
@@ -35,45 +35,41 @@ export class HttpClient {
   /**
    * Perform GET request
    */
-  async get<T> (url: string, config?: RequestConfig): Promise<T> {
+  async get<T>(url: string, config?: RequestConfig): Promise<T> {
     return this.request<T>('GET', url, undefined, config)
   }
 
   /**
    * Perform POST request
    */
-  async post<T> (url: string, data?: any, config?: RequestConfig): Promise<T> {
+  async post<T>(url: string, data?: any, config?: RequestConfig): Promise<T> {
     return this.request<T>('POST', url, data, config)
   }
 
   /**
    * Perform PUT request
    */
-  async put<T> (url: string, data?: any, config?: RequestConfig): Promise<T> {
+  async put<T>(url: string, data?: any, config?: RequestConfig): Promise<T> {
     return this.request<T>('PUT', url, data, config)
   }
 
   /**
    * Perform DELETE request
    */
-  async delete<T> (url: string, config?: RequestConfig): Promise<T> {
+  async delete<T>(url: string, config?: RequestConfig): Promise<T> {
     return this.request<T>('DELETE', url, undefined, config)
   }
 
   /**
    * Generic request method with retry logic
    */
-  private async request<T> (
-    method: string,
-    url: string,
-    data?: any,
-    config?: RequestConfig,
-  ): Promise<T> {
+  private async request<T>(method: string, url: string, data?: any, config?: RequestConfig): Promise<T> {
     let lastError: Error
 
     for (let attempt = 0; attempt <= this.config.retries; attempt++) {
       try {
         const response = await this.performRequest<T>(method, url, data, config)
+
         return response
       } catch (error) {
         lastError = error as Error
@@ -90,6 +86,7 @@ export class HttpClient {
 
         // Exponential backoff delay
         const delay = Math.min(1000 * Math.pow(2, attempt), 10_000)
+
         await this.sleep(delay)
       }
     }
@@ -100,21 +97,13 @@ export class HttpClient {
   /**
    * Perform the actual HTTP request
    */
-  private async performRequest<T> (
-    method: string,
-    url: string,
-    data?: any,
-    config?: RequestConfig,
-  ): Promise<T> {
+  private async performRequest<T>(method: string, url: string, data?: any, config?: RequestConfig): Promise<T> {
     const fullUrl = this.buildUrl(url, config?.params)
     const requestConfig = this.buildRequestConfig(method, data, config)
 
     try {
       const controller = new AbortController()
-      const timeoutId = setTimeout(
-        () => controller.abort(),
-        config?.timeout || this.config.timeout,
-      )
+      const timeoutId = setTimeout(() => controller.abort(), config?.timeout || this.config.timeout)
 
       const response = await fetch(fullUrl, {
         ...requestConfig,
@@ -124,19 +113,16 @@ export class HttpClient {
       clearTimeout(timeoutId)
 
       if (!response.ok) {
-        throw new ApiError(
-          `HTTP ${response.status}: ${response.statusText}`,
-          response.status,
-          {
-            url: fullUrl,
-            method,
-            status: response.status,
-            statusText: response.statusText,
-          },
-        )
+        throw new ApiError(`HTTP ${response.status}: ${response.statusText}`, response.status, {
+          url: fullUrl,
+          method,
+          status: response.status,
+          statusText: response.statusText,
+        })
       }
 
       const responseData = await response.json()
+
       return responseData as T
     } catch (error) {
       if (error instanceof ApiError) {
@@ -164,19 +150,20 @@ export class HttpClient {
   /**
    * Build full URL with query parameters
    */
-  private buildUrl (url: string, params?: Record<string, any>): string {
+  private buildUrl(url: string, params?: Record<string, any>): string {
     let fullUrl = this.config.baseURL ? `${this.config.baseURL}${url}` : url
 
     if (params && Object.keys(params).length > 0) {
       const searchParams = new URLSearchParams()
 
-      for (const [key, value] of Object.entries(params)) {
+      for (const [ key, value ] of Object.entries(params)) {
         if (value !== undefined && value !== null) {
           searchParams.append(key, String(value))
         }
       }
 
       const queryString = searchParams.toString()
+
       if (queryString) {
         fullUrl += `${fullUrl.includes('?') ? '&' : '?'}${queryString}`
       }
@@ -188,11 +175,7 @@ export class HttpClient {
   /**
    * Build fetch request configuration
    */
-  private buildRequestConfig (
-    method: string,
-    data?: any,
-    config?: RequestConfig,
-  ): RequestInit {
+  private buildRequestConfig(method: string, data?: any, config?: RequestConfig): RequestInit {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       ...config?.headers,
@@ -213,7 +196,7 @@ export class HttpClient {
   /**
    * Sleep utility for delays
    */
-  private sleep (ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms))
+  private sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms))
   }
 }

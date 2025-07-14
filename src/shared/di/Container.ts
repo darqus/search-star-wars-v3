@@ -2,14 +2,16 @@
  * Simple Dependency Injection Container
  */
 export class Container {
-  private dependencies = new Map<string, any>()
-  private singletons = new Map<string, any>()
-  private singletonInstances = new Map<string, any>()
+  private readonly dependencies = new Map<string, any>()
+
+  private readonly singletons = new Map<string, any>()
+
+  private readonly singletonInstances = new Map<string, any>()
 
   /**
    * Register a dependency
    */
-  register<T> (token: string, factory: () => T, singleton = false): void {
+  register<T>(token: string, factory: () => T, singleton = false): void {
     if (singleton) {
       this.singletons.set(token, factory)
     } else {
@@ -20,7 +22,7 @@ export class Container {
   /**
    * Resolve a dependency
    */
-  resolve<T> (token: string): T {
+  resolve<T>(token: string): T {
     // Check for singleton instance first
     if (this.singletonInstances.has(token)) {
       return this.singletonInstances.get(token)
@@ -30,12 +32,15 @@ export class Container {
     if (this.singletons.has(token)) {
       const factory = this.singletons.get(token)
       const instance = factory()
+
       this.singletonInstances.set(token, instance)
+
       return instance
     }
 
     // Check for regular dependency
     const factory = this.dependencies.get(token)
+
     if (!factory) {
       throw new Error(`Dependency '${token}' not found. Make sure it's registered.`)
     }
@@ -46,16 +51,14 @@ export class Container {
   /**
    * Check if a dependency is registered
    */
-  has (token: string): boolean {
-    return this.dependencies.has(token)
-      || this.singletons.has(token)
-      || this.singletonInstances.has(token)
+  has(token: string): boolean {
+    return this.dependencies.has(token) || this.singletons.has(token) || this.singletonInstances.has(token)
   }
 
   /**
    * Remove a dependency
    */
-  unregister (token: string): void {
+  unregister(token: string): void {
     this.dependencies.delete(token)
     this.singletons.delete(token)
     this.singletonInstances.delete(token)
@@ -64,7 +67,7 @@ export class Container {
   /**
    * Clear all dependencies
    */
-  clear (): void {
+  clear(): void {
     this.dependencies.clear()
     this.singletons.clear()
     this.singletonInstances.clear()
@@ -73,7 +76,7 @@ export class Container {
   /**
    * Get all registered tokens
    */
-  getRegisteredTokens (): string[] {
+  getRegisteredTokens(): string[] {
     const tokens = new Set<string>()
 
     for (const token of this.dependencies.keys()) {
@@ -120,18 +123,18 @@ export const container = new Container()
 /**
  * Helper function to inject dependencies into Vue components or composables
  */
-export function inject<T> (token: string): T {
+export function inject<T>(token: string): T {
   return container.resolve<T>(token)
 }
 
 /**
  * Helper function to provide dependencies (usually called in setup functions)
  */
-export function provide<T> (token: string, factory: () => T, singleton = false): void {
+export function provide<T>(token: string, factory: () => T, singleton = false): void {
   container.register(token, factory, singleton)
 }
 
 /**
  * Helper type for inferring token types
  */
-export type TokenType<T extends keyof typeof TOKENS> = typeof TOKENS[T]
+export type TokenType<T extends keyof typeof TOKENS> = (typeof TOKENS)[T]

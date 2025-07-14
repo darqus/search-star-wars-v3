@@ -1,48 +1,49 @@
 <script setup lang="ts">
-  import { computed, onMounted, ref, watch } from 'vue'
-  import { AUDIO_ICONS } from '@/state/'
+import { computed, onMounted, ref, watch } from 'vue'
 
-  const sound = new Audio('snd/star-wars-theme.m4a')
+import { AUDIO_ICONS } from '@/state/'
 
-  const isPlayed = ref(false)
-  const isLoop = ref(false)
+const sound = new Audio('snd/star-wars-theme.m4a')
 
-  const icon = computed(() => {
-    return isPlayed.value ? AUDIO_ICONS.stop : AUDIO_ICONS.play
-  })
+const isPlayed = ref(false)
+const isLoop = ref(false)
 
-  const buttonColor = computed(() => {
-    return isPlayed.value ? 'info' : 'primary'
-  })
+const icon = computed(() => {
+  return isPlayed.value ? AUDIO_ICONS.stop : AUDIO_ICONS.play
+})
 
-  const buttonVariant = computed(() => {
-    return isPlayed.value ? 'elevated' : 'tonal'
-  })
+const buttonColor = computed(() => {
+  return isPlayed.value ? 'info' : 'primary'
+})
 
-  onMounted(() => {
-    sound.addEventListener('ended', () => onToggle(), false)
-  })
+const buttonVariant = computed(() => {
+  return isPlayed.value ? 'elevated' : 'tonal'
+})
 
-  watch(isLoop, value => {
-    sound.loop = value
-  })
+onMounted(() => {
+  sound.addEventListener('ended', () => onToggle(), false)
+})
 
-  const onPlaySound = () => {
-    sound.play()
+watch(isLoop, (value) => {
+  sound.loop = value
+})
+
+const onPlaySound = () => {
+  sound.play()
+}
+
+const onPauseSound = () => {
+  sound.pause()
+}
+
+const onToggle = () => {
+  isPlayed.value = !isPlayed.value
+  if (isPlayed.value) {
+    onPlaySound()
+  } else {
+    onPauseSound()
   }
-
-  const onPauseSound = () => {
-    sound.pause()
-  }
-
-  const onToggle = () => {
-    isPlayed.value = !isPlayed.value
-    if (isPlayed.value) {
-      onPlaySound()
-    } else {
-      onPauseSound()
-    }
-  }
+}
 </script>
 
 <template>
@@ -51,9 +52,9 @@
       <v-btn
         :aria-label="isPlayed ? 'Stop audio' : 'Play audio'"
         :color="buttonColor"
-        icon
-        size="small"
         :variant="buttonVariant"
+        size="small"
+        icon
         @click="onToggle"
       >
         <v-icon :size="28">{{ icon }}</v-icon>
@@ -65,8 +66,8 @@
         v-model="isLoop"
         color="primary"
         density="compact"
-        hide-details
         label="loop"
+        hide-details
       />
     </v-col>
   </v-row>

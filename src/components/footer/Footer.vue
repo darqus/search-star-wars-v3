@@ -1,42 +1,43 @@
 <script setup lang="ts">
-  import { defineAsyncComponent } from 'vue'
-  import { useDisplay } from 'vuetify'
-  import { LINKS } from '@/state/'
+import { defineAsyncComponent } from 'vue'
+import { useDisplay } from 'vuetify'
 
-  // Lazy loaded components with loading indicators
-  const FooterDropDownInfo = defineAsyncComponent({
-    loader: () => import('@/components/footer/FooterDropDownInfo.vue'),
-    delay: 200,
-  })
+import { LINKS } from '@/state/'
 
-  const Link = defineAsyncComponent({
-    loader: () => import('@/components/Link.vue'),
-    delay: 100,
-  })
+// Lazy loaded components with loading indicators
+const FooterDropDownInfo = defineAsyncComponent({
+  loader: () => import('@/components/footer/FooterDropDownInfo.vue'),
+  delay: 200,
+})
 
-  const SoundButton = defineAsyncComponent({
-    loader: () => import('@/components/SoundButton.vue'),
-    delay: 200,
-  })
+const Link = defineAsyncComponent({
+  loader: () => import('@/components/Link.vue'),
+  delay: 100,
+})
 
-  const SWCrawlText = defineAsyncComponent({
-    loader: () => import('@/components/SWCrawlText.vue'),
-    delay: 300,
-  })
+const SoundButton = defineAsyncComponent({
+  loader: () => import('@/components/SoundButton.vue'),
+  delay: 200,
+})
 
-  const ThemeSwitcher = defineAsyncComponent({
-    loader: () => import('@/components/ThemeSwitcher.vue'),
-    delay: 100,
-  })
+const SWCrawlText = defineAsyncComponent({
+  loader: () => import('@/components/SWCrawlText.vue'),
+  delay: 300,
+})
 
-  interface Props {
-    side: string
-  }
+const ThemeSwitcher = defineAsyncComponent({
+  loader: () => import('@/components/ThemeSwitcher.vue'),
+  delay: 100,
+})
 
-  defineProps<Props>()
+type Props = {
+  side: string
+}
 
-  const display = useDisplay()
-  const links = LINKS
+defineProps<Props>()
+
+const display = useDisplay()
+const links = LINKS
 </script>
 
 <template>
@@ -61,7 +62,7 @@
       <div>
         <small>
           <span>{{ `1977 — ${new Date().getFullYear()}` }}</span>
-          <span style="margin-left: 1rem;">
+          <span style="margin-left: 1rem">
             <span class="footer-icon">🌌</span>
             <span>&nbsp;</span>
             <FooterDropDownInfo />
@@ -98,14 +99,18 @@
     align-items: center;
 
     a {
-      padding-right: v-bind(display.smAndDown ? '0' : '1rem');
-      padding-left: v-bind(display.smAndDown ? '0' : '1rem');
-      color: v-bind($vuetify.theme.current.dark ? 'lightblue' : 'rgb(23 99 161)');
+      padding-right: v-bind(display.smAndDown ? '0': '1rem');
+      padding-left: v-bind(display.smAndDown ? '0': '1rem');
+      color: v-bind(
+        $vuetify.theme.current.dark ? 'lightblue': 'rgb(23 99 161)'
+      );
     }
   }
 }
 
 :deep(.footer-icon) {
-  filter: v-bind('$vuetify.theme.current.dark ? "invert(0.2) sepia(0.3) drop-shadow(0 4px 3px rgba(255, 255, 255, 0.5))" : "invert(0.2) sepia(0.3) blur(0.5px) drop-shadow(0 4px 3px rgba(0, 0, 0, 0.5))"');
+  filter: v-bind(
+    '$vuetify.theme.current.dark ? "invert(0.2) sepia(0.3) drop-shadow(0 4px 3px rgba(255, 255, 255, 0.5))" : "invert(0.2) sepia(0.3) blur(0.5px) drop-shadow(0 4px 3px rgba(0, 0, 0, 0.5))"'
+  );
 }
 </style>

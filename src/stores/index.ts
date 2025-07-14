@@ -5,4 +5,5 @@ export const pinia = createPinia()
 
 // Re-export all stores
 export * from './starWars'
+
 export * from './theme'

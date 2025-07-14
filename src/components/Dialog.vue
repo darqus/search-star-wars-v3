@@ -1,29 +1,33 @@
 <script setup lang="ts">
-  import type { Item } from '@/types/api'
-  import { ref, watch } from 'vue'
-  import { useDisplay } from 'vuetify'
+import { ref, watch } from 'vue'
+import { useDisplay } from 'vuetify'
 
-  interface Props {
-    search: Item
-    result: string
-    isDialogShow: boolean
-  }
+import type { Item } from '@/types/api'
 
-  const props = defineProps<Props>()
-  const emit = defineEmits<{
-    dialog: [value: boolean]
-  }>()
+type Props = {
+  search: Item
+  result: string
+  isDialogShow: boolean
+}
 
-  const display = useDisplay()
-  const dialog = ref(false)
+const props = defineProps<Props>()
+const emit = defineEmits<{
+  dialog: [value: boolean]
+}>()
 
-  watch(dialog, value => {
-    emit('dialog', value)
-  })
+const display = useDisplay()
+const dialog = ref(false)
 
-  watch(() => props.isDialogShow, value => {
+watch(dialog, (value) => {
+  emit('dialog', value)
+})
+
+watch(
+  () => props.isDialogShow,
+  (value) => {
     dialog.value = value
-  })
+  }
+)
 </script>
 
 <template>

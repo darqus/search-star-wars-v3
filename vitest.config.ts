@@ -1,10 +1,11 @@
 import { fileURLToPath, URL } from 'node:url'
+
 import vue from '@vitejs/plugin-vue'
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   // @ts-ignore - Ignore type incompatibility between vitest and vite plugin versions
-  plugins: [vue()],
+  plugins: [ vue() ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('src', import.meta.url)),
@@ -21,15 +22,15 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'happy-dom',
-    setupFiles: ['./tests/setup.ts', './tests/css-setup.js'],
-    include: ['**/*.{test,spec}.{js,ts,jsx,tsx}'],
+    setupFiles: [ './tests/setup.ts', './tests/css-setup.js' ],
+    include: [ '**/*.{test,spec}.{js,ts,jsx,tsx}' ],
     coverage: {
       provider: 'istanbul',
-      reporter: ['text', 'json', 'html'],
+      reporter: [ 'text', 'json', 'html' ],
     },
     server: {
       deps: {
-        inline: ['vuetify'],
+        inline: [ 'vuetify' ],
       },
     },
   },

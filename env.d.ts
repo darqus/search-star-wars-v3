@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 /// <reference types="unplugin-vue-router/client" />
 
-interface ImportMetaEnv {
+type ImportMetaEnv = {
   readonly VITE_APP_NAME: string
   readonly VITE_APP_NAME_SHORT: string
   readonly VITE_APP_NAME_POSTFIX: string
@@ -12,6 +12,6 @@ interface ImportMetaEnv {
   readonly VITE_APP_TITLE: string
 }
 
-interface ImportMeta {
+type ImportMeta = {
   readonly env: ImportMetaEnv
 }

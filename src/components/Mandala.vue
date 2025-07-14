@@ -1,46 +1,50 @@
 <script setup lang="ts">
-  import { NON_BREAKING_SPACE } from '@/state/'
+import { NON_BREAKING_SPACE } from '@/state/'
 
-  interface Props {
-    className?: string
-    side: string
-  }
+type Props = {
+  className?: string
+  side: string
+}
 
-  withDefaults(defineProps<Props>(), {
-    className: 'left',
-  })
+withDefaults(defineProps<Props>(), {
+  className: 'left',
+})
 
-  const items = {
-    s1: {
-      text: `${NON_BREAKING_SPACE.repeat(3)}΅̮̼˘˼̐`,
-      len: 7,
-    },
-    s2: {
-      text: `${NON_BREAKING_SPACE.repeat(
-        2,
-      )};̧΅̮̼<tspan>̧΅</tspan>̃ˬ<tspan>̧</tspan>̧΅̮<tspan>͒̈́</tspan>`,
-      len: 7,
-    },
-    s3: {
-      text: `˘˼̐˶̨̰̼̃͂̏̑̉̆${NON_BREAKING_SPACE.repeat(2)}`,
-      len: 6,
-    },
-    s4: {
-      text: `${NON_BREAKING_SPACE.repeat(3)} ͒̈́'`,
-      len: 7,
-    },
-    s5: {
-      text: 'ˠ˞˟˷̐˽̘̖̫̫̭̮̔',
-      len: 15,
-    },
-  }
+const items = {
+  s1: {
+    text: `${NON_BREAKING_SPACE.repeat(3)}΅̮̼˘˼̐`,
+    len: 7,
+  },
+  s2: {
+    text: `${NON_BREAKING_SPACE.repeat(
+      2
+    )};̧΅̮̼<tspan>̧΅</tspan>̃ˬ<tspan>̧</tspan>̧΅̮<tspan>͒̈́</tspan>`,
+    len: 7,
+  },
+  s3: {
+    text: `˘˼̐˶̨̰̼̃͂̏̑̉̆${NON_BREAKING_SPACE.repeat(2)}`,
+    len: 6,
+  },
+  s4: {
+    text: `${NON_BREAKING_SPACE.repeat(3)} ͒̈́'`,
+    len: 7,
+  },
+  s5: {
+    text: 'ˠ˞˟˷̐˽̘̖̫̫̭̮̔',
+    len: 15,
+  },
+}
 </script>
 
 <template>
-  <div aria-hidden="true" class="mandala-container animate-colors" :class="`${className} ${side}`">
+  <div
+    :class="`${className} ${side}`"
+    aria-hidden="true"
+    class="mandala-container animate-colors"
+  >
     <div
-      class="mandala-translate"
       :class="className === 'right' ? 'rotate-right' : 'rotate-left'"
+      class="mandala-translate"
     >
       <svg
         class="mandala"
@@ -72,7 +76,11 @@
             d="M337.5,337.5 m-160,0 a160,160 0 1,1 320,0 a160,160 0 1,1 -320,0"
           />
         </defs>
-        <text class="mandala-accent-1" dy="70" textLength="2010">
+        <text
+          class="mandala-accent-1"
+          dy="70"
+          textLength="2010"
+        >
           <animateTransform
             attributeName="transform"
             begin="0s"
@@ -82,11 +90,22 @@
             to="360 337.5 337.5"
             type="rotate"
           />
-          <textPath href="#circle1" textLength="2010">
-            <tspan v-for="s1 in items.s1.len" :key="s1" v-html="items.s1.text" />
+          <textPath
+            href="#circle1"
+            textLength="2010"
+          >
+            <tspan
+              v-for="s1 in items.s1.len"
+              :key="s1"
+              v-html="items.s1.text"
+            />
           </textPath>
         </text>
-        <text class="mandala-accent-2" dy="70" textLength="1760">
+        <text
+          class="mandala-accent-2"
+          dy="70"
+          textLength="1760"
+        >
           <animateTransform
             attributeName="transform"
             begin="0s"
@@ -96,11 +115,22 @@
             to="0 337.5 337.5"
             type="rotate"
           />
-          <textPath href="#circle2" textLength="1760">
-            <tspan v-for="s2 in items.s2.len" :key="s2" v-html="items.s2.text" />
+          <textPath
+            href="#circle2"
+            textLength="1760"
+          >
+            <tspan
+              v-for="s2 in items.s2.len"
+              :key="s2"
+              v-html="items.s2.text"
+            />
           </textPath>
         </text>
-        <text class="mandala-accent-3" dy="70" textLength="1507">
+        <text
+          class="mandala-accent-3"
+          dy="70"
+          textLength="1507"
+        >
           <animateTransform
             attributeName="transform"
             begin="0s"
@@ -110,11 +140,22 @@
             to="360 337.5 337.5"
             type="rotate"
           />
-          <textPath href="#circle3" textLength="1507">
-            <tspan v-for="s3 in items.s3.len" :key="s3" v-html="items.s3.text" />
+          <textPath
+            href="#circle3"
+            textLength="1507"
+          >
+            <tspan
+              v-for="s3 in items.s3.len"
+              :key="s3"
+              v-html="items.s3.text"
+            />
           </textPath>
         </text>
-        <text class="mandala-accent-4" dy="70" textLength="1257">
+        <text
+          class="mandala-accent-4"
+          dy="70"
+          textLength="1257"
+        >
           <animateTransform
             attributeName="transform"
             begin="0s"
@@ -124,11 +165,22 @@
             to="0 337.5 337.5"
             type="rotate"
           />
-          <textPath href="#circle4" textLength="1257">
-            <tspan v-for="s4 in items.s4.len" :key="s4" v-html="items.s4.text" />
+          <textPath
+            href="#circle4"
+            textLength="1257"
+          >
+            <tspan
+              v-for="s4 in items.s4.len"
+              :key="s4"
+              v-html="items.s4.text"
+            />
           </textPath>
         </text>
-        <text class="mandala-accent-5" dy="70" textLength="1005">
+        <text
+          class="mandala-accent-5"
+          dy="70"
+          textLength="1005"
+        >
           <animateTransform
             attributeName="transform"
             begin="0s"
@@ -138,8 +190,15 @@
             to="360 337.5 337.5"
             type="rotate"
           />
-          <textPath href="#circle5" textLength="1005">
-            <tspan v-for="s5 in items.s5.len" :key="s5" v-html="items.s5.text" />
+          <textPath
+            href="#circle5"
+            textLength="1005"
+          >
+            <tspan
+              v-for="s5 in items.s5.len"
+              :key="s5"
+              v-html="items.s5.text"
+            />
           </textPath>
         </text>
       </svg>
@@ -235,87 +294,87 @@
   font-size: 1rem;
 }
 
-.mandala-container.animate-colors svg>text>textPath>tspan {
+.mandala-container.animate-colors svg > text > textPath > tspan {
   fill: var(--mandala-primary);
   animation: mandala-color-change 50s infinite;
-  animation-timing-function: ease-in-out
+  animation-timing-function: ease-in-out;
 }
 
-.mandala-container.animate-colors .mandala-accent-1>textPath>tspan {
+.mandala-container.animate-colors .mandala-accent-1 > textPath > tspan {
   fill: var(--mandala-accent-1);
-  animation-delay: -15s
+  animation-delay: -15s;
 }
 
-.mandala-container.animate-colors .mandala-accent-2>textPath>tspan {
+.mandala-container.animate-colors .mandala-accent-2 > textPath > tspan {
   fill: var(--mandala-accent-2);
-  animation-delay: -20s
+  animation-delay: -20s;
 }
 
-.mandala-container.animate-colors .mandala-accent-3>textPath>tspan {
+.mandala-container.animate-colors .mandala-accent-3 > textPath > tspan {
   fill: var(--mandala-accent-3);
-  animation-delay: -30s
+  animation-delay: -30s;
 }
 
-.mandala-container.animate-colors .mandala-accent-5>textPath>tspan {
+.mandala-container.animate-colors .mandala-accent-5 > textPath > tspan {
   fill: var(--mandala-accent-4);
-  animation-delay: -40s
+  animation-delay: -40s;
 }
 
 @keyframes mandala-color-change {
   0% {
-    fill: var(--mandala-primary)
+    fill: var(--mandala-primary);
   }
 
   10% {
-    fill: var(--mandala-primary)
+    fill: var(--mandala-primary);
   }
 
   15% {
-    fill: var(--mandala-accent-1)
+    fill: var(--mandala-accent-1);
   }
 
   20% {
-    fill: var(--mandala-primary)
+    fill: var(--mandala-primary);
   }
 
   25% {
-    fill: var(--mandala-primary)
+    fill: var(--mandala-primary);
   }
 
   30% {
-    fill: var(--mandala-accent-2)
+    fill: var(--mandala-accent-2);
   }
 
   35% {
-    fill: var(--mandala-primary)
+    fill: var(--mandala-primary);
   }
 
   40% {
-    fill: var(--mandala-primary)
+    fill: var(--mandala-primary);
   }
 
   50% {
-    fill: var(--mandala-accent-3)
+    fill: var(--mandala-accent-3);
   }
 
   55% {
-    fill: var(--mandala-primary)
+    fill: var(--mandala-primary);
   }
 
   60% {
-    fill: var(--mandala-primary)
+    fill: var(--mandala-primary);
   }
 
   65% {
-    fill: var(--mandala-accent-4)
+    fill: var(--mandala-accent-4);
   }
 
   70% {
-    fill: var(--mandala-primary)
+    fill: var(--mandala-primary);
   }
 
   100% {
-    fill: var(--mandala-primary)
+    fill: var(--mandala-primary);
   }
 }
 </style>

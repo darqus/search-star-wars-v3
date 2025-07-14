@@ -1,13 +1,11 @@
-import type { Item } from '@/types/api'
-import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+
+import { defineStore } from 'pinia'
+
+import type { Item } from '@/types/api'
+
 import { useStarWarsApi } from '@/composables/useStarWarsApi'
-import {
-  API_ENDPOINTS,
-  DEFAULT_CACHE_ENABLED,
-  DEFAULT_CACHE_EXPIRY,
-  DEFAULT_PAGE_SIZE,
-} from '@/constants/api'
+import { API_ENDPOINTS, DEFAULT_CACHE_ENABLED, DEFAULT_CACHE_EXPIRY, DEFAULT_PAGE_SIZE } from '@/constants/api'
 
 export const useStarWarsStore = defineStore('starWars', () => {
   const {
@@ -41,18 +39,19 @@ export const useStarWarsStore = defineStore('starWars', () => {
   // Computed
   const isLoading = computed(() => apiIsLoading.value)
   const error = computed(() => apiError.value)
+
   // Return items directly since server-side filtering is used
   const filteredItems = computed(() => items.value)
 
   // Actions
-  async function fetchItems (skipCache = false, searchTerm?: string) {
+  async function fetchItems(skipCache = false, searchTerm?: string) {
     try {
       const response = await fetchData(
         selectedApi.value,
         currentPage.value,
         DEFAULT_PAGE_SIZE,
         !skipCache, // useCache parameter
-        searchTerm, // search parameter
+        searchTerm // search parameter
       )
 
       items.value = response.results
@@ -73,7 +72,7 @@ export const useStarWarsStore = defineStore('starWars', () => {
   }
 
   // Specific method for search requests with limit of 5 items
-  async function fetchSearchResults (searchTerm: string) {
+  async function fetchSearchResults(searchTerm: string) {
     try {
       // console.log('🏪 Store: Fetching search results for:', searchTerm)
       // console.log('🏪 Store: Using API endpoint:', selectedApi.value)
@@ -83,11 +82,12 @@ export const useStarWarsStore = defineStore('starWars', () => {
         1, // Always use page 1 for search
         5, // Limit to 5 items for dropdown
         false, // Never cache search results
-        searchTerm,
+        searchTerm
       )
 
       // Store search results separately from main items
       searchResults.value = response.results
+
       // console.log('🏪 Store: Search results stored:', response.results.length, 'items')
 
       return response
@@ -98,19 +98,19 @@ export const useStarWarsStore = defineStore('starWars', () => {
     }
   }
 
-  async function selectItem (nameOrItem: string | Item) {
+  async function selectItem(nameOrItem: string | Item) {
     if (!nameOrItem) {
       resetSelection()
+
       return
     }
 
     // If we received a string (name), find the corresponding item
-    const item = typeof nameOrItem === 'string'
-      ? items.value.find(i => i.name === nameOrItem)
-      : nameOrItem
+    const item = typeof nameOrItem === 'string' ? items.value.find((i) => i.name === nameOrItem) : nameOrItem
 
     if (!item) {
       resetSelection()
+
       return
     }
 
@@ -120,6 +120,7 @@ export const useStarWarsStore = defineStore('starWars', () => {
       imgURL.value = ''
       imgLoaded.value = false
       result.value = JSON.stringify(item, null, 2)
+
       return
     }
 
@@ -138,15 +139,13 @@ export const useStarWarsStore = defineStore('starWars', () => {
   }
 
   // Separate function for selecting from search results
-  async function selectFromSearch (nameOrItem: string | Item) {
+  async function selectFromSearch(nameOrItem: string | Item) {
     if (!nameOrItem) {
       return
     }
 
     // If we received a string (name), find the corresponding item
-    const item = typeof nameOrItem === 'string'
-      ? searchResults.value.find(i => i.name === nameOrItem)
-      : nameOrItem
+    const item = typeof nameOrItem === 'string' ? searchResults.value.find((i) => i.name === nameOrItem) : nameOrItem
 
     if (!item) {
       return
@@ -182,7 +181,7 @@ export const useStarWarsStore = defineStore('starWars', () => {
     searchResults.value = []
   }
 
-  function setApiEndpoint (endpoint: string) {
+  function setApiEndpoint(endpoint: string) {
     if (selectedApi.value !== endpoint) {
       selectedApi.value = endpoint
       currentPage.value = 1
@@ -193,7 +192,7 @@ export const useStarWarsStore = defineStore('starWars', () => {
     }
   }
 
-  function setPage (page: number) {
+  function setPage(page: number) {
     if (currentPage.value !== page) {
       currentPage.value = page
       fetchItems()
@@ -201,22 +200,22 @@ export const useStarWarsStore = defineStore('starWars', () => {
   }
 
   // Cache management functions
-  function invalidateCache () {
+  function invalidateCache() {
     setCacheExpiry(0) // Set expiry to 0 to force refresh
     fetchItems() // Re-fetch data
     setCacheExpiry(DEFAULT_CACHE_EXPIRY) // Restore default expiry
   }
 
-  function toggleCaching (enabled: boolean) {
+  function toggleCaching(enabled: boolean) {
     setCachingEnabled(enabled)
   }
 
-  function setSearchTerm (term: string) {
+  function setSearchTerm(term: string) {
     // console.log('Setting search term:', term)
     searchTerm.value = term
   }
 
-  function resetSelection () {
+  function resetSelection() {
     selectedItem.value = undefined
     imgURL.value = ''
     result.value = ''

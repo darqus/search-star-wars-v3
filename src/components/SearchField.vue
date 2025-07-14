@@ -1,12 +1,34 @@
+<script setup lang="ts">
+import { useSearch } from '@/composables/useSearch'
+
+type Props = {
+  selectedApi: string
+  isLoading: boolean
+  density?: 'default' | 'comfortable' | 'compact'
+}
+
+defineProps<Props>()
+
+const {
+  searchInput,
+  isShownDropDown,
+  searchResults,
+  onSearchInputChange,
+  onSearchBlur,
+  onSelectFromDropList,
+  highlightText,
+} = useSearch()
+</script>
+
 <template>
   <div style="position: relative">
     <v-text-field
       v-model="searchInput"
-      clearable
       :density="density"
       :label="`Search ${selectedApi}`"
       :loading="isLoading"
       :menu-props="{ scrim: true, scrollStrategy: 'close' }"
+      clearable
       @blur="onSearchBlur"
       @input="onSearchInputChange"
     />
@@ -30,28 +52,6 @@
     </v-card>
   </div>
 </template>
-
-<script setup lang="ts">
-  import { useSearch } from '@/composables/useSearch'
-
-  interface Props {
-    selectedApi: string
-    isLoading: boolean
-    density?: 'default' | 'comfortable' | 'compact'
-  }
-
-  defineProps<Props>()
-
-  const {
-    searchInput,
-    isShownDropDown,
-    searchResults,
-    onSearchInputChange,
-    onSearchBlur,
-    onSelectFromDropList,
-    highlightText,
-  } = useSearch()
-</script>
 
 <style scoped>
 .search-dropdown {

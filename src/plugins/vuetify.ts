@@ -6,6 +6,7 @@
 
 // Composables
 import { createVuetify } from 'vuetify'
+
 import { ru } from 'vuetify/locale'
 
 // Styles

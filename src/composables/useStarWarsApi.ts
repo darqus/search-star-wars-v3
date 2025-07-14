@@ -1,11 +1,10 @@
-import type { ApiResponse, Item } from '@/types/api'
 import { computed, ref } from 'vue'
+
+import type { ApiResponse, Item } from '@/types/api'
+
 import { apiCache } from '@/utils/apiCache'
 
-const {
-  VITE_APP_API_BASE_URL: API_URL,
-  VITE_APP_IMAGE_BASE_URL: IMAGE_BASE_URL,
-} = import.meta.env
+const { VITE_APP_API_BASE_URL: API_URL, VITE_APP_IMAGE_BASE_URL: IMAGE_BASE_URL } = import.meta.env
 
 const transformImageUrl = (image: string): string => {
   // Return absolute URLs without transformation
@@ -30,7 +29,7 @@ export const useStarWarsApi = () => {
     page = 1,
     limit = 20,
     useCache = true,
-    search?: string,
+    search?: string
   ): Promise<ApiResponse> => {
     isLoading.value = true
     error.value = null
@@ -46,6 +45,7 @@ export const useStarWarsApi = () => {
       }
 
       const cacheKey = `${endpoint}?${params}`
+
       // const fullUrl = `${API_URL}/${endpoint}?${params}`
 
       // console.log('🌐 Making API request to:', fullUrl)
@@ -56,12 +56,15 @@ export const useStarWarsApi = () => {
       // Try to get from cache first (but not for search requests)
       if (shouldUseCache) {
         const cachedData = apiCache.get<ApiResponse>(cacheKey)
+
         if (cachedData) {
           // console.log(`Cache hit for ${cacheKey}`)
           // We can skip the loading state for cached responses
           isLoading.value = false
+
           return cachedData
         }
+
         // console.log(`Cache miss for ${cacheKey}`)
       }
 
@@ -77,6 +80,7 @@ export const useStarWarsApi = () => {
       const data: ApiResponse = {
         results: rawData.results.map((item: Item) => ({
           ...item,
+
           // Ensure image URL has the correct format
           image: transformImageUrl(item.image),
         })),
@@ -104,6 +108,7 @@ export const useStarWarsApi = () => {
   const preloadImage = (url: string): Promise<void> => {
     return new Promise((resolve, reject) => {
       const img = new Image()
+
       img.addEventListener('load', () => resolve())
       img.addEventListener('error', () => reject(new Error(`Failed to load image: ${url}`)))
       img.src = url
