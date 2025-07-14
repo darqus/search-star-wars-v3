@@ -13,7 +13,7 @@ export function useErrorHandler(options: ErrorHandlerOptions = {}) {
   const isError = ref(false)
 
   const handleError = (err: unknown, customMessage?: string) => {
-    const message = customMessage || getErrorMessage(err) || defaultMessage
+    const message = customMessage ?? getErrorMessage(err) ?? defaultMessage
 
     if (logError) {
       console.error('Error occurred:', err)
