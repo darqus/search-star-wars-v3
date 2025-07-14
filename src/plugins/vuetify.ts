@@ -7,10 +7,9 @@
 // Composables
 import { createVuetify } from 'vuetify'
 
-import { ru } from 'vuetify/locale'
-
 // Styles
 import '@mdi/font/css/materialdesignicons.css'
+import { ru } from 'vuetify/locale'
 import 'vuetify/styles'
 
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
