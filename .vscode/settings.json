@@ -108,5 +108,5 @@
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.tsdk": "node_modules/typescript/lib",
   "gitPrefix.replacement": "$1 | ",
-  "cSpell.words": []
+  "cSpell.words": ["vuetify"]
 }

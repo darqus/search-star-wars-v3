@@ -1,9 +1,12 @@
-import { mount } from '@vue/test-utils'
-import { createPinia, setActivePinia } from 'pinia'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createVuetify } from 'vuetify'
+
+import { createPinia, setActivePinia } from 'pinia'
+
+import { mount } from '@vue/test-utils'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
+
 import Form from '../form/AppForm.vue'
 
 // Simplified Vue component mocks to avoid __isTeleport issues
@@ -12,7 +15,7 @@ vi.mock('@/components/AppDialog.vue', () => ({
   default: {
     name: 'MockDialog',
     template: '<div data-testid="mock-dialog" />',
-    props: ['isDialogShow', 'result', 'search'],
+    props: [ 'isDialogShow', 'result', 'search' ],
     __isTeleport: false,
     __isKeepAlive: false,
     __asyncResolved: true,
@@ -24,7 +27,7 @@ vi.mock('@/components/AppLink.vue', () => ({
   default: {
     name: 'MockLink',
     template: '<a data-testid="mock-link" />',
-    props: ['link', 'text'],
+    props: [ 'link', 'text' ],
     __isTeleport: false,
     __isKeepAlive: false,
     __asyncResolved: true,
@@ -47,7 +50,7 @@ vi.mock('@/components/AppMandala.vue', () => ({
   default: {
     name: 'MockMandala',
     template: '<div data-testid="mock-mandala" />',
-    props: ['side', 'className'],
+    props: [ 'side', 'className' ],
     __isTeleport: false,
     __isKeepAlive: false,
     __asyncResolved: true,
@@ -67,7 +70,7 @@ vi.mock('@/components/FormControls.vue', () => ({
         <div class="v-text-field"></div>
       </div>
     `,
-    props: ['role', 'density'],
+    props: [ 'role', 'density' ],
     __isTeleport: false,
     __isKeepAlive: false,
     __asyncResolved: true,
@@ -85,8 +88,8 @@ vi.mock('@/components/ResultDisplay.vue', () => ({
         <div v-if="items.length > 0" class="results"></div>
       </div>
     `,
-    props: ['items', 'imgURL', 'selectedItem', 'isLoading', 'error'],
-    emits: ['show-dialog'],
+    props: [ 'items', 'imgURL', 'selectedItem', 'isLoading', 'error' ],
+    emits: [ 'show-dialog' ],
     __isTeleport: false,
     __isKeepAlive: false,
     __asyncResolved: true,
@@ -144,7 +147,7 @@ vi.mock('@/components/ThemeSwitcher.vue', () => ({
   default: {
     name: 'MockThemeSwitcher',
     template: '<div data-testid="mock-theme-switcher" />',
-    props: ['label'],
+    props: [ 'label' ],
     __isTeleport: false,
     __isKeepAlive: false,
     __asyncResolved: true,
@@ -156,7 +159,7 @@ vi.mock('@/components/CacheControls.vue', () => ({
   default: {
     name: 'MockCacheControls',
     template: '<div data-testid="mock-cache-controls" />',
-    props: ['cachedEndpoints', 'currentEndpoint'],
+    props: [ 'cachedEndpoints', 'currentEndpoint' ],
     __isTeleport: false,
     __isKeepAlive: false,
     __asyncResolved: true,
@@ -185,8 +188,10 @@ const mockDisplay = {
   smAndDown: { value: false },
   mdAndDown: { value: false },
 }
+
 vi.mock('vuetify', async () => {
   const actual = await vi.importActual('vuetify')
+
   return {
     ...actual,
     useDisplay: vi.fn(() => mockDisplay),
@@ -216,7 +221,7 @@ describe('Form Component', () => {
         side: 'light',
       },
       global: {
-        plugins: [vuetify],
+        plugins: [ vuetify ],
         stubs: {
           'async-component-wrapper': true,
           transition: true,
@@ -237,7 +242,7 @@ describe('Form Component', () => {
         side: 'light',
       },
       global: {
-        plugins: [vuetify],
+        plugins: [ vuetify ],
         stubs: {
           'async-component-wrapper': true,
           transition: true,
@@ -250,6 +255,7 @@ describe('Form Component', () => {
 
     // Test that the composable has the correct totalPages value
     expect(mockFormData.totalPages).toBe(5)
+
     // Test that FormControls component is rendered
     expect(wrapper.find('[data-testid="mock-form-controls"]').exists()).toBe(true)
   })
@@ -263,7 +269,7 @@ describe('Form Component', () => {
         side: 'light',
       },
       global: {
-        plugins: [vuetify],
+        plugins: [ vuetify ],
         stubs: {
           'async-component-wrapper': true,
           transition: true,
@@ -276,6 +282,7 @@ describe('Form Component', () => {
 
     // Test that the composable has the correct totalPages value
     expect(mockFormData.totalPages).toBe(1)
+
     // Test that FormControls component is rendered
     expect(wrapper.find('[data-testid="mock-form-controls"]').exists()).toBe(true)
   })
@@ -289,7 +296,7 @@ describe('Form Component', () => {
         side: 'light',
       },
       global: {
-        plugins: [vuetify],
+        plugins: [ vuetify ],
         stubs: {
           'async-component-wrapper': true,
           transition: true,
@@ -302,6 +309,7 @@ describe('Form Component', () => {
 
   it('shows error when error is present', () => {
     mockFormData.isLoading = false
+
     // @ts-ignore - Allow string assignment for test
     mockFormData.error = 'API Error'
     mockFormData.items = []
@@ -312,7 +320,7 @@ describe('Form Component', () => {
         side: 'light',
       },
       global: {
-        plugins: [vuetify],
+        plugins: [ vuetify ],
         stubs: {
           'async-component-wrapper': true,
           transition: true,
@@ -331,7 +339,7 @@ describe('Form Component', () => {
         side: 'light',
       },
       global: {
-        plugins: [vuetify],
+        plugins: [ vuetify ],
         stubs: {
           'async-component-wrapper': true,
           transition: true,
@@ -349,7 +357,7 @@ describe('Form Component', () => {
         side: 'light',
       },
       global: {
-        plugins: [vuetify],
+        plugins: [ vuetify ],
         stubs: {
           'async-component-wrapper': true,
           transition: true,
@@ -371,7 +379,7 @@ describe('Form Component', () => {
         side: 'light',
       },
       global: {
-        plugins: [vuetify],
+        plugins: [ vuetify ],
         stubs: {
           'async-component-wrapper': true,
           transition: true,
@@ -399,7 +407,7 @@ describe('Form Component', () => {
         side: 'light',
       },
       global: {
-        plugins: [vuetify],
+        plugins: [ vuetify ],
         stubs: {
           'async-component-wrapper': true,
           transition: true,
@@ -419,7 +427,7 @@ describe('Form Component', () => {
         side: 'light',
       },
       global: {
-        plugins: [vuetify],
+        plugins: [ vuetify ],
         stubs: {
           'async-component-wrapper': true,
           transition: true,
@@ -429,6 +437,7 @@ describe('Form Component', () => {
 
     // Simulate search input change
     const searchTerm = 'Skywalker'
+
     // Test the composable's behavior directly since DOM interaction is complex
     mockFormData.selectInput = searchTerm
     expect(mockFormData.selectInput).toBe(searchTerm)
