@@ -1,13 +1,13 @@
-import type { AppError } from '../errors/AppError'
+import { AppError } from '../errors/AppError'
 
 /**
  * Logger interface for dependency injection
  */
 export type ILogger = {
-  error: (message: string, context?: Record<string, any>) => void
-  warn: (message: string, context?: Record<string, any>) => void
-  info: (message: string, context?: Record<string, any>) => void
-  debug: (message: string, context?: Record<string, any>) => void
+  error: (message: string, context?: Record<string, unknown>) => void
+  warn: (message: string, context?: Record<string, unknown>) => void
+  info: (message: string, context?: Record<string, unknown>) => void
+  debug: (message: string, context?: Record<string, unknown>) => void
 }
 
 /**
@@ -26,7 +26,7 @@ export type INotificationService = {
 export type IMonitoringService = {
   captureException: (error: Error | AppError) => void
   captureMessage: (message: string, level: 'error' | 'warning' | 'info') => void
-  setContext: (context: Record<string, any>) => void
+  setContext: (context: Record<string, unknown>) => void
 }
 
 /**
@@ -72,7 +72,7 @@ export class ErrorHandlerService {
   /**
    * Main error handling method
    */
-  handle(error: Error | AppError, context?: Record<string, any>): ErrorHandlingResult {
+  handle(error: Error | AppError, context?: Record<string, unknown>): ErrorHandlingResult {
     const finalConfig = { ...this.defaultConfig, ...this.config }
     const errorContext = this.enrichContext(error, context)
 
@@ -129,7 +129,7 @@ export class ErrorHandlerService {
    */
   private handleAppError(
     error: AppError,
-    context: Record<string, any>,
+    context: Record<string, unknown>,
     config: ErrorHandlerConfig
   ): ErrorHandlingResult {
     // Log the error
@@ -139,7 +139,7 @@ export class ErrorHandlerService {
         statusCode: error.statusCode,
         context: error.context,
         additionalContext: context,
-        stack: error.stack,
+        stack: error.stack
       })
     }
 
@@ -165,23 +165,20 @@ export class ErrorHandlerService {
       handled: true,
       shouldRetry,
       retryAfter,
-      userNotified,
+      userNotified
     }
   }
 
-  /**
-   * Handle unknown/unexpected errors
-   */
   private handleUnknownError(
     error: Error,
-    context: Record<string, any>,
+    context: Record<string, unknown>,
     config: ErrorHandlerConfig
   ): ErrorHandlingResult {
     if (config.logToConsole) {
       this.logger.error('Unknown error occurred', {
         message: error.message,
         stack: error.stack,
-        context,
+        context
       })
     }
 
@@ -197,100 +194,67 @@ export class ErrorHandlerService {
     return {
       handled: true,
       shouldRetry: false,
-      userNotified: config.showUserNotifications,
+      userNotified: config.showUserNotifications
     }
   }
 
-  /**
-   * Handle critical errors that occur during error handling
-   */
-  private handleCriticalError(handlingError: Error, originalError: Error, context: Record<string, any>): void {
-    console.error('Critical error in error handling:', {
-      handlingError: handlingError.message,
-      originalError: originalError.message,
-      context,
-    })
-
-    // Try to send to monitoring as last resort
+  private handleCriticalError(
+    handlingError: Error,
+    originalError: Error,
+    context: Record<string, unknown>
+  ): void {
     try {
+      this.logger.error('Critical error in error handling', {
+        handlingError: handlingError.message,
+        originalError: originalError.message,
+        context
+      })
       this.monitoringService?.captureMessage('Critical error in error handling', 'error')
     } catch {
-      // Silent fail - nothing more we can do
+      console.error('Fatal error in error handler', {
+        handlingError: handlingError.message,
+        originalError: originalError.message,
+        context
+      })
     }
   }
 
-  /**
-   * Check if error is an AppError instance
-   */
   private isAppError(error: Error | AppError): error is AppError {
-    return 'code' in error && 'statusCode' in error && 'userMessage' in error
+    return error instanceof AppError
   }
 
-  /**
-   * Determine if an error should trigger a retry
-   */
   private isRetryableError(error: AppError, config: ErrorHandlerConfig): boolean {
     return config.retryableErrorCodes.includes(error.code) && error.statusCode >= 500
   }
 
-  /**
-   * Calculate delay before retry based on error type
-   */
   private calculateRetryDelay(error: AppError): number | undefined {
     switch (error.code) {
-      case 'NETWORK_ERROR': {
-        return 1000 // 1 second
-      }
+      case 'NETWORK_ERROR':
+        return 1000
 
-      case 'API_ERROR': {
-        return error.statusCode === 429 ? 5000 : 2000 // Rate limit vs server error
-      }
+      case 'API_ERROR':
+        return error.statusCode === 429 ? 5000 : 2000
 
-      default: {
+      default:
         return undefined
-      }
     }
   }
 
-  /**
-   * Enrich error context with additional information
-   */
-  private enrichContext(error: Error, additionalContext?: Record<string, any>): Record<string, any> {
+  private enrichContext(
+    error: Error,
+    additionalContext?: Record<string, unknown>
+  ): Record<string, unknown> {
     return {
       timestamp: new Date().toISOString(),
       userAgent: typeof navigator === 'undefined' ? 'unknown' : navigator.userAgent,
       url: typeof window === 'undefined' ? 'unknown' : window.location.href,
       errorName: error.name,
       errorMessage: error.message,
-      ...additionalContext,
+      ...additionalContext
     }
   }
 
-  /**
-   * Utility method for delay
-   */
   private delay(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms))
-  }
-}
-
-/**
- * Console logger implementation
- */
-export class ConsoleLogger implements ILogger {
-  error(message: string, context?: Record<string, any>): void {
-    console.error(message, context)
-  }
-
-  warn(message: string, context?: Record<string, any>): void {
-    console.warn(message, context)
-  }
-
-  info(message: string, context?: Record<string, any>): void {
-    console.info(message, context)
-  }
-
-  debug(message: string, context?: Record<string, any>): void {
-    console.debug(message, context)
   }
 }
