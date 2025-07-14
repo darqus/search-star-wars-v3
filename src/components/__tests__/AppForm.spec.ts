@@ -420,7 +420,7 @@ describe('Form Component', () => {
     expect(mockFormData.onSelect).toHaveBeenCalledWith(testItem)
   })
 
-  it('handles search input change', async () => {
+  it('handles search input change', () => {
     const _wrapper = mount(Form, {
       props: {
         role: 'Jedi',
