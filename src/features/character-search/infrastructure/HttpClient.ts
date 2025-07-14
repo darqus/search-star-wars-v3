@@ -26,8 +26,8 @@ export class HttpClient {
 
   constructor(config: HttpClientConfig) {
     this.config = {
-      timeout: config.timeout || 10_000,
-      retries: config.retries || 3,
+      timeout: config.timeout ?? 10_000,
+      retries: config.retries ?? 3,
       baseURL: config.baseURL,
     }
   }
