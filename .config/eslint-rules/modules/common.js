@@ -18,32 +18,12 @@ export const common = {
           position: 'before',
         },
         {
-          pattern: '**/boot/**',
-          group: 'external',
-          position: 'before',
-        },
-        {
           pattern: '**/axios/**',
           group: 'external',
           position: 'before',
         },
         {
-          pattern: '#q-app',
-          group: 'external',
-          position: 'before',
-        },
-        {
-          pattern: '#q-app/**',
-          group: 'external',
-          position: 'before',
-        },
-        {
-          pattern: 'quasar',
-          group: 'external',
-          position: 'before',
-        },
-        {
-          pattern: 'quasar/**',
+          pattern: '*.scss',
           group: 'external',
           position: 'before',
         },
@@ -95,11 +75,6 @@ export const common = {
         {
           pattern: 'src/**',
           group: 'internal',
-        },
-        {
-          pattern: './**/*.scss',
-          group: 'index',
-          position: 'after',
         },
         {
           pattern: '../**/*.scss',
