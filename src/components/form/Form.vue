@@ -15,8 +15,6 @@ import {
   HEADER_NAME_SHORT,
 } from '@/constants/form'
 
-import './scss/form.scss'
-
 // Lazy loaded components with loading indicators
 const Dialog = defineAsyncComponent({
   loader: () => import('@/components/AppDialog.vue'),
@@ -151,6 +149,8 @@ onUnmounted(() => {
 </template>
 
 <style>
+@import './scss/form.scss';
+
 .header-links {
   color: v-bind('isDark() ? "lightblue" : "rgb(36, 125, 199)"');
 }
