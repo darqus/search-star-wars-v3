@@ -29,7 +29,7 @@ const Link = defineAsyncComponent({
 })
 
 const Logo = defineAsyncComponent({
-  loader: () => import('@/components/Logo.vue'),
+  loader: () => import('@/components/AppLogo.vue'),
   delay: COMPONENT_DELAY_FAST,
 })
 

@@ -526,7 +526,7 @@ src/
 │   │   └── ApiError.ts
 │   ├── ui/                   # Переиспользуемые UI компоненты
 │   │   ├── AppDialog.vue
-│   │   ├── Logo.vue
+│   │   ├── AppLogo.vue
 │   │   └── AsyncWrapper.vue
 │   ├── utils/
 │   │   ├── cache.ts

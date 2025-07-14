@@ -21,7 +21,7 @@ src/components/
 ├── ResultDisplay.vue         # Компонент отображения результатов
 ├── AppDialog.vue                # Модальное окно
 ├── AppLink.vue                  # Компонент ссылки
-├── Logo.vue                  # Логотип
+├── AppLogo.vue                  # Логотип
 ├── Mandala.vue               # Анимированный фон
 └── __tests__/                # Тесты компонентов
 ```

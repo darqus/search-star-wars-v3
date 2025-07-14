@@ -31,7 +31,7 @@ vi.mock('@/components/AppLink.vue', () => ({
   },
 }))
 
-vi.mock('@/components/Logo.vue', () => ({
+vi.mock('@/components/AppLogo.vue', () => ({
   __esModule: true,
   default: {
     name: 'MockLogo',
