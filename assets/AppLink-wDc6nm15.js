@@ -1,1 +1,0 @@
-import{d as t,h as n,o,t as a,q as r}from"./index-DmPOQmpm.js";const s=["href"],p=t({__name:"AppLink",props:{link:{default:"#"},text:{default:""},fontSizeRem:{default:-1}},setup(i){return(e,l)=>(o(),n("a",{href:e.link,style:r(e.fontSizeRem>0?`font-size: ${e.fontSizeRem}rem;`:""),target:"_blank"},a(e.text),13,s))}});export{p as default};
