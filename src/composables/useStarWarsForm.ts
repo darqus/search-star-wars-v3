@@ -51,7 +51,7 @@ export function useStarWarsForm() {
   }
 
   const fetchItems = () => {
-    starWarsStore.fetchItems()
+    void starWarsStore.fetchItems()
   }
 
   return {
