@@ -15,7 +15,7 @@ export function useStarWarsForm() {
   })
   const selectedItem = computed({
     get: () => starWarsStore.selectedItem,
-    set: (value: Item | undefined) => value && starWarsStore.selectItem(value),
+    set: (value: Item | undefined) => value && void starWarsStore.selectItem(value),
   })
   const selectInput = computed({
     get: () => starWarsStore.selectInput,
