@@ -13,7 +13,7 @@ export function useLoadingState() {
   }
 
   const getNamedLoading = (name: string): boolean => {
-    return loadingStates.value[name] || false
+    return loadingStates.value[name] ?? false
   }
 
   const isAnyLoading = (): boolean => {

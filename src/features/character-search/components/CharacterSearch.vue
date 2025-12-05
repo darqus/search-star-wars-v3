@@ -84,7 +84,7 @@ const endpointTitle = computed(() => {
     vehicles: 'транспорта',
   }
 
-  return titles[props.endpoint] || props.endpoint
+  return titles[props.endpoint] ?? props.endpoint
 })
 
 const totalPages = computed(() => {

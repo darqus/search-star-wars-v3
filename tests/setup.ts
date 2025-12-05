@@ -11,7 +11,7 @@ const localStorageMock = (() => {
 
   return {
     getItem: vi.fn((key: string): string | null => {
-      return store[key] || null
+      return store[key] ?? null
     }),
     setItem: vi.fn((key: string, value: string): void => {
       store[key] = value

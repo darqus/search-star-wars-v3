@@ -57,7 +57,7 @@ const endpointLabel = computed(() => {
     vehicles: 'Транспорт',
   }
 
-  return labels[props.character.endpoint] || props.character.endpoint
+  return labels[props.character.endpoint] ?? props.character.endpoint
 })
 
 const endpointColor = computed(() => {
@@ -71,7 +71,7 @@ const endpointColor = computed(() => {
     vehicles: 'brown',
   }
 
-  return colors[props.character.endpoint] || 'grey'
+  return colors[props.character.endpoint] ?? 'grey'
 })
 
 /**

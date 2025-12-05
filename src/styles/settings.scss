@@ -16,6 +16,8 @@
 }
 
 /* Оптимизация для Material Design Icons */
-.mdi::before {
-  font-display: swap !important;
+.mdi {
+  &::before {
+    font-display: swap !important;
+  }
 }
